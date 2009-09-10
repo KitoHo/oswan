@@ -82,7 +82,7 @@ BOOL InitApp(HINSTANCE hInst)
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = hInst;
-    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hIcon = LoadIcon(hInst, MAKEINTRESOURCE(IDI_ICON1));
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
     wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1);

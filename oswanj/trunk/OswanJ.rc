@@ -110,6 +110,15 @@ END
 //
 
 IDR_WAVE1               WAVE                    "ws.wav"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "icon1.ico"
 #endif    // “ú–{Œê resources
 /////////////////////////////////////////////////////////////////////////////
 

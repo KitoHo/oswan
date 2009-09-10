@@ -40,7 +40,7 @@ void SetPalette(int addr, BYTE PalData)
 
     // RGB444 format
     color = *(WORD*)(IRAM + (addr & 0xFFFE));
-    Palette[(addr & 0x1E0) >> 5][(addr & 0x1E) >> 1] = color| 0xF000;
+    Palette[(addr & 0x1E0) >> 5][(addr & 0x1E) >> 1] = color | 0xF000;
 }
 
 void RefreshLine(int Line)
@@ -64,7 +64,7 @@ void RefreshLine(int Line)
     pSBuf = FrameBuffer[Line] + 8;
     pSWrBuf = pSBuf;
 
-    if(LCDSLP &0x01)
+    if(LCDSLP & 0x01)
     {
         if(COLCTL & 0xE0)
         {

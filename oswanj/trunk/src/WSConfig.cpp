@@ -7,8 +7,6 @@ $Rev: 11 $
 #include "WSconfig.h"
 #include "WSInput.h"
 
-int Verbose;
-
 void ConfigCreate(void)
 {
 	strcpy(KeyConfig[0],"W");

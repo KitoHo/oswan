@@ -6,13 +6,12 @@ $Rev$
 #include <tchar.h>
 #include <shlwapi.h>
 #include <stdio.h>
-#include "WSconfig.h"
 #include "WSHard.h"
 #include "WS.h"
 #include "WSDraw.h"
-#include "WSfileio.h"
-#include "WSpdata.h"
-#include "WSerror.h"
+#include "WSFileio.h"
+#include "WSPdata.h"
+#include "WSError.h"
 
 // ファイル操作は表などとディレクトリセパレータがかぶるのでUNICODEを使います
 static wchar_t CurDir[512];
@@ -195,10 +194,7 @@ int WsCreate(wchar_t *CartName)
     }
     if(Checksum & 0xFFFF)
     {
-        if(Verbose)
-        {
-            ErrorMsg(ERR_CHECKSUM);
-        }
+        ErrorMsg(ERR_CHECKSUM);
     }
     if(RAMBanks)
     {

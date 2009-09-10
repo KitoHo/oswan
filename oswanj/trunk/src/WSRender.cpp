@@ -7,7 +7,7 @@ $Rev$
 #include "WSRender.h"
 #include "WS.h"
 #include "WSDraw.h"
-#include "WSsegment.h"
+#include "WSSegment.h"
 
 #define MAP_TILE 0x01FF
 #define MAP_PAL  0x1E00

@@ -7,8 +7,8 @@ $Rev$
 #include <mmsystem.h>
 #include "../resource.h"
 #include "WSHard.h"
-#include "WSapu.h"
-#include "WSerror.h"
+#include "WSApu.h"
+#include "WSError.h"
 
 #define BUFSIZEN    0x10000
 #define BPSWAV      12000 // WS‚ÌHblank‚ª12KHz

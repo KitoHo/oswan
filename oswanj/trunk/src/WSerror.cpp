@@ -5,7 +5,7 @@ $Rev$
 
 #include <windows.h>
 #include <tchar.h>
-#include "WSerror.h"
+#include "WSError.h"
 
 void  ErrorMsg(long err)
 {

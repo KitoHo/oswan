@@ -5,12 +5,12 @@ $Rev$
 
 #include "../resource.h"
 #include "WS.h"
-#include "WSconfig.h"
+#include "WSConfig.h"
 #include "WSInput.h"
 #include "WSDraw.h"
 #include "WSRender.h"
-#include "WSapu.h"
-#include "WSfileio.h"
+#include "WSApu.h"
+#include "WSFileio.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitApp(HINSTANCE);

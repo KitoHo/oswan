@@ -177,11 +177,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSapu.cpp"
+				RelativePath=".\src\WSApu.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSconfig.cpp"
+				RelativePath=".\src\WSConfig.cpp"
 				>
 			</File>
 			<File
@@ -189,11 +189,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSerror.cpp"
+				RelativePath=".\src\WSError.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSfileio.cpp"
+				RelativePath=".\src\WSFileio.cpp"
 				>
 			</File>
 			<File
@@ -201,7 +201,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSmain.cpp"
+				RelativePath=".\src\WSMain.cpp"
 				>
 			</File>
 			<File
@@ -231,15 +231,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSapu.h"
+				RelativePath=".\src\WSApu.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSbandai.h"
+				RelativePath=".\src\WSBandai.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSconfig.h"
+				RelativePath=".\src\WSConfig.h"
 				>
 			</File>
 			<File
@@ -247,11 +247,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSerror.h"
+				RelativePath=".\src\WSError.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSfileio.h"
+				RelativePath=".\src\WSFileio.h"
 				>
 			</File>
 			<File
@@ -263,7 +263,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSpdata.h"
+				RelativePath=".\src\WSPdata.h"
 				>
 			</File>
 			<File
@@ -271,7 +271,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSsegment.h"
+				RelativePath=".\src\WSSegment.h"
 				>
 			</File>
 		</Filter>

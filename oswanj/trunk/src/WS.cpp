@@ -4,16 +4,15 @@ $Rev$
 */
 
 #include <time.h>
-#include "WSconfig.h"
 #include "WSRender.h"
 #include "WS.h"
 #include "WSDraw.h"
 #include "WSInput.h"
-#include "WSapu.h"
-#include "WSfileio.h"
-#include "WSpdata.h"
-#include "WSbandai.h"
-#include "WSerror.h"
+#include "WSApu.h"
+#include "WSFileio.h"
+#include "WSPdata.h"
+#include "WSBandai.h"
+#include "WSError.h"
 #include "nec/necintrf.h"
 
 #define IPeriod 32          // HBlank/8 (256/8)

@@ -4,7 +4,6 @@ $Rev$
 */
 
 #include "WSDraw.h"
-#include "WSconfig.h"
 #include "WS.h"
 #include "WSInput.h"
 #include "WSRender.h"

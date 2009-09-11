@@ -156,7 +156,7 @@ typedef void (*WriteMemFn)(DWORD A, BYTE V);
 
 static void  WriteRom(DWORD A, BYTE V)
 {
-	ErrorMsg(ERR_WRITE_ROM);
+	//ErrorMsg(ERR_WRITE_ROM);
 }
 
 static void  WriteIRam(DWORD A, BYTE V)

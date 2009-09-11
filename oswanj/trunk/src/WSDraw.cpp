@@ -204,27 +204,42 @@ void drawDraw()
     //頂点バッファの中身を埋める
     MY_VERTEX* v;
     pMyVB->Lock( 0, 0, (void**)&v, 0 );
-    // 頂点座標の設定
-    v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
-    v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
-    v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
-    v[3].p = D3DXVECTOR3(MAIN_W, -1.0f, 0.0f);
-    v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
-    v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
-    v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
-    v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
+	if (DrawMode == 2)
+	{
+		// 頂点座標の設定
+		v[0].p = D3DXVECTOR3(-1.0f,  0.0f, 0.0f);
+		v[1].p = D3DXVECTOR3( 0.35f, 0.8f, 0.0f);
+		v[2].p = D3DXVECTOR3(-0.5f, -0.85f, 0.0f);
+		v[3].p = D3DXVECTOR3( 0.85f, -0.05f, 0.0f);
+		v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
+		v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
+		v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
+		v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
+	}
+	else
+	{
+		// 頂点座標の設定
+		v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
+		v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
+		v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
+		v[3].p = D3DXVECTOR3(MAIN_W, -1.0f, 0.0f);
+		v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
+		v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
+		v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
+		v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
+	}
+	// テクスチャ座標の設定
+	v[0].t = D3DXVECTOR2(0.0f, 0.0f);
+	v[1].t = D3DXVECTOR2(MAIN_X, 0.0f);
+	v[2].t = D3DXVECTOR2(0.0f, MAIN_Y);
+	v[3].t = D3DXVECTOR2(MAIN_X, MAIN_Y);
+	v[4].t = D3DXVECTOR2(0.0f, 0.0f);
+	v[5].t = D3DXVECTOR2(SEG_X, 0.0f);
+	v[6].t = D3DXVECTOR2(0.0f, SEG_Y);
+	v[7].t = D3DXVECTOR2(SEG_X, SEG_Y);
     // 頂点カラーの設定
     v[0].color = v[1].color = v[2].color = v[3].color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
     v[4].color = v[5].color = v[6].color = v[7].color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
-    // テクスチャ座標の設定
-    v[0].t = D3DXVECTOR2(0.0f, 0.0f);
-    v[1].t = D3DXVECTOR2(MAIN_X, 0.0f);
-    v[2].t = D3DXVECTOR2(0.0f, MAIN_Y);
-    v[3].t = D3DXVECTOR2(MAIN_X, MAIN_Y);
-    v[4].t = D3DXVECTOR2(0.0f, 0.0f);
-    v[5].t = D3DXVECTOR2(SEG_X, 0.0f);
-    v[6].t = D3DXVECTOR2(0.0f, SEG_Y);
-    v[7].t = D3DXVECTOR2(SEG_X, SEG_Y);
     pMyVB->Unlock();
     // 回転処理
     D3DXMATRIX mat;
@@ -234,12 +249,6 @@ void drawDraw()
     {
         D3DXMatrixRotationZ(&mat, D3DXToRadian(90));
     }
-	/*
-    else if (DrawMode == 2)
-    {
-        D3DXMatrixRotationZ(&mat, D3DXToRadian(30));
-    }
-	*/
     // 描画開始宣言
     if(SUCCEEDED(pD3DDevice->BeginScene()))
     {
@@ -276,6 +285,11 @@ void WsResize(void)
     {
         client_width  = lcdHeight * DrawSize;
         client_height = lcdWidth  * DrawSize;
+    }
+    else if (DrawMode == 2)
+    {
+        client_width  = 256 * DrawSize;
+        client_height = 256 * DrawSize;
     }
     else
     {

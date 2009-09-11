@@ -5,7 +5,7 @@ $Rev: 5 $
 
 #include "WSInput.h"
 #include <windows.h>
-#include <Mmsystem.h>
+#include <mmsystem.h>
 
 #define JOYMAX 2
 JOYINFOEX JIEX;

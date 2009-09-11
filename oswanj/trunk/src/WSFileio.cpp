@@ -3,7 +3,6 @@ $Date: 2009-09-10 11:00:27 +0900 (木, 10 9 2009) $
 $Rev: 5 $
 */
 
-#include <tchar.h>
 #include <shlwapi.h>
 #include <stdio.h>
 #include "WSHard.h"

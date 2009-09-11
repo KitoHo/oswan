@@ -9,14 +9,14 @@ $Rev: 5 $
 #include "WSRender.h"
 
 extern HWND hWnd;
-static enum DRAWSIZE DrawSize = DS_1;            // 描画サイズ フルスクリーン、x1 x2 x3
-static int DrawMode = 0;                    // 縦横フラグ 0:横
-static LPDIRECT3D9                 pD3D;           // IDirect3D9インターフェイスへのポインタ
-static LPDIRECT3DDEVICE9           pD3DDevice;     // IDirect3DDevice9インターフェイスへのポインタ
-static D3DPRESENT_PARAMETERS       D3DPP;          // デバイスのプレゼンテーションパラメータ
-static LPDIRECT3DVERTEXBUFFER9     pMyVB;          // Vertex Buffer
-static LPDIRECT3DTEXTURE9          pTexture;       // Texture
-static LPDIRECT3DSURFACE9          pSurface;       // Surface
+static enum DRAWSIZE DrawSize = DS_1;           // 描画サイズ フルスクリーン、x1 x2 x3
+static int DrawMode = 0;                        // 縦横フラグ 0:横
+static LPDIRECT3D9                 pD3D;        // IDirect3D9インターフェイスへのポインタ
+static LPDIRECT3DDEVICE9           pD3DDevice;  // IDirect3DDevice9インターフェイスへのポインタ
+static D3DPRESENT_PARAMETERS       D3DPP;       // デバイスのプレゼンテーションパラメータ
+static LPDIRECT3DVERTEXBUFFER9     pMyVB;       // Vertex Buffer
+static LPDIRECT3DTEXTURE9          pTexture;    // Texture
+static LPDIRECT3DSURFACE9          pSurface;    // Surface
 static LPDIRECT3DTEXTURE9          pSegTexture;
 static LPDIRECT3DSURFACE9          pSegSurface;
 
@@ -206,7 +206,7 @@ void drawDraw()
     pMyVB->Lock( 0, 0, (void**)&v, 0 );
     // 頂点座標の設定
     v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
-    v[1].p = D3DXVECTOR3(MAIN_W,  1.0f, 0.0f);
+    v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
     v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
     v[3].p = D3DXVECTOR3(MAIN_W, -1.0f, 0.0f);
     v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
@@ -237,7 +237,7 @@ void drawDraw()
     // 描画開始宣言
     if(SUCCEEDED(pD3DDevice->BeginScene()))
     {
-		pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0xFF222222, 0.0f, 0);
+        pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0xFF666666, 0.0f, 0);
         pD3DDevice->SetStreamSource(0, pMyVB, 0, sizeof(MY_VERTEX));
         pD3DDevice->SetFVF(MY_VERTEX_FVF);
         pD3DDevice->SetTexture( 0, pTexture);

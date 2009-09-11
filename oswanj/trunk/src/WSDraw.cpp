@@ -234,6 +234,12 @@ void drawDraw()
     {
         D3DXMatrixRotationZ(&mat, D3DXToRadian(90));
     }
+	/*
+    else if (DrawMode == 2)
+    {
+        D3DXMatrixRotationZ(&mat, D3DXToRadian(30));
+    }
+	*/
     // •`‰æŠJŽnéŒ¾
     if(SUCCEEDED(pD3DDevice->BeginScene()))
     {

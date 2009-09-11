@@ -264,7 +264,7 @@ void SetKeyMap(int Mode)
     char dest[64];
     int i, j, index;
 
-    index = Mode ? 12 : 0;
+    index = (Mode & 1) ? 12 : 0;
     memset(KeyMap, 0, sizeof(KeyMap));
 
     for(i = 0; i < 12; i++)

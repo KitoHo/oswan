@@ -684,19 +684,19 @@ void WsReset (void)
 
 void WsRomPatch(BYTE *buf)
 {
-    if((buf[0] == 0x01) && (buf[2] == 0x16)) //STAR HEARTS
+    if((buf[0] == 0x01) && (buf[1] == 0x01) && (buf[2] == 0x16)) // SWJ-BANC16 STAR HEARTS
     {
         RAMBanks = 1;
         RAMSize = 0x8000;
         CartKind = 0;
     }
-    if((buf[0] == 0x01) && (buf[2] == 0x2C)) // SWJ-BAN02C,02F デジタルパートナー
+    if((buf[0] == 0x01) && (buf[1] == 0x00) && (buf[2] == 0x2C || buf[2] == 0x2F)) // SWJ-BAN02C,02F デジタルパートナー
     {
         RAMBanks = 1;
         RAMSize = 0x8000;
         CartKind = 0;
     }
-    if((buf[0] == 0x01) && (buf[2] == 0x38)) // SWJ-BANC38 NARUTO 木ノ葉忍法帖
+    if((buf[0] == 0x01) && (buf[1] == 0x01) && (buf[2] == 0x38)) // SWJ-BANC38 NARUTO 木ノ葉忍法帖
     {
         RAMBanks = 1;
         RAMSize = 0x10000;

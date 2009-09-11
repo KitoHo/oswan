@@ -119,6 +119,9 @@ void apuWaveClear(void)
     rBuf = 0;
     wBuf = 0;
     wPos = 0;
+    for (i = 0; i < 8; i++) {
+		ZeroMemory(PDataN[i], BUFSIZEN);
+    }
 }
 
 int apuInit(void)

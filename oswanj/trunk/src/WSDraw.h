@@ -10,6 +10,8 @@ $Rev: 5 $
 #include <d3d9.h>
 #include <d3dx9.h>
 
+extern int Kerorikan;
+
 enum DRAWSIZE {
     DS_1 = 1,
     DS_2 = 2,

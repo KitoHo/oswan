@@ -9,6 +9,7 @@ $Rev: 5 $
 #include "WSRender.h"
 
 extern HWND hWnd;
+int	Kerorikan = 0;
 static enum DRAWSIZE DrawSize = DS_1;           // 描画サイズ フルスクリーン、x1 x2 x3
 static int DrawMode = 0;                        // 縦横フラグ 0:横
 static LPDIRECT3D9                 pD3D;        // IDirect3D9インターフェイスへのポインタ
@@ -162,6 +163,7 @@ void drawDestroy(void)
 #define SEG_X (4 * 8.0f/32.0f)
 #define SEG_Y (4 * 144.0f/1024.0f)
 #define SEG_W (1.0f - 2 * 8.0f/234.0f)
+#define KERO 0.0075f
 void drawDraw()
 {
     if(pD3DDevice == 0)
@@ -204,17 +206,17 @@ void drawDraw()
     //頂点バッファの中身を埋める
     MY_VERTEX* v;
     pMyVB->Lock( 0, 0, (void**)&v, 0 );
-	if (DrawMode == 2)
+	if (Kerorikan)
 	{
 		// 頂点座標の設定
-		v[0].p = D3DXVECTOR3(-1.0f,  0.0f, 0.0f);
-		v[1].p = D3DXVECTOR3( 0.35f, 0.8f, 0.0f);
-		v[2].p = D3DXVECTOR3(-0.5f, -0.85f, 0.0f);
-		v[3].p = D3DXVECTOR3( 0.85f, -0.05f, 0.0f);
-		v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
-		v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
-		v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
-		v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
+		v[0].p = D3DXVECTOR3(-112*KERO,  72*KERO, 0.0f);
+		v[1].p = D3DXVECTOR3( 112*KERO,  72*KERO, 0.0f);
+		v[2].p = D3DXVECTOR3(-112*KERO, -72*KERO, 0.0f);
+		v[3].p = D3DXVECTOR3( 112*KERO, -72*KERO, 0.0f);
+		v[4].p = D3DXVECTOR3( 114*KERO,  72*KERO, 0.0f);
+		v[5].p = D3DXVECTOR3( 122*KERO,  72*KERO, 0.0f);
+		v[6].p = D3DXVECTOR3( 114*KERO, -72*KERO, 0.0f);
+		v[7].p = D3DXVECTOR3( 122*KERO, -72*KERO, 0.0f);
 	}
 	else
 	{
@@ -244,11 +246,16 @@ void drawDraw()
     // 回転処理
     D3DXMATRIX mat;
     D3DXMatrixIdentity(&mat);
-    // 縦（左90度回転）
-    if (DrawMode & 0x01)
+    // 斜め（左25度回転）
+    if (Kerorikan)
     {
-        D3DXMatrixRotationZ(&mat, D3DXToRadian(90));
+        D3DXMatrixRotationZ(&mat, D3DXToRadian(25));
     }
+    // 縦（左90度回転）
+	else if (DrawMode & 0x01)
+	{
+        D3DXMatrixRotationZ(&mat, D3DXToRadian(90));
+	}
     // 描画開始宣言
     if(SUCCEEDED(pD3DDevice->BeginScene()))
     {
@@ -281,15 +288,15 @@ void WsResize(void)
     int  client_width;
     int  client_height;
 
-    if (DrawMode & 0x01)
-    {
-        client_width  = lcdHeight * DrawSize;
-        client_height = lcdWidth  * DrawSize;
-    }
-    else if (DrawMode == 2)
+    if (Kerorikan)
     {
         client_width  = 256 * DrawSize;
         client_height = 256 * DrawSize;
+    }
+    else if (DrawMode & 0x01)
+    {
+        client_width  = lcdHeight * DrawSize;
+        client_height = lcdWidth  * DrawSize;
     }
     else
     {

@@ -260,14 +260,7 @@ int WsCreate(wchar_t *CartName)
         SaveName[0] = 0;
     }
     WsReset();
-	if (buf[0] == 1 && buf[1] == 1 && buf[2] == 1) // ÉPÉçÉäÉJÉì
-	{
-		SetDrawMode(2); // obilque mode
-	}
-	else
-	{
-	    SetDrawMode(buf[6] & 1); // 0:â° 1:èc
-	}
+	SetDrawMode(buf[6] & 1); // 0:â° 1:èc
     return 0;
 }
 

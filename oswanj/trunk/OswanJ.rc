@@ -75,6 +75,7 @@ BEGIN
             MENUITEM "レイヤー2(&F)",                   ID_LAYER_2, CHECKED
             MENUITEM "スプライト(&S)",                   ID_LAYER_S, CHECKED
         END
+        MENUITEM "ケロリカン(&K)",                   ID_KERORIKAN
     END
     POPUP "サウンド(&S)"
     BEGIN

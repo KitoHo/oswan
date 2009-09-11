@@ -182,6 +182,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 CheckMenuItem(menu, LOWORD(wp), MF_CHECKED);
             }
             return 0L;
+        case ID_KERORIKAN:
+            menu = GetMenu(hWnd);
+			if (Kerorikan)
+			{
+				Kerorikan = 0;
+                CheckMenuItem(menu, LOWORD(wp), MF_UNCHECKED);
+				WsResize();
+				drawDraw();
+			}
+			else
+			{
+				Kerorikan = 1;
+                CheckMenuItem(menu, LOWORD(wp), MF_CHECKED);
+				WsResize();
+				drawDraw();
+			}
+			return 0L;
         case ID_SOUND_1:
         case ID_SOUND_2:
         case ID_SOUND_3:

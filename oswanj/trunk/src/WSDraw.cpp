@@ -224,7 +224,7 @@ void drawDraw()
 		v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
 		v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
 		v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
-		v[3].p = D3DXVECTOR3(MAIN_W, -1.0f, 0.0f);
+		v[3].p = D3DXVECTOR3(MAIN_W,-1.0f, 0.0f);
 		v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
 		v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
 		v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
@@ -246,10 +246,10 @@ void drawDraw()
     // 回転処理
     D3DXMATRIX mat;
     D3DXMatrixIdentity(&mat);
-    // 斜め（左25度回転）
+    // 斜め（左atan(0.5)回転）
     if (Kerorikan)
     {
-        D3DXMatrixRotationZ(&mat, D3DXToRadian(25));
+        D3DXMatrixRotationZ(&mat, atanf(0.5f));
     }
     // 縦（左90度回転）
 	else if (DrawMode & 0x01)

@@ -249,7 +249,7 @@ void drawDraw()
     // 斜め（左atan(0.5)回転）
     if (Kerorikan)
     {
-        D3DXMatrixRotationZ(&mat, atanf(0.5f));
+        D3DXMatrixRotationZ(&mat, 0.4636476f); // atanf(0.5f)だと最適化されないかもしれないので
     }
     // 縦（左90度回転）
 	else if (DrawMode & 0x01)

@@ -720,7 +720,7 @@ int Interrupt(void)
             {
                 DWORD VCounter;
 
-                ButtonState = (WORD)Joystick();
+                ButtonState = WsInputGetState();
                 if((ButtonState ^ Joyz) & Joyz)
                 {
                     if(IRQENA & KEY_IFLAG)

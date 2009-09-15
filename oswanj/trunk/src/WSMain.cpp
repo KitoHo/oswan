@@ -41,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     drawInitialize(FALSE);
     drawCreate();
     SetDrawSize(DS_2);
-    WsInputInit();
+    WsInputInit(hWnd);
     SetKeyMap(0);
     WsSplash();
     while (1) {
@@ -233,12 +233,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             return 0L;
         }
         break;
-    case WM_KEYDOWN:
-        WsKeyDown(wp);
-        return 0L;
-    case WM_KEYUP:
-        WsKeyUp(wp);
-        return 0L;
     case WM_PAINT:
         drawDraw();
         break;

@@ -5,347 +5,241 @@ $Rev: 5 $
 
 #include "WSInput.h"
 #include <windows.h>
-#include <mmsystem.h>
 
-#define JOYMAX 2
-JOYINFOEX JIEX;
-int KeyStat;
-int JoyOn;
-UINT Joy;
-UINT ThRight;
-UINT ThLeft;
-UINT ThUp;
-UINT ThDown;
-UINT NumButton;
+LPDIRECTINPUT8 lpDInput = NULL;
+LPDIRECTINPUTDEVICE8 lpKeyDevice = NULL;
+LPDIRECTINPUTDEVICE8 lpJoyDevice = NULL;
+DIJOYSTATE2 js;
+int WsJoypad[12];
+int WsButtons[12];
 
-char KeyConfig[24][64];
-char JoyConfig[24][64];
-
-int KeyMap[256];
-int JoyMap[16];
-
-struct CPTR2INT
+BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* lpddi, LPVOID lpContext)
 {
-    char *Cptr;
-    int Code;
-};
+	HRESULT hRet;
 
-const static CPTR2INT KeyAddr[] = {
-    { "BS",     0x08},
-    { "RETURN", 0x0D},
-    { "SHIFT",  0x10},
-    { "CONTROL",0x11},
-    { "SPACE",  0x20},
-    { "LEFT",   0x25},
-    { "UP",     0x26},
-    { "RIGHT",  0x27},
-    { "DOWN",   0x28},
-    { "0",      0x30},
-    { "1",      0x31},
-    { "2",      0x32},
-    { "3",      0x33},
-    { "4",      0x34},
-    { "5",      0x35},
-    { "6",      0x36},
-    { "7",      0x37},
-    { "8",      0x38},
-    { "9",      0x39},
-    { "A",      0x41},
-    { "B",      0x42},
-    { "C",      0x43},
-    { "D",      0x44},
-    { "E",      0x45},
-    { "F",      0x46},
-    { "G",      0x47},
-    { "H",      0x48},
-    { "I",      0x49},
-    { "J",      0x4A},
-    { "K",      0x4B},
-    { "L",      0x4C},
-    { "M",      0x4D},
-    { "N",      0x4E},
-    { "O",      0x4F},
-    { "P",      0x50},
-    { "Q",      0x51},
-    { "R",      0x52},
-    { "S",      0x53},
-    { "T",      0x54},
-    { "U",      0x55},
-    { "V",      0x56},
-    { "W",      0x57},
-    { "X",      0x58},
-    { "Y",      0x59},
-    { "Z",      0x5A},
-    { ":",      0xBA},
-    { ";",      0xBB},
-    { "-",      0xBD},
-    { ". ",     0xBE},
-    { "/",      0xBF},
-    { "@",      0xC0},
-    { "[",      0xDB},
-    { "\\",     0xDC},
-    { "]",      0xDD},
-    { "^",      0xDE},
-    { NULL,     0   }
-};
+	hRet = lpDInput->CreateDevice(lpddi->guidInstance, &lpJoyDevice, NULL);
+	if(FAILED(hRet))  return DIENUM_CONTINUE;
 
-const static CPTR2INT JoyAddr[] = {
-    { "LEFT",   0x01},
-    { "RIGHT",  0x02},
-    { "UP",     0x03},
-    { "DOWN",   0x04},
-    { "1",  0x05},
-    { "2",  0x06},
-    { "3",  0x07},
-    { "4",  0x08},
-    { "5",  0x09},
-    { "6",  0x0A},
-    { "7",  0x0B},
-    { "8",  0x0C},
-    { "9",  0x0D},
-    { "10", 0x0E},
-    { "11", 0x0F},
-    { NULL, 0   }
-};
-
-//---------------------------------------------------------------------------
-int WsInputInit(void)
-{
-    MMRESULT result;
-    JOYCAPS JCaps;
-    UINT JoyId[JOYMAX] = {JOYSTICKID1, JOYSTICKID2};
-    UINT min, max, value;
-    int i;
-
-    KeyStat = 0x0000;
-
-    JoyOn = 0;
-    Joy = 0;
-    if(joyGetNumDevs() == 0)
-    {
-        return -1;
-    }
-
-    memset(&JIEX, 0, sizeof(JIEX));
-    JIEX.dwSize=sizeof(JIEX);
-    JIEX.dwFlags=JOY_RETURNX|JOY_RETURNY|JOY_RETURNBUTTONS;
-    memset(&JCaps, 0, sizeof(JCaps));
-
-    for(i=0;i<JOYMAX;i++)
-    {
-        result=joyGetPosEx(JoyId[i],&JIEX);
-        if(result!=JOYERR_NOERROR)
-        {
-            continue;
-        }
-        result=joyGetDevCaps(JoyId[i],&JCaps,sizeof(JCaps));
-        if(result!=JOYERR_NOERROR)
-        {
-            continue;
-        }
-        JoyOn=1;
-        Joy=JoyId[i];
-
-        NumButton=JCaps.wNumButtons;
-        min=JCaps.wXmin;
-        max=JCaps.wXmax;
-        value=(max-min)/3;
-        ThRight=max-value;
-        ThLeft=min+value;
-        min=JCaps.wYmin;
-        max=JCaps.wYmax;
-        value=(max-min)/3;
-        ThDown=max-value;
-        ThUp=min+value;
-
-        return 0;
-    }
-    return -1;
+	return DIENUM_STOP;
 }
 
-//---------------------------------------------------------------------------
-int Joystick(void)
+int WsInputJoyInit(HWND hw)
 {
-    MMRESULT result;
-    int value;
+	HRESULT hRet;
+	if (lpJoyDevice != NULL)
+		return TRUE;
 
-    if(JoyOn == 0)
-    {
-        return KeyStat;
-    }
+	hRet = lpDInput->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback, NULL, DIEDFL_ATTACHEDONLY);
+	if (hRet != DI_OK){
+		if (lpJoyDevice != NULL)
+		{
+			lpJoyDevice->Release();
+			lpJoyDevice = NULL;
+		}
+		return FALSE;
+	}
+	if (lpJoyDevice == NULL)
+	{
+		return FALSE;
+	}
+	hRet = lpJoyDevice->SetDataFormat(&c_dfDIJoystick2);
+	if (hRet != DI_OK){
+		if (lpJoyDevice != NULL)
+		{
+			lpJoyDevice->Release();
+			lpJoyDevice = NULL;
+		}
+		return FALSE;
+	}
+	hRet = lpJoyDevice->SetCooperativeLevel(hw, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+	if (hRet != DI_OK){
+		if (lpJoyDevice != NULL)
+		{
+			lpJoyDevice->Release();
+			lpJoyDevice = NULL;
+		}
+		return FALSE;
+	}
+	lpJoyDevice->Acquire();
 
-    result = joyGetPosEx(Joy,&JIEX);
-    if(result != JOYERR_NOERROR)
-    {
-        return KeyStat;
-    }
-
-    value = 0x0000;
-    if(JIEX.dwXpos <= ThLeft)
-    {
-        value |= JoyMap[0x01];
-    }
-    if(JIEX.dwXpos >= ThRight)
-    {
-        value |= JoyMap[0x02];
-    }
-    if(JIEX.dwYpos <= ThUp)
-    {
-        value |= JoyMap[0x03];
-    }
-    if(JIEX.dwYpos >= ThDown)
-    {
-        value |= JoyMap[0x04];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON1)
-    {
-        value |= JoyMap[0x05];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON2)
-    {
-        value |= JoyMap[0x06];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON3)
-    {
-        value |= JoyMap[0x07];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON4)
-    {
-        value |= JoyMap[0x08];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON5)
-    {
-        value |= JoyMap[0x09];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON6)
-    {
-        value |= JoyMap[0x0A];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON7)
-    {
-        value |= JoyMap[0x0B];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON8)
-    {
-        value |= JoyMap[0x0C];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON9)
-    {
-        value |= JoyMap[0x0D];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON10)
-    {
-        value |= JoyMap[0x0E];
-    }
-    if(JIEX.dwButtons & JOY_BUTTON11)
-    {
-        value |= JoyMap[0x0F];
-    }
-
-    return KeyStat | value;
+	return TRUE;
 }
 
-//---------------------------------------------------------------------------
-void WsKeyDown(WORD Key)
+int WsInputInit(HWND hw)
 {
-    KeyStat |= KeyMap[Key & 0xFF];
+	DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&lpDInput, NULL);
+	lpDInput->CreateDevice(GUID_SysKeyboard, &lpKeyDevice, NULL);
+	lpKeyDevice->SetDataFormat(&c_dfDIKeyboard);
+	lpKeyDevice->SetCooperativeLevel(hw, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+	return WsInputJoyInit(hw);
 }
 
-//---------------------------------------------------------------------------
-void WsKeyUp(WORD Key)
+void WsInputJoyRelease(void)
 {
-    KeyStat &= ~KeyMap[Key & 0xFF];
+	if (lpJoyDevice != NULL)
+	{
+		lpJoyDevice->Unacquire();
+		lpJoyDevice->Release();
+		lpJoyDevice = NULL;
+	}
 }
 
-//---------------------------------------------------------------------------
-void SetKeyMap(int Mode)
+void WsInputRelease(void)
 {
-    char *src, *pos;
-    char dest[64];
-    int i, j, index;
-
-    index = (Mode & 1) ? 12 : 0;
-    memset(KeyMap, 0, sizeof(KeyMap));
-
-    for(i = 0; i < 12; i++)
-    {
-        src = KeyConfig[i + index];
-        while(1)
-        {
-            if(src == NULL)
-            {
-                break;
-            }
-            pos = strchr(src, ', ');
-            if(pos)
-            {
-                strncpy(dest, src, pos - src);
-                dest[pos-src] = '\0';
-                src = pos + 1;
-            }
-            else
-            {
-                strcpy(dest, src);
-                src = NULL;
-            }
-
-            for(j = 0; KeyAddr[j].Cptr; j++)
-            {
-                if(!strcmp(dest, KeyAddr[j]. Cptr))
-                {
-                    break;
-                }
-            }
-            if(KeyAddr[j].Cptr)
-            {
-                KeyMap[KeyAddr[j].Code] |= 0x01 << i;
-            }
-        }
-    }
-
-    if(!JoyOn)
-    {
-        return;
-    }
-
-    memset(JoyMap, 0, sizeof(JoyMap));
-
-    for(i = 0; i < 12; i++)
-    {
-        src = JoyConfig[i + index];
-        while(1)
-        {
-            if(src == NULL)
-            {
-                break;
-            }
-            pos = strchr(src, ',');
-            if(pos)
-            {
-                strncpy(dest, src, pos - src);
-                dest[pos - src] = '\0';
-                src = pos + 1;
-            }
-            else
-            {
-                strcpy(dest, src);
-                src = NULL;
-            }
-
-            for(j = 0; JoyAddr[j].Cptr; j++)
-            {
-                if(!strcmp(dest, JoyAddr[j].Cptr))
-                {
-                    break;
-                }
-            }
-            if(JoyAddr[j].Cptr)
-            {
-                JoyMap[JoyAddr[j].Code] |= 0x01 << i;
-            }
-        }
-    }
+	if (lpKeyDevice != NULL)
+	{
+		lpKeyDevice->Unacquire();
+		lpKeyDevice->Release();
+		lpKeyDevice = NULL;
+	}
+	if (lpDInput != NULL)
+	{
+		lpDInput->Release();
+		lpDInput = NULL;
+	}
+	WsInputJoyRelease();
 }
 
-//---------------------------------------------------------------------------
+int WsInputCheckJoy(int value)
+{
+	int i;
 
+	if ((value >= 1) && (value <= 32))
+	{
+		return((js.rgbButtons[value - 1] & 0x80) >> 7);
+	}
+	if ((value & 0x1100) == 0x100)
+	{
+		i = (value & 0x10) >> 4;
+		switch (value & 0x0F)
+		{
+		case 1:
+			if (js.rgdwPOV[i] == JOY_POVFORWARD) return 1;
+			if (js.rgdwPOV[i] == JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVLEFT + JOY_POVRIGHT / 2) return 1;
+			break;
+		case 2:
+			if (js.rgdwPOV[i] == JOY_POVRIGHT) return 1;
+			if (js.rgdwPOV[i] == JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVRIGHT + JOY_POVRIGHT / 2) return 1;
+			break;
+		case 4:
+			if (js.rgdwPOV[i] == JOY_POVBACKWARD) return 1;
+			if (js.rgdwPOV[i] == JOY_POVRIGHT + JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVBACKWARD + JOY_POVRIGHT / 2) return 1;
+			break;
+		case 8:
+			if (js.rgdwPOV[i] == JOY_POVLEFT) return 1;
+			if (js.rgdwPOV[i] == JOY_POVBACKWARD + JOY_POVRIGHT/2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVLEFT + JOY_POVRIGHT / 2) return 1;
+			break;
+		}
+		return 0;
+	}
+	switch (value)
+	{
+	case WS_JOY_AXIS_X_P:
+		if (js.lX > 0xC000) return 1;
+		break;
+	case WS_JOY_AXIS_X_M:
+		if (js.lX < 0x4000) return 1;
+		break;
+	case WS_JOY_AXIS_Y_P:
+		if (js.lY > 0xC000) return 1;
+		break;
+	case WS_JOY_AXIS_Y_M:
+		if (js.lY < 0x4000) return 1;
+		break;
+	case WS_JOY_AXIS_Z_P:
+		if (js.lZ > 0xC000) return 1;
+		break;
+	case WS_JOY_AXIS_Z_M:
+		if (js.lZ < 0x4000) return 1;
+		break;
+	case WS_JOY_AXIS_RX_P:
+		if (js.lRx > 0xC000) return 1;
+		break;
+	case WS_JOY_AXIS_RX_M:
+		if (js.lRx < 0x4000) return 1;
+		break;
+	case WS_JOY_AXIS_RY_P:
+		if (js.lRy > 0xC000) return 1;
+		break;
+	case WS_JOY_AXIS_RY_M:
+		if (js.lRy < 0x4000) return 1;
+		break;
+	case WS_JOY_AXIS_RZ_P:
+		if (js.lRz > 0xC000) return 1;
+		break;
+	case WS_JOY_AXIS_RZ_M:
+		if (js.lRz < 0x4000) return 1;
+		break;
+	case WS_JOY_SLIDER1_P:
+		if (js.rglSlider[0] > 0xC000) return 1;
+		break;
+	case WS_JOY_SLIDER1_M:
+		if (js.rglSlider[0] < 0x4000) return 1;
+		break;
+	case WS_JOY_SLIDER2_P:
+		if (js.rglSlider[1] > 0xC000) return 1;
+		break;
+	case WS_JOY_SLIDER2_M:
+		if (js.rglSlider[1] < 0x4000) return 1;
+		break;
+	}
+	return 0;
+}
+
+WORD WsInputGetState(void)
+{
+	int i;
+	HRESULT hRet;
+	BYTE diKeys[256];
+	WORD JoyState = 0;
+	WORD ButtonState = 0;// Button state: B.A.START.OPTION.X4.X3.X2.X1.Y4.Y3.Y2.Y1
+
+	ZeroMemory(&js, sizeof(DIJOYSTATE2));
+	ZeroMemory(diKeys, 256);
+	if (lpJoyDevice != NULL)
+	{
+		hRet = lpJoyDevice->Poll();
+		if (FAILED(hRet))
+		{
+			hRet = lpJoyDevice->Acquire();
+			while(hRet == DIERR_INPUTLOST)
+				hRet = lpJoyDevice->Acquire();
+			return 0;
+		}
+
+		hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+		if (hRet == DI_OK){
+			for (i = 0; i < 12; i++)
+			{
+				JoyState <<= 1;
+				JoyState |= WsInputCheckJoy(WsJoypad[i]);
+			}
+		}
+	}
+
+	hRet = lpKeyDevice->Acquire();
+	if (hRet == DI_OK || hRet == S_FALSE)
+	{
+		hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+		if (hRet == DI_OK)
+		{
+			for (i = 0; i < 12; i++)
+			{
+				ButtonState <<= 1;
+				if (diKeys[WsButtons[i]] & 0x80)
+				{
+					ButtonState |= 1;
+				}
+			}
+		}
+	}
+	return JoyState || ButtonState;
+}
+
+void SetKeyMap(int mode)
+{
+}

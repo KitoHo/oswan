@@ -44,8 +44,10 @@ $Rev: 5 $
 #define WS_JOY_SLIDER2_P  0x1102
 #define WS_JOY_SLIDER2_M  0x1103
 
-extern int WsJoypad[12];
-extern int WsButtons[12];
+extern int WsJoypadH[12];
+extern int WsJoypadV[12];
+extern int WsButtonsH[12];
+extern int WsButtonsV[12];
 
 int WsInputInit(HWND hw);
 int WsInputJoyInit(HWND hw);

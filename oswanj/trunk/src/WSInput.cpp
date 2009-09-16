@@ -10,8 +10,12 @@ LPDIRECTINPUT8 lpDInput = NULL;
 LPDIRECTINPUTDEVICE8 lpKeyDevice = NULL;
 LPDIRECTINPUTDEVICE8 lpJoyDevice = NULL;
 DIJOYSTATE2 js;
-int WsJoypad[12];
-int WsButtons[12];
+int WsJoypadH[12];
+int WsJoypadV[12];
+int WsButtonsH[12];
+int WsButtonsV[12];
+static int* WsJoypad;
+static int* WsButtons;
 
 BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* lpddi, LPVOID lpContext)
 {
@@ -110,7 +114,7 @@ int WsInputCheckJoy(int value)
 	}
 	if ((value & 0x1100) == 0x100)
 	{
-		i = (value & 0x10) >> 4;
+		i = (value & 0x30) >> 4;
 		switch (value & 0x0F)
 		{
 		case 1:
@@ -237,9 +241,19 @@ WORD WsInputGetState(void)
 			}
 		}
 	}
-	return JoyState || ButtonState;
+	return JoyState | ButtonState;
 }
 
 void SetKeyMap(int mode)
 {
+	if (mode & 1)
+	{
+		WsJoypad = WsJoypadV;
+		WsButtons = WsButtonsV;
+	}
+	else
+	{
+		WsJoypad = WsJoypadH;
+		WsButtons = WsButtonsH;
+	}
 }

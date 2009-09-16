@@ -225,8 +225,12 @@ int WsCreate(wchar_t *CartName)
             {
                 CreateDirectoryW(SaveName, NULL);
             }
-            wcscat(SaveName, L"\\");
             wcscat (SaveName, p);
+			p = wcsrchr(SaveName, L'.');
+			if (p)
+			{
+				*p = 0;
+			}
             wcscat(SaveName, L".sav");
         }
         else

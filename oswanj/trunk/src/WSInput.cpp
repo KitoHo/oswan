@@ -4,18 +4,17 @@ $Rev: 5 $
 */
 
 #include "WSInput.h"
-#include <windows.h>
 
-LPDIRECTINPUT8 lpDInput = NULL;
-LPDIRECTINPUTDEVICE8 lpKeyDevice = NULL;
-LPDIRECTINPUTDEVICE8 lpJoyDevice = NULL;
-DIJOYSTATE2 js;
 int WsJoypadH[12];
 int WsJoypadV[12];
-int WsButtonsH[12];
-int WsButtonsV[12];
+int WsKeyboardH[12];
+int WsKeyboardV[12];
 static int* WsJoypad;
-static int* WsButtons;
+static int* WsKeyboard;
+static LPDIRECTINPUT8 lpDInput;
+static LPDIRECTINPUTDEVICE8 lpKeyDevice;
+static LPDIRECTINPUTDEVICE8 lpJoyDevice;
+static DIJOYSTATE2 js;
 
 BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* lpddi, LPVOID lpContext)
 {
@@ -104,13 +103,14 @@ void WsInputRelease(void)
 	WsInputJoyRelease();
 }
 
+#define HALFRECT JOY_POVRIGHT / 2
 int WsInputCheckJoy(int value)
 {
 	int i;
 
-	if ((value >= 1) && (value <= 32))
+	if ((value >= 1) && (value <= 128))
 	{
-		return((js.rgbButtons[value - 1] & 0x80) >> 7);
+		return((js.rgbButtons[value - 1] & 0x80) ? 1 : 0);
 	}
 	if ((value & 0x1100) == 0x100)
 	{
@@ -118,24 +118,24 @@ int WsInputCheckJoy(int value)
 		switch (value & 0x0F)
 		{
 		case 1:
+			if (js.rgdwPOV[i] == JOY_POVLEFT + HALFRECT) return 1;
 			if (js.rgdwPOV[i] == JOY_POVFORWARD) return 1;
-			if (js.rgdwPOV[i] == JOY_POVRIGHT / 2) return 1;
-			if (js.rgdwPOV[i] == JOY_POVLEFT + JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVFORWARD + HALFRECT) return 1;
 			break;
 		case 2:
+			if (js.rgdwPOV[i] == JOY_POVFORWARD + HALFRECT) return 1;
 			if (js.rgdwPOV[i] == JOY_POVRIGHT) return 1;
-			if (js.rgdwPOV[i] == JOY_POVRIGHT / 2) return 1;
-			if (js.rgdwPOV[i] == JOY_POVRIGHT + JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVRIGHT + HALFRECT) return 1;
 			break;
 		case 4:
+			if (js.rgdwPOV[i] == JOY_POVRIGHT + HALFRECT) return 1;
 			if (js.rgdwPOV[i] == JOY_POVBACKWARD) return 1;
-			if (js.rgdwPOV[i] == JOY_POVRIGHT + JOY_POVRIGHT / 2) return 1;
-			if (js.rgdwPOV[i] == JOY_POVBACKWARD + JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVBACKWARD + HALFRECT) return 1;
 			break;
 		case 8:
+			if (js.rgdwPOV[i] == JOY_POVBACKWARD + HALFRECT) return 1;
 			if (js.rgdwPOV[i] == JOY_POVLEFT) return 1;
-			if (js.rgdwPOV[i] == JOY_POVBACKWARD + JOY_POVRIGHT/2) return 1;
-			if (js.rgdwPOV[i] == JOY_POVLEFT + JOY_POVRIGHT / 2) return 1;
+			if (js.rgdwPOV[i] == JOY_POVLEFT + HALFRECT) return 1;
 			break;
 		}
 		return 0;
@@ -200,7 +200,7 @@ WORD WsInputGetState(void)
 	HRESULT hRet;
 	BYTE diKeys[256];
 	WORD JoyState = 0;
-	WORD ButtonState = 0;// Button state: B.A.START.OPTION.X4.X3.X2.X1.Y4.Y3.Y2.Y1
+	WORD ButtonState = 0;
 
 	ZeroMemory(&js, sizeof(DIJOYSTATE2));
 	ZeroMemory(diKeys, 256);
@@ -234,7 +234,7 @@ WORD WsInputGetState(void)
 			for (i = 0; i < 12; i++)
 			{
 				ButtonState <<= 1;
-				if (diKeys[WsButtons[i]] & 0x80)
+				if (diKeys[WsKeyboard[i]] & 0x80)
 				{
 					ButtonState |= 1;
 				}
@@ -249,11 +249,11 @@ void SetKeyMap(int mode)
 	if (mode & 1)
 	{
 		WsJoypad = WsJoypadV;
-		WsButtons = WsButtonsV;
+		WsKeyboard = WsKeyboardV;
 	}
 	else
 	{
 		WsJoypad = WsJoypadH;
-		WsButtons = WsButtonsH;
+		WsKeyboard = WsKeyboardH;
 	}
 }

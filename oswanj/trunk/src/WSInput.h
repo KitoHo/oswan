@@ -46,8 +46,8 @@ $Rev: 5 $
 
 extern int WsJoypadH[12];
 extern int WsJoypadV[12];
-extern int WsButtonsH[12];
-extern int WsButtonsV[12];
+extern int WsKeyboardH[12];
+extern int WsKeyboardV[12];
 
 int WsInputInit(HWND hw);
 int WsInputJoyInit(HWND hw);

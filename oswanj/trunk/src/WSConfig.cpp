@@ -10,30 +10,30 @@ $Rev: 11 $
 void ConfigCreate(void)
 {
 	// Button state: B.A.START.OPTION.X4.X3.X2.X1.Y4.Y3.Y2.Y1
-	WsButtonsH[0] = DIK_Z;
-	WsButtonsH[1] = DIK_X;
-	WsButtonsH[2] = DIK_RETURN;
-	WsButtonsH[3] = DIK_LCONTROL;
-	WsButtonsH[4] = DIK_LEFT;
-	WsButtonsH[5] = DIK_DOWN;
-	WsButtonsH[6] = DIK_RIGHT;
-	WsButtonsH[7] = DIK_UP;
-	WsButtonsH[8] = DIK_A;
-	WsButtonsH[9] = DIK_S;
-	WsButtonsH[10] = DIK_D;
-	WsButtonsH[11] = DIK_W;
-	WsButtonsV[0] = DIK_Z;
-	WsButtonsV[1] = DIK_X;
-	WsButtonsV[2] = DIK_RETURN;
-	WsButtonsV[3] = DIK_LCONTROL;
-	WsButtonsV[4] = DIK_S;
-	WsButtonsV[5] = DIK_D;
-	WsButtonsV[6] = DIK_W;
-	WsButtonsV[7] = DIK_A;
-	WsButtonsV[8] = DIK_DOWN;
-	WsButtonsV[9] = DIK_RIGHT;
-	WsButtonsV[10] = DIK_UP;
-	WsButtonsV[11] = DIK_LEFT;
+	WsKeyboardH[0] = DIK_Z;
+	WsKeyboardH[1] = DIK_X;
+	WsKeyboardH[2] = DIK_RETURN;
+	WsKeyboardH[3] = DIK_LCONTROL;
+	WsKeyboardH[4] = DIK_LEFT;
+	WsKeyboardH[5] = DIK_DOWN;
+	WsKeyboardH[6] = DIK_RIGHT;
+	WsKeyboardH[7] = DIK_UP;
+	WsKeyboardH[8] = DIK_A;
+	WsKeyboardH[9] = DIK_S;
+	WsKeyboardH[10] = DIK_D;
+	WsKeyboardH[11] = DIK_W;
+	WsKeyboardV[0] = DIK_Z;
+	WsKeyboardV[1] = DIK_X;
+	WsKeyboardV[2] = DIK_RETURN;
+	WsKeyboardV[3] = DIK_LCONTROL;
+	WsKeyboardV[4] = DIK_S;
+	WsKeyboardV[5] = DIK_D;
+	WsKeyboardV[6] = DIK_W;
+	WsKeyboardV[7] = DIK_A;
+	WsKeyboardV[8] = DIK_DOWN;
+	WsKeyboardV[9] = DIK_RIGHT;
+	WsKeyboardV[10] = DIK_UP;
+	WsKeyboardV[11] = DIK_LEFT;
 }
 
 void ConfigRelease(void)

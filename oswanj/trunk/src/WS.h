@@ -16,8 +16,6 @@ struct EEPROM
 
 extern int Run;
 extern BYTE *Page[0x10];
-extern BYTE *ROMMap[0x100];
-extern BYTE *RAMMap[0x100];
 extern BYTE IRAM[0x10000];
 extern BYTE IO[0x100];
 extern BYTE MemDummy[0x10000];

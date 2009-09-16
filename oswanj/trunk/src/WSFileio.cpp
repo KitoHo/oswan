@@ -11,11 +11,15 @@ $Rev$
 #include "WSFileio.h"
 #include "WSPdata.h"
 #include "WSError.h"
+#include "WSRender.h"
+#include "nec/necintrf.h"
 
 // ファイル操作は表などとディレクトリセパレータがかぶるのでUNICODEを使います
 static wchar_t CurDir[512];
 static wchar_t *SaveDir = L"RAM";
+static wchar_t *StateDir = L"STATE";
 static wchar_t SaveName[512];   // ".sav"
+static wchar_t StateName[512];
 wchar_t IniPath[512];
 
 void WsSetDir(void)
@@ -55,10 +59,11 @@ int WsSetPdata(void)
 int WsCreate(wchar_t *CartName)
 {
     int Checksum, i, j;
-    FILE *F;
+    FILE* fp;
     BYTE buf[16];
+    wchar_t* p;
 
-    for(i = 0; i < 256; i++)
+    for (i = 0; i < 256; i++)
     {
         ROMMap[i] = MemDummy;
         RAMMap[i] = MemDummy;
@@ -70,13 +75,13 @@ int WsCreate(wchar_t *CartName)
     {
         return WsSetPdata();
     }
-    if((F = _wfopen(CartName, L"rb")) == NULL)
+    if ((fp = _wfopen(CartName, L"rb")) == NULL)
     {
         ErrorMsg(ERR_FOPEN);
         return -1;
     }
-    fseek(F, -10, 2);
-    if(fread(buf, 1, 10, F) != 10)
+    fseek(fp, -10, 2);
+    if (fread(buf, 1, 10, fp) != 10)
     {
         ErrorMsg(ERR_FREAD_ROMINFO);
         return -1;
@@ -114,7 +119,7 @@ int WsCreate(wchar_t *CartName)
         ROMBanks = 0;
         break;
     }
-    if(ROMBanks == 0)
+    if (ROMBanks == 0)
     {
         ErrorMsg(ERR_ILLEGAL_ROMSIZE);
         return -1;
@@ -165,14 +170,14 @@ int WsCreate(wchar_t *CartName)
     WsRomPatch(buf);
     Checksum = (int)((buf[9] << 8) + buf[8]);
     Checksum += (int)(buf[9] + buf[8]);
-    for(i = ROMBanks - 1; i >= 0; i--)
+    for (i = ROMBanks - 1; i >= 0; i--)
     {
-        fseek(F, (ROMBanks - i) * -0x10000, 2);
-        if((ROMMap[0x100 - ROMBanks + i] = (BYTE*)malloc(0x10000)) != NULL)
+        fseek(fp, (ROMBanks - i) * -0x10000, 2);
+        if ((ROMMap[0x100 - ROMBanks + i] = (BYTE*)malloc(0x10000)) != NULL)
         {
-            if(fread(ROMMap[0x100 - ROMBanks + i], 1, 0x10000, F) == 0x10000)
+            if (fread(ROMMap[0x100 - ROMBanks + i], 1, 0x10000, fp) == 0x10000)
             {
-                for(j = 0; j < 0x10000; j++)
+                for (j = 0; j < 0x10000; j++)
                 {
                     Checksum -= ROMMap[0x100 - ROMBanks + i][j];
                 }
@@ -189,20 +194,20 @@ int WsCreate(wchar_t *CartName)
             break;
         }
     }
-    fclose(F);
-    if(i >= 0)
+    fclose(fp);
+    if (i >= 0)
     {
         return -1;
     }
-    if(Checksum & 0xFFFF)
+    if (Checksum & 0xFFFF)
     {
         ErrorMsg(ERR_CHECKSUM);
     }
-    if(RAMBanks)
+    if (RAMBanks)
     {
-        for(i = 0; i < RAMBanks; i++)
+        for (i = 0; i < RAMBanks; i++)
         {
-            if((RAMMap[i] = (BYTE*)malloc(0x10000)) != NULL)
+            if ((RAMMap[i] = (BYTE*)malloc(0x10000)) != NULL)
             {
                 memset(RAMMap[i], 0x00, 0x10000);
             }
@@ -213,9 +218,8 @@ int WsCreate(wchar_t *CartName)
             }
         }
     }
-    if(RAMSize)
+    if (RAMSize)
     {
-        wchar_t* p;
         wcscpy (SaveName, CurDir);
         p = wcsrchr(CartName, L'\\');
         if (p)
@@ -225,7 +229,7 @@ int WsCreate(wchar_t *CartName)
             {
                 CreateDirectoryW(SaveName, NULL);
             }
-            wcscat (SaveName, p);
+            wcscat(SaveName, p);
 			p = wcsrchr(SaveName, L'.');
 			if (p)
 			{
@@ -237,34 +241,49 @@ int WsCreate(wchar_t *CartName)
         {
             SaveName[0] = 0;
         }
-        if((F = _wfopen(SaveName, L"rb")) != NULL)
+        if ((fp = _wfopen(SaveName, L"rb")) != NULL)
         {
-            for(i = 0; i < RAMBanks; i++)
+            for (i = 0; i < RAMBanks; i++)
             {
-                if(RAMSize < 0x10000)
+                if (RAMSize < 0x10000)
                 {
-                    if(fread(RAMMap[i], 1, RAMSize, F) != (size_t)RAMSize)
+                    if (fread(RAMMap[i], 1, RAMSize, fp) != (size_t)RAMSize)
                     {
-                        fclose(F);
                         ErrorMsg(ERR_FREAD_SAVE);
+						break;
                     }
                 }
                 else
                 {
-                    if(fread(RAMMap[i],1,0x10000,F) != 0x10000)
+                    if (fread(RAMMap[i], 1, 0x10000, fp) != 0x10000)
                     {
-                        fclose(F);
                         ErrorMsg(ERR_FREAD_SAVE);
-                        return -1;
+                        break;
                     }
                 }
             }
-            fclose(F);
+            fclose(fp);
         }
     }
     else
     {
         SaveName[0] = 0;
+    }
+    wcscpy (StateName, CurDir);
+    p = wcsrchr(CartName, L'\\');
+    if (p)
+    {
+        wcscat(StateName, StateDir);
+        if (PathIsDirectoryW(StateName) == FALSE)
+        {
+            CreateDirectoryW(StateName, NULL);
+        }
+        wcscat(StateName, p);
+		p = wcsrchr(StateName, L'.');
+		if (p)
+		{
+			*p = 0;
+		}
     }
     WsReset();
 	SetDrawMode(buf[6] & 1); // 0:横 1:縦
@@ -273,37 +292,37 @@ int WsCreate(wchar_t *CartName)
 
 void WsRelease(void)
 {
-    FILE *F;
+    FILE* fp;
     int i;
 
-    if(SaveName[0] != 0)
+    if (SaveName[0] != 0)
     {
-        if((F = _wfopen(SaveName, L"wb"))!= NULL)
+        if ((fp = _wfopen(SaveName, L"wb"))!= NULL)
         {
-            for(i=0;i<RAMBanks;i++)
+            for (i  =0; i < RAMBanks; i++)
             {
-                if(RAMSize<0x10000)
+                if (RAMSize<0x10000)
                 {
-                    if(fwrite(RAMMap[i],1,RAMSize,F)!=(size_t)RAMSize)
+                    if (fwrite(RAMMap[i], 1, RAMSize, fp) != (size_t)RAMSize)
                     {
                         break;
                     }
                 }
                 else
                 {
-                    if(fwrite(RAMMap[i],1,0x10000,F)!=0x10000)
+                    if (fwrite(RAMMap[i], 1, 0x10000, fp)!=0x10000)
                     {
                         break;
                     }
                 }
                 free(RAMMap[i]);
             }
-            fclose(F);
+            fclose(fp);
         }
     }
-    for(i = 0xFF; i >= 0; i--)
+    for (i = 0xFF; i >= 0; i--)
     {
-        if(ROMMap[i] == MemDummy)
+        if (ROMMap[i] == MemDummy)
         {
             break;
         }
@@ -314,15 +333,15 @@ void WsRelease(void)
 
 void WsLoadIEep(void)
 {
-    FILE* F;
+    FILE* fp;
     wchar_t buf[512];
 
     wcscpy(buf, CurDir);
     wcscat(buf, L"eeprom.dat");
-    if ((F = _wfopen(buf, L"rb")) != NULL)
+    if ((fp = _wfopen(buf, L"rb")) != NULL)
     {
-        fread(IEep, sizeof(WORD), 64, F);
-        fclose(F);
+        fread(IEep, sizeof(WORD), 64, fp);
+        fclose(fp);
     }
 	else
 	{
@@ -333,15 +352,117 @@ void WsLoadIEep(void)
 
 void WsSaveIEep(void)
 {
-    FILE* F;
+    FILE* fp;
     wchar_t buf[512];
 
     wcscpy(buf, CurDir);
     wcscat(buf, L"eeprom.dat");
-    if ((F = _wfopen(buf, L"wb")) != NULL)
+    if ((fp = _wfopen(buf, L"wb")) != NULL)
     {
-        fwrite(IEep, sizeof(WORD), 64, F);
-        fclose(F);
+        fwrite(IEep, sizeof(WORD), 64, fp);
+        fclose(fp);
     }
-
 }
+
+#define MacroLoadNecRegisterFromFile(F,R)        \
+		fread(&value, sizeof(unsigned int), 1, fp);		\
+	    nec_set_reg(R,value); 
+void WsLoadState(int num)
+{
+    FILE* fp;
+    wchar_t buf[16];
+	unsigned int value;
+	int i;
+
+	wsprintf(buf, L".%03d", num);
+	wcscat(StateName, buf);
+    if ((fp = _wfopen(StateName, L"rb")) == NULL)
+    {
+		return;
+	}
+	MacroLoadNecRegisterFromFile(fp,NEC_IP);
+	MacroLoadNecRegisterFromFile(fp,NEC_AW);
+	MacroLoadNecRegisterFromFile(fp,NEC_BW);
+	MacroLoadNecRegisterFromFile(fp,NEC_CW);
+	MacroLoadNecRegisterFromFile(fp,NEC_DW);
+	MacroLoadNecRegisterFromFile(fp,NEC_CS);
+	MacroLoadNecRegisterFromFile(fp,NEC_DS);
+	MacroLoadNecRegisterFromFile(fp,NEC_ES);
+	MacroLoadNecRegisterFromFile(fp,NEC_SS);
+	MacroLoadNecRegisterFromFile(fp,NEC_IX);
+	MacroLoadNecRegisterFromFile(fp,NEC_IY);
+	MacroLoadNecRegisterFromFile(fp,NEC_BP);
+	MacroLoadNecRegisterFromFile(fp,NEC_SP);
+	MacroLoadNecRegisterFromFile(fp,NEC_FLAGS);
+	MacroLoadNecRegisterFromFile(fp,NEC_VECTOR);
+	MacroLoadNecRegisterFromFile(fp,NEC_PENDING);
+	MacroLoadNecRegisterFromFile(fp,NEC_NMI_STATE);
+	MacroLoadNecRegisterFromFile(fp,NEC_IRQ_STATE);
+    fread(IRAM, sizeof(BYTE), 0x10000, fp);
+    fread(IO, sizeof(BYTE), 0x100, fp);
+    for (i  =0; i < RAMBanks; i++)
+    {
+        if (RAMSize < 0x10000)
+        {
+            fread(RAMMap[i], 1, RAMSize, fp);
+        }
+        else
+        {
+            fread(RAMMap[i], 1, 0x10000, fp);
+        }
+    }
+	fread(Palette, sizeof(WORD), 16 * 16, fp);
+    fclose(fp);
+}
+
+#define MacroStoreNecRegisterToFile(F,R)        \
+	    value = nec_get_reg(R); \
+		fwrite(&value, sizeof(unsigned int), 1, fp);
+void WsSaveState(int num)
+{
+    FILE* fp;
+    wchar_t buf[16];
+	unsigned int value;
+	int i;
+
+	wsprintf(buf, L".%03d", num);
+	wcscat(StateName, buf);
+    if ((fp = _wfopen(StateName, L"wb")) == NULL)
+    {
+		return;
+	}
+	MacroStoreNecRegisterToFile(fp,NEC_IP);
+	MacroStoreNecRegisterToFile(fp,NEC_AW);
+	MacroStoreNecRegisterToFile(fp,NEC_BW);
+	MacroStoreNecRegisterToFile(fp,NEC_CW);
+	MacroStoreNecRegisterToFile(fp,NEC_DW);
+	MacroStoreNecRegisterToFile(fp,NEC_CS);
+	MacroStoreNecRegisterToFile(fp,NEC_DS);
+	MacroStoreNecRegisterToFile(fp,NEC_ES);
+	MacroStoreNecRegisterToFile(fp,NEC_SS);
+	MacroStoreNecRegisterToFile(fp,NEC_IX);
+	MacroStoreNecRegisterToFile(fp,NEC_IY);
+	MacroStoreNecRegisterToFile(fp,NEC_BP);
+	MacroStoreNecRegisterToFile(fp,NEC_SP);
+	MacroStoreNecRegisterToFile(fp,NEC_FLAGS);
+	MacroStoreNecRegisterToFile(fp,NEC_VECTOR);
+	MacroStoreNecRegisterToFile(fp,NEC_PENDING);
+	MacroStoreNecRegisterToFile(fp,NEC_NMI_STATE);
+	MacroStoreNecRegisterToFile(fp,NEC_IRQ_STATE);
+    fwrite(IRAM, sizeof(BYTE), 0x10000, fp);
+    fwrite(IO, sizeof(BYTE), 0x100, fp);
+    for (i  =0; i < RAMBanks; i++)
+    {
+        if (RAMSize < 0x10000)
+        {
+            fwrite(RAMMap[i], 1, RAMSize, fp);
+        }
+        else
+        {
+            fwrite(RAMMap[i], 1, 0x10000, fp);
+        }
+    }
+	fwrite(Palette, sizeof(WORD), 16 * 16, fp);
+    fclose(fp);
+}
+

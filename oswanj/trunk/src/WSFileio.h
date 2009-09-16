@@ -12,5 +12,7 @@ int WsCreate(wchar_t *CartName);
 void WsRelease(void);
 void WsLoadIEep(void);
 void WsSaveIEep(void);
+void WsLoadState(int num);
+void WsSaveState(int num);
 
 #endif

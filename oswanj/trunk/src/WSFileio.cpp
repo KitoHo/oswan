@@ -317,7 +317,11 @@ void WsLoadIEep(void)
         fread(IEep, sizeof(WORD), 64, F);
         fclose(F);
     }
-
+	else
+	{
+		memset(IEep, 0xFF, 0x60);
+		memset(IEep + 0x60, 0, 0x20);
+	}
 }
 
 void WsSaveIEep(void)

@@ -92,28 +92,28 @@ void  ComEEP(struct EEPROM *eeprom, WORD *cmd, WORD *data)
         addr = (*cmd & tblmask[i][2]) >> tblmask[i][3];
         switch(addr)
         {
-        case 0:
+        case 0: // 書込み禁止
             eeprom->we = 0;
             break;
-        case 1:
+        case 1: // 全アドレス書き込み
             for(j = tblmask[i][4]; j >= 0; j--)
             {
                 eeprom->data[j] = *data;
             }
             break;
-        case 2:
+        case 2: // チップ消去
             if(eeprom->we)
             {
                 memset(eeprom->data, 0xFF, sizeof(eeprom->data)*2);
             }
             break;
-        case 3:
+        case 3: // 書き込み可能
             eeprom->we = 1;
             break;
         }
         *data = 0;
         break;
-    case 1:
+    case 1: // 書き込み
         if(eeprom->we)
         {
             addr = *cmd & tblmask[i][4];
@@ -126,11 +126,11 @@ void  ComEEP(struct EEPROM *eeprom, WORD *cmd, WORD *data)
         }
         *data = 0;
         break;
-    case 2:
+    case 2: // 読み出し
         addr = *cmd & tblmask[i][4];
         *data = eeprom->data[addr];
         break;
-    case 3:
+    case 3: // 消去
         if(eeprom->we)
         {
             addr = *cmd & tblmask[i][4];
@@ -645,8 +645,8 @@ void WsReset (void)
     WriteIO(0xB3, 0x04);
     WriteIO(0xBA, 0x01);
     WriteIO(0xBB, 0x00);
-    WriteIO(0xBC, 0x42);
-    WriteIO(0xBD, 0x00);
+    WriteIO(0xBC, 0x30); // 内蔵EEPROM
+    WriteIO(0xBD, 0x01); // 書き込み可能
     WriteIO(0xBE, 0x83);
     IO[0xC0] = 0x0F;
     j = 0xF0;

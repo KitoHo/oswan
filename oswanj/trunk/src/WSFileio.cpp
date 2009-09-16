@@ -16,6 +16,7 @@ $Rev: 5 $
 static wchar_t CurDir[512];
 static wchar_t *SaveDir = L"RAM";
 static wchar_t SaveName[512];   // ".sav"
+wchar_t IniPath[512];
 
 void WsSetDir(void)
 {
@@ -29,6 +30,8 @@ void WsSetDir(void)
         return;
     }
     *(++p) = 0;
+	wcscpy(IniPath, CurDir);
+	wcscat(IniPath, L"OswanJ.ini");
 }
 
 int WsSetPdata(void)

@@ -9,11 +9,12 @@ $Rev$
 #include "WSInput.h"
 #include "WSFileio.h"
 
-LPCWSTR KeyName[] = {
+static LPCWSTR KeyName[] = {
 	L"B", L"A", L"START", L"OPTION", 
 	L"X4", L"X3", L"X2", L"X1", 
 	L"Y4", L"Y3", L"Y2", L"Y1"
 };
+
 void ConfigCreate(void)
 {
 	int i;

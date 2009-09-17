@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="d3d9.lib d3dx9.lib dinput8.lib dxguid.lib winmm.lib ShLwApi.Lib"
+				AdditionalDependencies="d3d9.lib d3dx9.lib dinput8.lib dxguid.lib winmm.lib comctl32.lib ShLwApi.Lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="d3d9.lib d3dx9.lib dinput8.lib dxguid.lib winmm.lib ShLwApi.Lib"
+				AdditionalDependencies="d3d9.lib d3dx9.lib dinput8.lib dxguid.lib winmm.lib comctl32.lib ShLwApi.Lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -337,6 +337,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\WSDialog.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\WSDraw.cpp"
 				>
 			</File>
@@ -375,6 +379,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\keycode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\resource.h"
 				>
 			</File>
@@ -392,6 +400,10 @@
 			</File>
 			<File
 				RelativePath=".\src\WSConfig.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\WSDialog.h"
 				>
 			</File>
 			<File

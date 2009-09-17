@@ -11,6 +11,7 @@ $Rev$
 #include "WSRender.h"
 #include "WSApu.h"
 #include "WSFileio.h"
+#include "WSDialog.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitApp(HINSTANCE);
@@ -231,6 +232,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 WsWaveVol -= 2;
             }
             return 0L;
+        case ID_CONF_INPUT:
+			WsDlgConfInit(hWnd);
+			return 0L;
         }
         break;
     case WM_PAINT:

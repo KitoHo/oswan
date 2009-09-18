@@ -208,33 +208,31 @@ void WsDlgConfInit(HWND hWnd)
 	hDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_DIALOG_CONFIG), hWnd, (DLGPROC)ConfProc);
 	ShowWindow(hDlg, SW_SHOW);
 	hTab = GetDlgItem(hDlg, IDC_TAB1);
-	// タブコントロールのクライアント領域の座標を取得
-	GetClientRect(hTab, &rt);
-	TabCtrl_AdjustRect(hTab, FALSE, &rt);
-	// 親ウィンドウがhDlgなのでタブのマップが必要
-	MapWindowPoints(hTab, hDlg, pt, 2);
-	// タブコントロールにタブ1シートを挿入
+	// タブコントロールにタブシートを挿入
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("キー横");
 	TabCtrl_InsertItem(hTab , 0, &tc);
-	// タブ1に貼り付けるダイアログを生成
-	hTabCtrl1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hTab, (DLGPROC)TabCtrlProc1);
-	// タブ1のウィンドウの位置とサイズを変更する
-	MoveWindow(hTabCtrl1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("キー縦");
 	TabCtrl_InsertItem(hTab , 1, &tc);
-	hTabCtrl2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hTab, (DLGPROC)TabCtrlProc2);
-	MoveWindow(hTabCtrl2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("コントローラー横");
 	TabCtrl_InsertItem(hTab , 2, &tc);
-	hTabCtrl3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hTab, (DLGPROC)TabCtrlProc3);
-	MoveWindow(hTabCtrl3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("コントローラー縦");
 	TabCtrl_InsertItem(hTab , 3, &tc);
+	// タブに貼り付けるダイアログを生成
+	hTabCtrl1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hTab, (DLGPROC)TabCtrlProc1);
+	hTabCtrl2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hTab, (DLGPROC)TabCtrlProc2);
+	hTabCtrl3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hTab, (DLGPROC)TabCtrlProc3);
 	hTabCtrl4 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hTab, (DLGPROC)TabCtrlProc4);
+	// タブコントロールのクライアント領域の座標を取得
+	GetClientRect(hTab, &rt);
+	TabCtrl_AdjustRect(hTab, FALSE, &rt);
+	// タブのウィンドウの位置とサイズを変更する
+	MoveWindow(hTabCtrl1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTabCtrl2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTabCtrl3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	MoveWindow(hTabCtrl4, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	// デフォルトでタブ1を表示
 	ShowWindow(hTabCtrl1, SW_SHOW);

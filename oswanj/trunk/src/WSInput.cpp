@@ -9,11 +9,11 @@ int WsJoypadH[12];
 int WsJoypadV[12];
 int WsKeyboardH[12];
 int WsKeyboardV[12];
+LPDIRECTINPUTDEVICE8 lpKeyDevice;
+LPDIRECTINPUTDEVICE8 lpJoyDevice;
 static int* WsJoypad;
 static int* WsKeyboard;
 static LPDIRECTINPUT8 lpDInput;
-static LPDIRECTINPUTDEVICE8 lpKeyDevice;
-static LPDIRECTINPUTDEVICE8 lpJoyDevice;
 static DIJOYSTATE2 js;
 
 BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* lpddi, LPVOID lpContext)

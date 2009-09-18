@@ -48,6 +48,8 @@ extern int WsJoypadH[12];
 extern int WsJoypadV[12];
 extern int WsKeyboardH[12];
 extern int WsKeyboardV[12];
+extern LPDIRECTINPUTDEVICE8 lpKeyDevice;
+extern LPDIRECTINPUTDEVICE8 lpJoyDevice;
 
 int WsInputInit(HWND hw);
 int WsInputJoyInit(HWND hw);

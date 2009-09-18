@@ -10,6 +10,7 @@ $Rev$
 #include "WSInput.h"
 #include "keycode.h"
 
+static WNDPROC OrgWndProc1;
 static HWND hDlg, hTab, hTabCtrl1, hTabCtrl2, hTabCtrl3, hTabCtrl4;
 static LPTSTR JoyStr[] = {
 	TEXT("POV1 UP"), TEXT("POV1 RIGHT"), TEXT("POV1 DOWN"), TEXT("POV1 LEFT"),
@@ -58,6 +59,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_INITDIALOG:
+		WsInputInit(hDlg);
 		return TRUE;
 	case WM_NOTIFY:
 		// タブコントロールの選択されているタブが変更されたことを通知
@@ -112,14 +114,102 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		break;
+	case WM_DESTROY:
+		WsInputRelease();
+		break;
 	}
 	return FALSE;
+}
+
+LRESULT CALLBACK EditProc1(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	HRESULT hRet;
+	BYTE    diKeys[256];
+	int key, i;
+
+	if (msg == WM_CHAR)
+	{
+		return 0;
+	}
+	if ((msg == WM_KEYDOWN || msg == WM_HOTKEY) && (wParam != VK_TAB))
+	{
+		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
+		wParam = NULL;
+		hRet = lpKeyDevice->Acquire();
+		if (hRet == DI_OK || hRet == S_FALSE)
+		{
+			hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+			if (hRet == DI_OK)
+			{
+				for (i = 0; i < 256; i++)
+				{
+					if (diKeys[i] & 0x80)
+					{
+						SetWindowText(hEditWnd, keyName[i]);
+						WsKeyboardH[key] = i;
+						wParam = VK_TAB;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return CallWindowProc(OrgWndProc1, hEditWnd, msg, wParam, lParam);
+}
+
+LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	HRESULT hRet;
+	BYTE    diKeys[256];
+	int key, i;
+
+	if (msg == WM_CHAR)
+	{
+		return 0;
+	}
+	if ((msg == WM_KEYDOWN || msg == WM_HOTKEY) && (wParam != VK_TAB))
+	{
+		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
+		wParam = NULL;
+		hRet = lpKeyDevice->Acquire();
+		if (hRet == DI_OK || hRet == S_FALSE)
+		{
+			hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+			if (hRet == DI_OK)
+			{
+				for (i = 0; i < 256; i++)
+				{
+					if (diKeys[i] & 0x80)
+					{
+						SetWindowText(hEditWnd, keyName[i]);
+						WsKeyboardV[key] = i;
+						wParam = VK_TAB;
+						break;
+					}
+				}
+			}
+		}
+	}
+	return CallWindowProc(OrgWndProc1, hEditWnd, msg, wParam, lParam);
 }
 
 LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg) {
 	case WM_INITDIALOG:
+		OrgWndProc1 = (WNDPROC)GetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWL_WNDPROC);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y4), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X1), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X2), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X3), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X4), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_START), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_A), GWL_WNDPROC, (LONG)EditProc1);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_B), GWL_WNDPROC, (LONG)EditProc1);
+
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), keyName[WsKeyboardH[11]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), keyName[WsKeyboardH[10]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), keyName[WsKeyboardH[9]]);
@@ -131,7 +221,10 @@ LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_START), keyName[WsKeyboardH[2]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), keyName[WsKeyboardH[1]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), keyName[WsKeyboardH[0]]);
+		SetFocus(GetDlgItem(hCtrl, IDC_EDIT_Y1));
 		return TRUE;
+	case WM_DESTROY:
+		break;
 	}
 	return FALSE;
 }
@@ -140,6 +233,18 @@ LRESULT CALLBACK TabCtrlProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 {
 	switch (msg) {
 	case WM_INITDIALOG:
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y4), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X1), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X2), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X3), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X4), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_START), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_A), GWL_WNDPROC, (LONG)EditProc2);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_B), GWL_WNDPROC, (LONG)EditProc2);
+
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), keyName[WsKeyboardV[11]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), keyName[WsKeyboardV[10]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), keyName[WsKeyboardV[9]]);

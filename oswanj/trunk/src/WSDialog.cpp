@@ -10,8 +10,9 @@ $Rev$
 #include "WSInput.h"
 #include "keycode.h"
 
+extern HWND hDlgCurrent;
 static WNDPROC OrgWndProc1;
-static HWND hDlg, hTab, hTabCtrl1, hTabCtrl2, hTabCtrl3, hTabCtrl4;
+static HWND hTab, hTabCtrl1, hTabCtrl2, hTabCtrl3, hTabCtrl4;
 static LPTSTR JoyStr[] = {
 	TEXT("POV1 UP"), TEXT("POV1 RIGHT"), TEXT("POV1 DOWN"), TEXT("POV1 LEFT"),
 	TEXT("POV2 UP"), TEXT("POV2 RIGHT"), TEXT("POV2 DOWN"), TEXT("POV2 LEFT"),
@@ -112,6 +113,16 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				EndDialog(hDlg, LOWORD(wParam));
 				return TRUE;
 			}
+		}
+		break;
+	case WM_ACTIVATE:
+		if (0 == wParam)
+		{
+			hDlgCurrent = NULL;
+		}
+		else
+		{
+			hDlgCurrent = hDlg;
 		}
 		break;
 	case WM_DESTROY:
@@ -223,8 +234,16 @@ LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), keyName[WsKeyboardH[0]]);
 		SetFocus(GetDlgItem(hCtrl, IDC_EDIT_Y1));
 		return TRUE;
-	case WM_DESTROY:
-		break;
+	case WM_ACTIVATE:
+		if (0 == wParam)
+		{
+			hDlgCurrent = NULL;
+		}
+		else
+		{
+			hDlgCurrent = hCtrl;
+		}
+		return FALSE;
 	}
 	return FALSE;
 }
@@ -257,6 +276,16 @@ LRESULT CALLBACK TabCtrlProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), keyName[WsKeyboardV[1]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), keyName[WsKeyboardV[0]]);
 		return TRUE;
+	case WM_ACTIVATE:
+		if (0 == wParam)
+		{
+			hDlgCurrent = NULL;
+		}
+		else
+		{
+			hDlgCurrent = hCtrl;
+		}
+		return FALSE;
 	}
 	return FALSE;
 }
@@ -277,6 +306,16 @@ LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), joyName(WsJoypadH[1]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), joyName(WsJoypadH[0]));
 		return TRUE;
+	case WM_ACTIVATE:
+		if (0 == wParam)
+		{
+			hDlgCurrent = NULL;
+		}
+		else
+		{
+			hDlgCurrent = hCtrl;
+		}
+		return FALSE;
 	}
 	return FALSE;
 }
@@ -297,6 +336,16 @@ LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), joyName(WsJoypadV[1]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), joyName(WsJoypadV[0]));
 		return TRUE;
+	case WM_ACTIVATE:
+		if (0 == wParam)
+		{
+			hDlgCurrent = NULL;
+		}
+		else
+		{
+			hDlgCurrent = hCtrl;
+		}
+		return FALSE;
 	}
 	return FALSE;
 }
@@ -304,6 +353,7 @@ LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 void WsDlgConfInit(HWND hWnd)
 {
 	HINSTANCE hInst;
+	HWND hDlg;
 	TC_ITEM tc;
 	RECT    rt;
 	LPPOINT pt = (LPPOINT)&rt;

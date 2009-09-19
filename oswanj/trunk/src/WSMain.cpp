@@ -18,6 +18,7 @@ BOOL InitApp(HINSTANCE);
 BOOL InitInstance(HINSTANCE);
 wchar_t* OpenWSFile(wchar_t* path, DWORD max);
 
+HWND hDlgCurrent;
 HWND hWnd;
 static LPCTSTR szClassName = TEXT("OswanJ"); //ƒNƒ‰ƒX–¼
 
@@ -52,10 +53,13 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
             {
                 break;
             }
-            if (!TranslateAccelerator(hWnd, accel, &msg)) {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
+			if (NULL == hDlgCurrent || !IsDialogMessage(hDlgCurrent, &msg))
+			{
+				if (!TranslateAccelerator(hWnd, accel, &msg)) {
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+				}
+			}
         }
         if (Run)
         {

@@ -5,10 +5,10 @@ $Rev$
 
 #include "WSInput.h"
 
-int WsJoypadH[12];
-int WsJoypadV[12];
 int WsKeyboardH[12];
 int WsKeyboardV[12];
+int WsJoypadH[12];
+int WsJoypadV[12];
 LPDIRECTINPUTDEVICE8 lpKeyDevice;
 LPDIRECTINPUTDEVICE8 lpJoyDevice;
 static int* WsJoypad;

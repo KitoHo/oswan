@@ -8,6 +8,7 @@ $Rev$
 
 #include <windows.h>
 
+LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 void WsDlgConfInit(HWND hWnd);
 
 

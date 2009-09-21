@@ -225,18 +225,21 @@ WORD WsInputGetState(void)
 		}
 	}
 
-	hRet = lpKeyDevice->Acquire();
-	if (hRet == DI_OK || hRet == S_FALSE)
+	if (lpKeyDevice != NULL)
 	{
-		hRet = lpKeyDevice->GetDeviceState(256, diKeys);
-		if (hRet == DI_OK)
+		hRet = lpKeyDevice->Acquire();
+		if (hRet == DI_OK || hRet == S_FALSE)
 		{
-			for (i = 0; i < 12; i++)
+			hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+			if (hRet == DI_OK)
 			{
-				ButtonState <<= 1;
-				if (diKeys[WsKeyboard[i]] & 0x80)
+				for (i = 0; i < 12; i++)
 				{
-					ButtonState |= 1;
+					ButtonState <<= 1;
+					if (diKeys[WsKeyboard[i]] & 0x80)
+					{
+						ButtonState |= 1;
+					}
 				}
 			}
 		}

@@ -10,7 +10,6 @@ $Rev$
 #include "WSInput.h"
 #include "keycode.h"
 
-extern HWND hDlgCurrent;
 static WNDPROC OrgEditProc;
 static HWND hTab, hTabCtrl1, hTabCtrl2, hTabCtrl3, hTabCtrl4;
 static LPTSTR JoyStr[] = {
@@ -61,6 +60,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_INITDIALOG:
 		WsInputInit(hDlg);
+		WsDlgConfInit(hDlg);
 		return TRUE;
 	case WM_NOTIFY:
 		// タブコントロールの選択されているタブが変更されたことを通知
@@ -76,24 +76,28 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ShowWindow(hTabCtrl2, SW_HIDE);
 					ShowWindow(hTabCtrl3, SW_HIDE);
 					ShowWindow(hTabCtrl4, SW_HIDE);
+					SetFocus(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1));
 					break;
 				case 1:
 					ShowWindow(hTabCtrl1, SW_HIDE);
 					ShowWindow(hTabCtrl2, SW_SHOW);
 					ShowWindow(hTabCtrl3, SW_HIDE);
 					ShowWindow(hTabCtrl4, SW_HIDE);
+					SetFocus(GetDlgItem(hTabCtrl2, IDC_EDIT_Y1));
 					break;
 				case 2:
 					ShowWindow(hTabCtrl1, SW_HIDE);
 					ShowWindow(hTabCtrl2, SW_HIDE);
 					ShowWindow(hTabCtrl3, SW_SHOW);
 					ShowWindow(hTabCtrl4, SW_HIDE);
+					SetFocus(GetDlgItem(hTabCtrl3, IDC_EDIT_Y1));
 					break;
 				case 3:
 					ShowWindow(hTabCtrl1, SW_HIDE);
 					ShowWindow(hTabCtrl2, SW_HIDE);
 					ShowWindow(hTabCtrl3, SW_HIDE);
 					ShowWindow(hTabCtrl4, SW_SHOW);
+					SetFocus(GetDlgItem(hTabCtrl4, IDC_EDIT_Y1));
 					break;
 				}
 				return TRUE;
@@ -113,16 +117,6 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 				EndDialog(hDlg, LOWORD(wParam));
 				return TRUE;
 			}
-		}
-		break;
-	case WM_ACTIVATE:
-		if (0 == wParam)
-		{
-			hDlgCurrent = NULL;
-		}
-		else
-		{
-			hDlgCurrent = hDlg;
 		}
 		break;
 	case WM_DESTROY:
@@ -233,12 +227,6 @@ LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), keyName[WsKeyboardH[1]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), keyName[WsKeyboardH[0]]);
 		return TRUE;
-	case WM_ACTIVATE:
-		if (wParam)
-		{
-			SetFocus(GetDlgItem(hCtrl, IDC_EDIT_Y1));
-		}
-		break;
 	}
 	return FALSE;
 }
@@ -271,12 +259,6 @@ LRESULT CALLBACK TabCtrlProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), keyName[WsKeyboardV[1]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), keyName[WsKeyboardV[0]]);
 		return TRUE;
-	case WM_ACTIVATE:
-		if (wParam)
-		{
-			SetFocus(GetDlgItem(hCtrl, IDC_EDIT_Y1));
-		}
-		break;
 	}
 	return FALSE;
 }
@@ -297,12 +279,6 @@ LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), joyName(WsJoypadH[1]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), joyName(WsJoypadH[0]));
 		return TRUE;
-	case WM_ACTIVATE:
-		if (wParam)
-		{
-			SetFocus(GetDlgItem(hCtrl, IDC_EDIT_Y1));
-		}
-		break;
 	}
 	return FALSE;
 }
@@ -323,28 +299,18 @@ LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), joyName(WsJoypadV[1]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), joyName(WsJoypadV[0]));
 		return TRUE;
-	case WM_ACTIVATE:
-		if (wParam)
-		{
-			SetFocus(GetDlgItem(hCtrl, IDC_EDIT_Y1));
-		}
-		break;
 	}
 	return FALSE;
 }
 
-void WsDlgConfInit(HWND hWnd)
+void WsDlgConfInit(HWND hDlg)
 {
 	HINSTANCE hInst;
-	HWND hDlg;
 	TC_ITEM tc;
 	RECT    rt;
 	LPPOINT pt = (LPPOINT)&rt;
 
-	InitCommonControls();
-	hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
-	hDlg = CreateDialog(hInst, MAKEINTRESOURCE(IDD_DIALOG_CONFIG), hWnd, (DLGPROC)ConfProc);
-	ShowWindow(hDlg, SW_SHOW);
+	hInst = (HINSTANCE)GetWindowLong(hDlg, GWL_HINSTANCE);
 	hTab = GetDlgItem(hDlg, IDC_TAB1);
 	// タブコントロールにタブシートを挿入
 	tc.mask = TCIF_TEXT;

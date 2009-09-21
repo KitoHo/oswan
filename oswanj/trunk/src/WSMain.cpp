@@ -18,7 +18,7 @@ BOOL InitApp(HINSTANCE);
 BOOL InitInstance(HINSTANCE);
 wchar_t* OpenWSFile(wchar_t* path, DWORD max);
 
-HWND hDlgCurrent;
+HINSTANCE hInst;
 HWND hWnd;
 static LPCTSTR szClassName = TEXT("OswanJ"); //ƒNƒ‰ƒX–¼
 
@@ -35,6 +35,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     {
         return FALSE;
     }
+	hInst = hCurInst;
     accel = LoadAccelerators(hCurInst, MAKEINTRESOURCE(IDR_ACCELERATOR1));
     WsSetDir();
     WsLoadIEep();
@@ -53,12 +54,9 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
             {
                 break;
             }
-			if (NULL == hDlgCurrent || !IsDialogMessage(hDlgCurrent, &msg))
-			{
-				if (!TranslateAccelerator(hWnd, accel, &msg)) {
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-				}
+			if (!TranslateAccelerator(hWnd, accel, &msg)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
 			}
         }
         if (Run)
@@ -237,7 +235,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             }
             return 0L;
         case ID_CONF_INPUT:
-			WsDlgConfInit(hWnd);
+			WsInputRelease();
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_CONFIG), hWnd, (DLGPROC)ConfProc);
+			WsInputInit(hWnd);
 			return 0L;
         }
         break;

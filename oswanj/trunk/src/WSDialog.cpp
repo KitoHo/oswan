@@ -132,12 +132,13 @@ LRESULT CALLBACK EditProc1(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	BYTE    diKeys[256];
 	int key, i;
 
-	if (msg == WM_CHAR)
+	switch (msg)
 	{
+	case WM_GETDLGCODE:
+		return DLGC_WANTALLKEYS;
+	case WM_CHAR:
 		return 0;
-	}
-	if ((msg == WM_KEYDOWN || msg == WM_HOTKEY) && (wParam != VK_TAB))
-	{
+	case WM_KEYDOWN:
 		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
 		wParam = 0;
 		hRet = lpKeyDevice->Acquire();
@@ -152,12 +153,12 @@ LRESULT CALLBACK EditProc1(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 					{
 						SetWindowText(hEditWnd, keyName[i]);
 						WsKeyboardH[key] = i;
-						wParam = VK_TAB;
-						break;
+						return 0;
 					}
 				}
 			}
 		}
+		break;
 	}
 	return CallWindowProc(OrgEditProc, hEditWnd, msg, wParam, lParam);
 }
@@ -168,12 +169,13 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	BYTE    diKeys[256];
 	int key, i;
 
-	if (msg == WM_CHAR)
+	switch (msg)
 	{
+	case WM_GETDLGCODE:
+		return DLGC_WANTALLKEYS;
+	case WM_CHAR:
 		return 0;
-	}
-	if ((msg == WM_KEYDOWN || msg == WM_HOTKEY) && (wParam != VK_TAB))
-	{
+	case WM_KEYDOWN:
 		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
 		wParam = 0;
 		hRet = lpKeyDevice->Acquire();
@@ -188,12 +190,12 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 					{
 						SetWindowText(hEditWnd, keyName[i]);
 						WsKeyboardV[key] = i;
-						wParam = VK_TAB;
-						break;
+						return 0;
 					}
 				}
 			}
 		}
+		break;
 	}
 	return CallWindowProc(OrgEditProc, hEditWnd, msg, wParam, lParam);
 }

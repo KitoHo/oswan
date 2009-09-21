@@ -32,24 +32,45 @@ WS_JOY_AXIS_RY_M, WS_JOY_AXIS_RX_P, WS_JOY_AXIS_RY_P, WS_JOY_AXIS_RX_M, WS_JOY_A
 WS_JOY_SLIDER1_P, WS_JOY_SLIDER1_M, WS_JOY_SLIDER2_P, WS_JOY_SLIDER2_M
 };
 
-LPTSTR joyName(int joy)
+void WsDlgConfInit(HWND hDlg)
 {
-	static TCHAR buf[8];
-	int i;
+	HINSTANCE hInst;
+	TC_ITEM tc;
+	RECT    rt;
+	LPPOINT pt = (LPPOINT)&rt;
 
-	if (joy < 0x80)
-	{
-		_stprintf_s(buf, 8, TEXT("%d"), joy);
-		return buf;
-	}
-	for (i = 0; i < 32; i++)
-	{
-		if (joy == JoyInt[i])
-		{
-			return JoyStr[i];
-		}
-	}
-	return NULL;
+	hInst = (HINSTANCE)GetWindowLong(hDlg, GWL_HINSTANCE);
+	hTab = GetDlgItem(hDlg, IDC_TAB1);
+	// タブコントロールにタブシートを挿入
+	tc.mask = TCIF_TEXT;
+	tc.pszText = TEXT("キー横");
+	TabCtrl_InsertItem(hTab , 0, &tc);
+	tc.mask = TCIF_TEXT;
+	tc.pszText = TEXT("キー縦");
+	TabCtrl_InsertItem(hTab , 1, &tc);
+	tc.mask = TCIF_TEXT;
+	tc.pszText = TEXT("コントローラー横");
+	TabCtrl_InsertItem(hTab , 2, &tc);
+	tc.mask = TCIF_TEXT;
+	tc.pszText = TEXT("コントローラー縦");
+	TabCtrl_InsertItem(hTab , 3, &tc);
+	// タブに貼り付けるダイアログを生成
+	hTabCtrl1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabCtrlProc1);
+	hTabCtrl2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabCtrlProc2);
+	hTabCtrl3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabCtrlProc3);
+	hTabCtrl4 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabCtrlProc4);
+	// タブコントロールのクライアント領域の座標を取得
+	GetClientRect(hTab, &rt);
+	TabCtrl_AdjustRect(hTab, FALSE, &rt);
+	// 親ウィンドウがhDlgなのでタブのマップが必要
+	MapWindowPoints(hTab, hDlg, pt, 2);
+	// タブのウィンドウの位置とサイズを変更する
+	MoveWindow(hTabCtrl1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTabCtrl2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTabCtrl3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTabCtrl4, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	// デフォルトでタブ1を表示
+	ShowWindow(hTabCtrl1, SW_SHOW);
 }
 
 LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -202,6 +223,20 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	return CallWindowProc(OrgEditProc, hEditWnd, msg, wParam, lParam);
 }
 
+LRESULT CALLBACK EditProc3(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_GETDLGCODE:
+		return DLGC_WANTALLKEYS;
+	case WM_CHAR:
+		return 0;
+	case WM_KEYDOWN:
+		return 0;
+	}
+	return CallWindowProc(OrgEditProc, hEditWnd, msg, wParam, lParam);
+}
+
 LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg) {
@@ -269,19 +304,48 @@ LRESULT CALLBACK TabCtrlProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 
 LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	HWND hEditWnd;
+	int key, joy;
+
 	switch (msg) {
 	case WM_INITDIALOG:
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), joyName(WsJoypadH[11]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), joyName(WsJoypadH[10]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), joyName(WsJoypadH[9]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y4), joyName(WsJoypadH[8]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X1), joyName(WsJoypadH[7]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X2), joyName(WsJoypadH[6]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X3), joyName(WsJoypadH[5]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X4), joyName(WsJoypadH[4]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_START), joyName(WsJoypadH[2]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), joyName(WsJoypadH[1]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), joyName(WsJoypadH[0]));
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y4), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X1), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X2), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X3), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X4), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_START), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_A), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_B), GWL_WNDPROC, (LONG)EditProc3);
+
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), GetJoyName(WsJoypadH[11]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), GetJoyName(WsJoypadH[10]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), GetJoyName(WsJoypadH[9]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y4), GetJoyName(WsJoypadH[8]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X1), GetJoyName(WsJoypadH[7]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X2), GetJoyName(WsJoypadH[6]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X3), GetJoyName(WsJoypadH[5]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X4), GetJoyName(WsJoypadH[4]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_START), GetJoyName(WsJoypadH[2]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), GetJoyName(WsJoypadH[1]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), GetJoyName(WsJoypadH[0]));
+
+		SetTimer(hCtrl, 0, 30, NULL);
+		return TRUE;
+	case WM_TIMER:
+		hEditWnd = GetFocus();
+		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
+		joy = GetJoyState();
+		if (joy < 0)
+		{
+			break;
+		}
+		SetWindowText(hEditWnd, GetJoyName(joy));
+		WsJoypadH[key] = joy;
+		//SetFocus(GetNextDlgTabItem(hCtrl, hEditWnd, FALSE));
 		return TRUE;
 	}
 	return FALSE;
@@ -289,61 +353,248 @@ LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 
 LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	HWND hEditWnd;
+	int key, joy;
+
 	switch (msg) {
 	case WM_INITDIALOG:
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), joyName(WsJoypadV[11]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), joyName(WsJoypadV[10]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), joyName(WsJoypadV[9]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y4), joyName(WsJoypadV[8]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X1), joyName(WsJoypadV[7]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X2), joyName(WsJoypadV[6]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X3), joyName(WsJoypadV[5]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X4), joyName(WsJoypadV[4]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_START), joyName(WsJoypadV[2]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), joyName(WsJoypadV[1]));
-		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), joyName(WsJoypadV[0]));
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_Y4), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X1), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X2), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X3), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_X4), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_START), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_A), GWL_WNDPROC, (LONG)EditProc3);
+		SetWindowLong(GetDlgItem(hCtrl, IDC_EDIT_B), GWL_WNDPROC, (LONG)EditProc3);
+
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), GetJoyName(WsJoypadV[11]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), GetJoyName(WsJoypadV[10]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), GetJoyName(WsJoypadV[9]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y4), GetJoyName(WsJoypadV[8]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X1), GetJoyName(WsJoypadV[7]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X2), GetJoyName(WsJoypadV[6]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X3), GetJoyName(WsJoypadV[5]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_X4), GetJoyName(WsJoypadV[4]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_START), GetJoyName(WsJoypadV[2]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), GetJoyName(WsJoypadV[1]));
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), GetJoyName(WsJoypadV[0]));
+
+		SetTimer(hCtrl, 0, 30, NULL);
+		return TRUE;
+	case WM_TIMER:
+		hEditWnd = GetFocus();
+		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
+		joy = GetJoyState();
+		if (joy < 0)
+		{
+			break;
+		}
+		SetWindowText(hEditWnd, GetJoyName(joy));
+		WsJoypadV[key] = joy;
+		//SetFocus(GetNextDlgTabItem(hCtrl, hEditWnd, FALSE));
 		return TRUE;
 	}
 	return FALSE;
 }
 
-void WsDlgConfInit(HWND hDlg)
+LPTSTR GetJoyName(int joy)
 {
-	HINSTANCE hInst;
-	TC_ITEM tc;
-	RECT    rt;
-	LPPOINT pt = (LPPOINT)&rt;
+	static TCHAR buf[8];
+	int i;
 
-	hInst = (HINSTANCE)GetWindowLong(hDlg, GWL_HINSTANCE);
-	hTab = GetDlgItem(hDlg, IDC_TAB1);
-	// タブコントロールにタブシートを挿入
-	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("キー横");
-	TabCtrl_InsertItem(hTab , 0, &tc);
-	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("キー縦");
-	TabCtrl_InsertItem(hTab , 1, &tc);
-	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("コントローラー横");
-	TabCtrl_InsertItem(hTab , 2, &tc);
-	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("コントローラー縦");
-	TabCtrl_InsertItem(hTab , 3, &tc);
-	// タブに貼り付けるダイアログを生成
-	hTabCtrl1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabCtrlProc1);
-	hTabCtrl2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabCtrlProc2);
-	hTabCtrl3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabCtrlProc3);
-	hTabCtrl4 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabCtrlProc4);
-	// タブコントロールのクライアント領域の座標を取得
-	GetClientRect(hTab, &rt);
-	TabCtrl_AdjustRect(hTab, FALSE, &rt);
-	// 親ウィンドウがhDlgなのでタブのマップが必要
-	MapWindowPoints(hTab, hDlg, pt, 2);
-	// タブのウィンドウの位置とサイズを変更する
-	MoveWindow(hTabCtrl1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	MoveWindow(hTabCtrl2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	MoveWindow(hTabCtrl3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	MoveWindow(hTabCtrl4, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	// デフォルトでタブ1を表示
-	ShowWindow(hTabCtrl1, SW_SHOW);
+	if (joy < 0x80)
+	{
+		_stprintf_s(buf, 8, TEXT("%d"), joy);
+		return buf;
+	}
+	for (i = 0; i < 32; i++)
+	{
+		if (joy == JoyInt[i])
+		{
+			return JoyStr[i];
+		}
+	}
+	return NULL;
+}
+
+int GetJoyState(void)
+{
+	const long joyCenter = 0x7fff;
+
+	static int xFlag  = 0;
+	static int yFlag  = 0;
+	static int zFlag  = 0;
+	static int rxFlag = 0;
+	static int ryFlag = 0;
+	static int rzFlag = 0;
+	static int s1Flag = 0;
+	static int s2Flag = 0;
+
+	HRESULT      hRet;
+	int          joy;
+	unsigned int i;
+	DIJOYSTATE2  js;
+	DIDEVCAPS    diDevCaps;
+
+	diDevCaps.dwSize = sizeof(DIDEVCAPS);
+
+	if (lpJoyDevice == NULL)
+	{
+		return -1;
+	}
+	hRet = lpJoyDevice->Poll();
+	if (FAILED(hRet))
+	{
+		hRet = lpJoyDevice->Acquire();
+		while (hRet == DIERR_INPUTLOST)
+		{
+			hRet = lpJoyDevice->Acquire();
+		}
+		return -1;
+	}
+	lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+	lpJoyDevice->GetCapabilities(&diDevCaps);
+	for (i = 0; i < diDevCaps.dwButtons; i++)
+	{
+		if (js.rgbButtons[i] & 0x80)
+		{
+			return i + 1;
+		}
+	}
+	for (i = 0; i < diDevCaps.dwPOVs; i++)
+	{
+		joy = WS_JOY_POV1_UP + (i << 4);
+		if (js.rgdwPOV[i] == JOY_POVFORWARD)
+		{
+			return joy;
+		}
+		else if (js.rgdwPOV[i] == JOY_POVRIGHT)
+		{
+			return joy + 1;
+		}
+		else if (js.rgdwPOV[i] == JOY_POVBACKWARD)
+		{
+			return joy + 3;
+		}
+		else if (js.rgdwPOV[i] == JOY_POVLEFT)
+		{
+			return joy + 7;
+		}
+	}
+	if ((js.lX > joyCenter - 0x1000) && (js.lX < joyCenter + 0x1000))
+	{
+		xFlag = 1;
+	}
+	if ((js.lX > (joyCenter + 0x4000)) && xFlag)
+	{
+		xFlag = 0;
+		return WS_JOY_AXIS_X_P;
+	}
+	else if ((js.lX < (joyCenter - 0x4000)) && xFlag)
+	{
+		xFlag = 0;
+		return WS_JOY_AXIS_X_M;
+	}
+	if ((js.lY > joyCenter - 0x1000) && (js.lY < joyCenter + 0x1000))
+	{
+		yFlag = 1;
+	}
+	if ((js.lY > (joyCenter + 0x4000)) && yFlag)
+	{
+		yFlag = 0;
+		return WS_JOY_AXIS_Y_P;
+	}
+	else if ((js.lY < (joyCenter - 0x4000)) && yFlag)
+	{
+		yFlag = 0;
+		return WS_JOY_AXIS_Y_M;
+	}
+	if ((js.lZ > joyCenter - 0x1000) && (js.lZ < joyCenter + 0x1000))
+	{
+		zFlag = 1;
+	}
+	if ((js.lZ > (joyCenter + 0x4000)) && zFlag)
+	{
+		zFlag = 0;
+		return WS_JOY_AXIS_Z_P;
+	}
+	else if ((js.lZ < (joyCenter - 0x4000)) && zFlag)
+	{
+		zFlag = 0;
+		return WS_JOY_AXIS_Z_M;
+	}
+	if ((js.lRx > joyCenter - 0x1000) && (js.lRx < joyCenter + 0x1000))
+	{
+		rxFlag = 1;
+	}
+	if ((js.lRx > (joyCenter + 0x4000)) && rxFlag)
+	{
+		rxFlag = 0;
+		return WS_JOY_AXIS_RX_P;
+	}
+	else if ((js.lRx < (joyCenter - 0x4000)) && rxFlag)
+	{
+		rxFlag = 0;
+		return WS_JOY_AXIS_RX_M;
+	}
+	if ((js.lRy > joyCenter - 0x1000) && (js.lRy < joyCenter + 0x1000))
+	{
+		ryFlag = 1;
+	}
+	if ((js.lRy > (joyCenter + 0x4000)) && ryFlag)
+	{
+		ryFlag = 0;
+		return WS_JOY_AXIS_RY_P;
+	}
+	else if ((js.lRy < (joyCenter - 0x4000)) && ryFlag)
+	{
+		ryFlag = 0;
+		return WS_JOY_AXIS_RY_M;
+	}
+	if ((js.lRz > joyCenter - 0x1000) && (js.lRz < joyCenter + 0x1000))
+	{
+		rzFlag = 1;
+	}
+	if ((js.lRz > (joyCenter + 0x4000)) && rzFlag)
+	{
+		rzFlag = 0;
+		return WS_JOY_AXIS_RZ_P;
+	}
+	else if ((js.lRz < (joyCenter - 0x4000)) && rzFlag)
+	{
+		rzFlag = 0;
+		return WS_JOY_AXIS_RZ_M;
+	}
+	if ((js.rglSlider[0] > joyCenter - 0x1000) && (js.rglSlider[0] < joyCenter + 0x1000))
+	{
+		s1Flag = 1;
+	}
+	if ((js.rglSlider[0] > (joyCenter + 0x4000)) && s1Flag)
+	{
+		s1Flag = 0;
+		return WS_JOY_SLIDER1_P;
+	}
+	else if ((js.rglSlider[0] < (joyCenter - 0x4000)) && s1Flag)
+	{
+		s1Flag = 0;
+		return WS_JOY_SLIDER1_M;
+	}
+	if ((js.rglSlider[1] > joyCenter - 0x1000) && (js.rglSlider[0] < joyCenter + 0x1000))
+	{
+		s2Flag = 1;
+	}
+	if ((js.rglSlider[1] > (joyCenter + 0x4000)) && s2Flag)
+	{
+		s2Flag = 0;
+		return WS_JOY_SLIDER2_P;
+	}
+	else if ((js.rglSlider[1] < (joyCenter - 0x4000)) && s2Flag)
+	{
+		s2Flag = 0;
+		return WS_JOY_SLIDER2_M;
+	}
+	return -1;
 }

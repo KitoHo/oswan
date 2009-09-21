@@ -153,6 +153,7 @@ LRESULT CALLBACK EditProc1(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 					{
 						SetWindowText(hEditWnd, keyName[i]);
 						WsKeyboardH[key] = i;
+						SetFocus(GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE));
 						return 0;
 					}
 				}
@@ -190,6 +191,7 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 					{
 						SetWindowText(hEditWnd, keyName[i]);
 						WsKeyboardV[key] = i;
+						SetFocus(GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE));
 						return 0;
 					}
 				}

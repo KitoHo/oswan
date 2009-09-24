@@ -434,7 +434,6 @@ LPTSTR GetJoyName(int joy)
 int GetJoyState(void)
 {
 	const long joyCenter = 0x7fff;
-
 	static int xFlag  = 0;
 	static int yFlag  = 0;
 	static int zFlag  = 0;
@@ -443,7 +442,6 @@ int GetJoyState(void)
 	static int rzFlag = 0;
 	static int s1Flag = 0;
 	static int s2Flag = 0;
-
 	HRESULT      hRet;
 	int          joy;
 	unsigned int i;
@@ -451,7 +449,6 @@ int GetJoyState(void)
 	DIDEVCAPS    diDevCaps;
 
 	diDevCaps.dwSize = sizeof(DIDEVCAPS);
-
 	if (lpJoyDevice == NULL)
 	{
 		return -1;

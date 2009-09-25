@@ -272,6 +272,16 @@ void apuSweep(void)
     }
 }
 
+WORD apuShiftReg(void)
+{
+    static int nPos = 0;
+    // Noise counter
+    if (++nPos >= BUFSIZEN) {
+        nPos = 0;
+    }
+    return RandData[nPos];
+}
+
 void apuWaveSet(void)
 {
     static  int point[] = {0, 0, 0, 0};
@@ -279,7 +289,7 @@ void apuWaveSet(void)
     int     channel, index;
     short   value, lVol[4], rVol[4];
     short   LL, RR, vVol;
-    static int wPos = 0, nPos = 0;
+    static int wPos = 0;
     short   *dataAdr;
 
     apuSweep();
@@ -334,11 +344,6 @@ void apuWaveSet(void)
             Sleep(1); // WaveOutのコールバック関数でrBufが更新されるまで待つ
         }
     }
-    // Noise counter
-    if (++nPos >= BUFSIZEN) {
-        nPos = 0;
-    }
-    *(WORD*)(IO + 0x92) = RandData[nPos];
 }
 
 void apuStartupSound(void)

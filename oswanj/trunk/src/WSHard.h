@@ -74,17 +74,16 @@ BYTE  ReadIO(DWORD A);
 #define WAVDTP  IO[0x8F]        // WAVE
 #define SNDMOD  IO[0x90]        // 
 #define SNDOUT  IO[0x91]        // 
-#define PCSRL   IO[0x92]        // 
-#define PCSRH   IO[0x93]        // 
+#define NCSR    (*(WORD*)(IO+0x92))  //
 
 #define HWARCH  IO[0xA0]        // 
 
 #define TIMCTL  IO[0xA2]        // 
-#define PHPRE   ((WORD*)(IO+0xA4))  //
-#define PVPRE   ((WORD*)(IO+0xA6))  //
-#define PHCNT   ((WORD*)(IO+0xA8))  //
-#define PVCNTL  ((WORD*)(IO+0xAA))  //  L
-#define PVCNTH  ((WORD*)(IO+0xAC))  //  H
+#define HPRE    (*(WORD*)(IO+0xA4))  //
+#define VPRE    (*(WORD*)(IO+0xA6))  //
+#define HCNT    (*(WORD*)(IO+0xA8))  //
+#define VCNTL   (*(WORD*)(IO+0xAA))  //  L
+#define VCNTH   (*(WORD*)(IO+0xAC))  //  H
 
 #define IRQBSE  IO[0xB0]        // 
 #define COMDT   IO[0xB1]        // 

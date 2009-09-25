@@ -41,6 +41,7 @@ unsigned int apuMrand(unsigned int Degree);
 void apuSetPData(int addr, unsigned char val);
 unsigned char apuVoice(void);
 void apuSweep(void);
+WORD apuShiftReg(void);
 void apuWaveSet(void);
 void apuStartupSound(void);
 

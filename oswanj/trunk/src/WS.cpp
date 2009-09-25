@@ -730,15 +730,16 @@ int Interrupt(void)
                 }
                 Joyz = ButtonState;
                 // Vblankカウントアップ
-                VCounter = *PVCNTH << 16 || *PVCNTL;
+                VCounter = VCNTH << 16 || VCNTL;
                 VCounter++;
-                *PVCNTL = (WORD)VCounter;
-                *PVCNTH = (WORD)(VCounter >> 16);
+                VCNTL = (WORD)VCounter;
+                VCNTH = (WORD)(VCounter >> 16);
             }
             break;
         case 2:
             // Hblank毎に1サンプルセットすることで12KHzのwaveデータが出来る
             apuWaveSet();
+			NCSR = apuShiftReg();
             break;
         case 4:
             if(RSTRL == 140)
@@ -782,7 +783,7 @@ int Interrupt(void)
                 {
                     if(TIMCTL & 0x02)
                     {
-                        HTimer = *PHPRE;
+                        HTimer = HPRE;
                     }
                     if(IRQENA & HTM_IFLAG)
                     {
@@ -790,7 +791,7 @@ int Interrupt(void)
                     }
                 }
             }
-            else if(*PHPRE == 1)
+            else if(HPRE == 1)
             {
                 if(IRQENA & HTM_IFLAG)
                 {
@@ -808,7 +809,7 @@ int Interrupt(void)
                 {
                     if(TIMCTL & 0x08)
                     {
-                        VTimer = *PVPRE;
+                        VTimer = VPRE;
                     }
                     if(IRQENA & VTM_IFLAG)
                     {
@@ -828,7 +829,7 @@ int Interrupt(void)
                 RSTRL = 0;
             }
             // Hblankカウントアップ
-            (*PHCNT)++;
+            HCNT++;
             break;
         default:
             break;

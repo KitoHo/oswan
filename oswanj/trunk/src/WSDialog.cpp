@@ -165,6 +165,7 @@ LRESULT CALLBACK EditProc1(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	HRESULT hRet;
 	BYTE    diKeys[256];
 	int key, i;
+	HWND next;
 
 	switch (msg)
 	{
@@ -187,7 +188,9 @@ LRESULT CALLBACK EditProc1(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 					{
 						SetWindowText(hEditWnd, keyName[i]);
 						TmpKeyboardH[key] = i;
-						SetFocus(GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE));
+						next = GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE);
+						SetFocus(next);
+						SendMessage(next, EM_SETSEL, 0, -1);
 						return 0;
 					}
 				}
@@ -203,6 +206,7 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	HRESULT hRet;
 	BYTE    diKeys[256];
 	int key, i;
+	HWND next;
 
 	switch (msg)
 	{
@@ -225,7 +229,9 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 					{
 						SetWindowText(hEditWnd, keyName[i]);
 						TmpKeyboardV[key] = i;
-						SetFocus(GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE));
+						next = GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE);
+						SetFocus(next);
+						SendMessage(next, EM_SETSEL, 0, -1);
 						return 0;
 					}
 				}
@@ -238,6 +244,8 @@ LRESULT CALLBACK EditProc2(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 LRESULT CALLBACK EditProc3(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	HWND next;
+
 	switch (msg)
 	{
 	case WM_GETDLGCODE:
@@ -245,6 +253,12 @@ LRESULT CALLBACK EditProc3(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	case WM_CHAR:
 		return 0;
 	case WM_KEYDOWN:
+		if (wParam == VK_TAB || wParam == VK_RETURN)
+		{
+			next = GetNextDlgTabItem(GetParent(hEditWnd), hEditWnd, FALSE);
+			SetFocus(next);
+			SendMessage(next, EM_SETSEL, 0, -1);
+		}
 		return 0;
 	}
 	return CallWindowProc(OrgEditProc, hEditWnd, msg, wParam, lParam);
@@ -362,7 +376,6 @@ LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		}
 		SetWindowText(hEditWnd, GetJoyName(joy));
 		TmpJoypadH[key] = joy;
-		//SetFocus(GetNextDlgTabItem(hCtrl, hEditWnd, FALSE));
 		return TRUE;
 	}
 	return FALSE;
@@ -415,7 +428,6 @@ LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		}
 		SetWindowText(hEditWnd, GetJoyName(joy));
 		TmpJoypadV[key] = joy;
-		//SetFocus(GetNextDlgTabItem(hCtrl, hEditWnd, FALSE));
 		return TRUE;
 	}
 	return FALSE;

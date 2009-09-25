@@ -34,6 +34,7 @@ static int TmpKeyboardH[12];
 static int TmpKeyboardV[12];
 static int TmpJoypadH[12];
 static int TmpJoypadV[12];
+static int SelectedTab;
 
 void WsDlgConfInit(HWND hDlg)
 {
@@ -97,7 +98,8 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		case TCN_SELCHANGE:
 			if (nm->hwndFrom == hTab)
 			{
-				switch (TabCtrl_GetCurSel(hTab))
+				SelectedTab = TabCtrl_GetCurSel(hTab);
+				switch (SelectedTab)
 				{
 				case 0:
 					ShowWindow(hTabCtrl1, SW_SHOW);
@@ -347,6 +349,10 @@ LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetTimer(hCtrl, 0, 30, NULL);
 		return TRUE;
 	case WM_TIMER:
+		if (SelectedTab != 2 || wParam != 0)
+		{
+			break;
+		}
 		hEditWnd = GetFocus();
 		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
 		joy = GetJoyState();
@@ -393,9 +399,13 @@ LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_A), GetJoyName(TmpJoypadV[1]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_B), GetJoyName(TmpJoypadV[0]));
 
-		SetTimer(hCtrl, 0, 30, NULL);
+		SetTimer(hCtrl, 1, 30, NULL);
 		return TRUE;
 	case WM_TIMER:
+		if (SelectedTab != 3 || wParam != 1)
+		{
+			break;
+		}
 		hEditWnd = GetFocus();
 		key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
 		joy = GetJoyState();

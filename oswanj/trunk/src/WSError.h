@@ -17,6 +17,7 @@ $Rev$
 #define ERR_FREAD_ROM				0x80030004
 #define ERR_CHECKSUM				0x80030005
 #define ERR_FREAD_SAVE				0x80030006
+#define ERR_DRAW_HAL				0x80040001
 
 void  ErrorMsg(long err);
 

@@ -7,6 +7,7 @@ $Rev$
 #include "WS.h"
 #include "WSInput.h"
 #include "WSRender.h"
+#include "WSError.h"
 
 extern HWND hWnd;
 int	Kerorikan = 0;
@@ -78,13 +79,9 @@ HRESULT drawInitialize(BOOL isFullScreen)
         // 描画をハードウェアで行い、頂点処理はCPUで行なう
         if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
         {
-            // 上記の設定が失敗したら
-            // 描画と頂点処理をCPUで行なう
-            if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF,hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
-            {
-                // 初期化失敗
-                return E_FAIL;
-            }
+            // 初期化失敗
+			ErrorMsg(ERR_DRAW_HAL);
+            return E_FAIL;
         }
     }
     return S_OK;

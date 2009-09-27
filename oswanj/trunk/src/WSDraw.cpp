@@ -7,7 +7,6 @@ $Rev$
 #include "WS.h"
 #include "WSInput.h"
 #include "WSRender.h"
-#include "WSError.h"
 
 extern HWND hWnd;
 int	Kerorikan = 0;
@@ -80,7 +79,7 @@ HRESULT drawInitialize(BOOL isFullScreen)
         if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
         {
             // 初期化失敗
-			ErrorMsg(ERR_DRAW_HAL);
+			MessageBox(hWnd, TEXT("グラフィックチップが未対応です"), TEXT("Direct3D Error"), MB_OK);
             return E_FAIL;
         }
     }

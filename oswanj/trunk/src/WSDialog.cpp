@@ -422,7 +422,8 @@ LPCTSTR GetJoyName(int joy)
 			return JoyStr[i];
 		}
 	}
-	return NULL;
+	buf[0] = 0;
+	return buf;
 }
 
 int GetJoyState(void)

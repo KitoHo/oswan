@@ -63,6 +63,7 @@ void WsDlgConfInit(HWND hDlg)
 	ShowWindow(hTabCtrl1, SW_SHOW);
 	SetFocus(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1));
 	SendMessage(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+	lpKeyDevice->Acquire();
 }
 
 LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -92,6 +93,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ShowWindow(hTabCtrl4, SW_HIDE);
 					SetFocus(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1));
 					SendMessage(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+					lpKeyDevice->Acquire();
 					break;
 				case 1:
 					ShowWindow(hTabCtrl1, SW_HIDE);
@@ -100,6 +102,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					ShowWindow(hTabCtrl4, SW_HIDE);
 					SetFocus(GetDlgItem(hTabCtrl2, IDC_EDIT_Y1));
 					SendMessage(GetDlgItem(hTabCtrl2, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+					lpKeyDevice->Acquire();
 					break;
 				case 2:
 					ShowWindow(hTabCtrl1, SW_HIDE);

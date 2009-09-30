@@ -364,8 +364,8 @@ void WsSaveIEep(void)
     }
 }
 
-#define MacroLoadNecRegisterFromFile(F,R)        \
-		fread(&value, sizeof(unsigned int), 1, fp);		\
+#define MacroLoadNecRegisterFromFile(F,R) \
+		fread(&value, sizeof(unsigned int), 1, fp); \
 	    nec_set_reg(R,value); 
 void WsLoadState(int num)
 {
@@ -422,7 +422,7 @@ void WsLoadState(int num)
 	}
 }
 
-#define MacroStoreNecRegisterToFile(F,R)        \
+#define MacroStoreNecRegisterToFile(F,R) \
 	    value = nec_get_reg(R); \
 		fwrite(&value, sizeof(unsigned int), 1, fp);
 void WsSaveState(int num)

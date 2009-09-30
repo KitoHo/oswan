@@ -69,7 +69,7 @@ int WsCreate(wchar_t *CartName)
         RAMMap[i] = MemDummy;
     }
     memset(IRAM, 0, sizeof(IRAM));
-    memset(MemDummy, 0xFF, sizeof(MemDummy));
+    memset(MemDummy, 0xA0, sizeof(MemDummy));
     memset(IO, 0, sizeof(IO));
     if (CartName == NULL)
     {

@@ -144,10 +144,6 @@ void  ComEEP(struct EEPROM *eeprom, WORD *cmd, WORD *data)
 
 BYTE  ReadMem(DWORD A)
 {
-	if (RAMSize == 0x40000 && BNK1SEL >= 8 && (A & 0xF0000) == 0x10000)
-	{
-		return 0xA0;
-	}
     return Page[(A >> 16) & 0xF][A & 0xFFFF];
 }
 
@@ -555,7 +551,11 @@ void  WriteIO(DWORD A, BYTE V)
         Page[0xF] = ROMMap[0xF | j];
         break;
     case 0xC1:
-        if(V >= RAMBanks) RAMEnable = 0;
+		if (V >= 8) // WonderWitch
+		{
+			Page[1] = MemDummy;
+		}
+        else if (V >= RAMBanks) RAMEnable = 0;
         else Page[1] = RAMMap[V];
         break;
     case 0xC2:

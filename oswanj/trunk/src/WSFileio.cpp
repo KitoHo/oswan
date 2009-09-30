@@ -432,6 +432,10 @@ void WsSaveState(int num)
 	unsigned int value;
 	int i;
 
+	if (StateName[0] == 0)
+	{
+		return;
+	}
 	wsprintf(buf, L"%s.%03d", StateName, num);
     if ((fp = _wfopen(buf, L"wb")) == NULL)
     {

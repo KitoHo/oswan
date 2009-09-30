@@ -201,7 +201,7 @@ int WsCreate(wchar_t *CartName)
     }
     if (Checksum & 0xFFFF)
     {
-        ErrorMsg(ERR_CHECKSUM);
+        //ErrorMsg(ERR_CHECKSUM);
     }
     if (RAMBanks)
     {

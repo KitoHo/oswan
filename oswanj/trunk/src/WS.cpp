@@ -144,6 +144,10 @@ void  ComEEP(struct EEPROM *eeprom, WORD *cmd, WORD *data)
 
 BYTE  ReadMem(DWORD A)
 {
+	if (RAMSize == 0x40000 && BNK1SEL >= 8 && (A & 0xF0000) == 0x10000)
+	{
+		return 0xA0;
+	}
     return Page[(A >> 16) & 0xF][A & 0xFFFF];
 }
 
@@ -172,13 +176,109 @@ static void  WriteIRam(DWORD A, BYTE V)
     }
 }
 
+#define	FLASH_CMD_ADDR1			0x0AAA
+#define	FLASH_CMD_ADDR2			0x0555
+#define	FLASH_CMD_DATA1			0xAA
+#define	FLASH_CMD_DATA2			0x55
+#define	FLASH_CMD_RESET			0xF0
+#define	FLASH_CMD_ERASE			0x80
+#define	FLASH_CMD_ERASE_CHIP	0x10
+#define	FLASH_CMD_ERASE_SECT	0x30
+#define	FLASH_CMD_CONTINUE_SET	0x20
+#define	FLASH_CMD_CONTINUE_RES1	0x90
+#define	FLASH_CMD_CONTINUE_RES2	0xF0
+#define	FLASH_CMD_CONTINUE_RES3	0x00
+#define	FLASH_CMD_WRITE			0xA0
 static void  WriteCRam(DWORD A, BYTE V)
 {
-    if ((A & 0xFFFF) >= (unsigned)RAMSize)
+	static int flashCommand1 = 0;
+	static int flashCommand2 = 0;
+	static int flashWriteSet = 0;
+	static int flashWriteOne = 0;
+	static int flashWriteReset = 0;
+	static int flashWriteEnable = 0;
+	int offset = A & 0xFFFF;
+
+    if (offset >= RAMSize)
     {
         ErrorMsg(ERR_OVER_RAMSIZE);
     }
-    Page[1][A & 0xFFFF] = V;
+	// WonderWitch
+	// FLASH ROM command sequence
+	if (flashCommand2)
+	{
+		if (offset == FLASH_CMD_ADDR1)
+		{
+			switch (V) {
+			case FLASH_CMD_CONTINUE_SET:
+				flashWriteSet   = 1;
+				flashWriteReset = 0;
+				break;
+			case FLASH_CMD_WRITE:
+				flashWriteOne = 1;
+				break;
+			case FLASH_CMD_RESET:
+				break;
+			case FLASH_CMD_ERASE:
+				break;
+			case FLASH_CMD_ERASE_CHIP:
+				break;
+			case FLASH_CMD_ERASE_SECT:
+				break;
+			}
+		}
+		flashCommand2 = 0;
+	}
+	else if (flashCommand1)
+	{
+		if (offset == FLASH_CMD_ADDR2 && V == FLASH_CMD_DATA2)
+		{
+			flashCommand2 = 1;
+		}
+		flashCommand1 = 0;
+	}
+	else if (offset == FLASH_CMD_ADDR1 && V == FLASH_CMD_DATA1)
+	{
+		flashCommand1 = 1;
+	}
+	if (RAMSize != 0x40000 || BNK1SEL < 8)
+	{
+		// normal sram
+		Page[1][offset] = V;
+	}
+	else if (BNK1SEL >= 8 && BNK1SEL < 15)
+	{
+		// FLASH ROM use SRAM bank(port 0xC1:8-14)(0xC1:15 0xF0000-0xFFFFF are write protected)
+		if (flashWriteEnable || flashWriteOne)
+		{
+			Page[IO[0xc1]][offset] = V;
+			flashWriteEnable    = 0;
+			flashWriteOne = 0;
+		}
+		else if (flashWriteSet)
+		{
+			switch (V)
+			{
+			case FLASH_CMD_WRITE:
+				flashWriteEnable      = 1;
+				flashWriteReset = 0;
+				break;
+			case FLASH_CMD_CONTINUE_RES1:
+				flashWriteReset = 1;
+				break;
+			case FLASH_CMD_CONTINUE_RES2:
+			case FLASH_CMD_CONTINUE_RES3:
+				if (flashWriteReset)
+				{
+					flashWriteSet   = 0;
+					flashWriteReset = 0;
+				}
+				break;
+			default:
+				flashWriteReset = 0;
+			}
+		}
+	}
 }
 
 void  WriteIO(DWORD A, BYTE V)

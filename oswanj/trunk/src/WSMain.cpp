@@ -137,6 +137,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             Run = 1;
             WsCreate(NULL);
             return 0L;
+        case ID_STATE_SAVE_0:
+			WsSaveState(0);
+			return 0L;
+        case ID_STATE_LOAD_0:
+			WsLoadState(0);
+			return 0L;
         case ID_SIZE_1:
             menu = GetMenu(hWnd);
             CheckMenuItem(menu, ID_SIZE_1, MF_CHECKED);

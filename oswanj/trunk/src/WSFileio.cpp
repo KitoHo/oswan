@@ -413,6 +413,10 @@ void WsLoadState(int num)
     }
 	fread(Palette, sizeof(WORD), 16 * 16, fp);
     fclose(fp);
+	WriteIO(0xC1, IO[0xC1]);
+	WriteIO(0xC2, IO[0xC2]);
+	WriteIO(0xC3, IO[0xC3]);
+	WriteIO(0xC0, IO[0xC0]);
 }
 
 #define MacroStoreNecRegisterToFile(F,R)        \

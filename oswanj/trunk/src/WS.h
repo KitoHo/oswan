@@ -31,6 +31,7 @@ extern struct EEPROM sCEep;
 #define CK_EEP 1
 extern int CartKind;
 
+void WriteIO(DWORD A, BYTE V);
 void WsReset (void);
 void WsRomPatch(BYTE *buf);
 void WsSetDir(void);

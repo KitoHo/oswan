@@ -59,6 +59,9 @@ BEGIN
         MENUITEM "開く(&O)",                      ID_FILE_OPENROM
         MENUITEM SEPARATOR
         MENUITEM "パーソナルデータ(&P)",                ID_PDATA_SET
+        MENUITEM SEPARATOR
+        MENUITEM "ステートセーブ(&S)",                 ID_STATE_SAVE_0
+        MENUITEM "ステートロード(&L)",                 ID_STATE_LOAD_0
     END
     POPUP "ビデオ(&V)"
     BEGIN

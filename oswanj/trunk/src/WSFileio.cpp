@@ -370,13 +370,12 @@ void WsSaveIEep(void)
 void WsLoadState(int num)
 {
     FILE* fp;
-    wchar_t buf[16];
+    wchar_t buf[512];
 	unsigned int value;
 	int i;
 
-	wsprintf(buf, L".%03d", num);
-	wcscat(StateName, buf);
-    if ((fp = _wfopen(StateName, L"rb")) == NULL)
+	wsprintf(buf, L"%s.%03d", StateName, num);
+    if ((fp = _wfopen(buf, L"rb")) == NULL)
     {
 		return;
 	}
@@ -417,6 +416,10 @@ void WsLoadState(int num)
 	WriteIO(0xC2, IO[0xC2]);
 	WriteIO(0xC3, IO[0xC3]);
 	WriteIO(0xC0, IO[0xC0]);
+	for (i = 0x80; i <= 0x90; i++)
+	{
+		WriteIO(i, IO[i]);
+	}
 }
 
 #define MacroStoreNecRegisterToFile(F,R)        \
@@ -425,13 +428,12 @@ void WsLoadState(int num)
 void WsSaveState(int num)
 {
     FILE* fp;
-    wchar_t buf[16];
+    wchar_t buf[512];
 	unsigned int value;
 	int i;
 
-	wsprintf(buf, L".%03d", num);
-	wcscat(StateName, buf);
-    if ((fp = _wfopen(StateName, L"wb")) == NULL)
+	wsprintf(buf, L"%s.%03d", StateName, num);
+    if ((fp = _wfopen(buf, L"wb")) == NULL)
     {
 		return;
 	}

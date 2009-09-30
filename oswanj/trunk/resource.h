@@ -4,14 +4,15 @@
 //
 #define IDR_MENU1                       101
 #define IDR_ACCELERATOR1                102
-#define IDD_CONFIG_TAB1                 102
 #define IDR_WAVE1                       103
 #define IDI_ICON1                       104
 #define IDD_DIALOG_CONFIG               105
-#define IDD_CONFIG_TAB2                 106
+#define IDD_CONFIG_TAB1                 106
+#define IDD_CONFIG_TAB2                 107
 #define IDC_EDIT_B                      1001
 #define IDC_EDIT_A                      1002
 #define IDC_EDIT_START                  1003
+#define IDC_EDIT_OPTION                 1004
 #define IDC_EDIT_X4                     1005
 #define IDC_EDIT_X3                     1006
 #define IDC_EDIT_X2                     1007
@@ -40,20 +41,16 @@
 #define ID_SOUND_7                      40026
 #define ID_SOUND_UP                     40027
 #define ID_SOUND_DOWN                   40028
-#define ID_40029                        40029
-#define ID_CONF_INPUT                   40030
-#define ID_40031                        40031
-#define ID_40032                        40032
-#define ID_STATE_SAVE0                  40033
-#define ID_STATE_LOAD_0                 40034
-#define ID_STATE_SAVE_0                 40035
+#define ID_CONF_INPUT                   40029
+#define ID_STATE_LOAD_0                 40030
+#define ID_STATE_SAVE_0                 40031
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        106
-#define _APS_NEXT_COMMAND_VALUE         40036
+#define _APS_NEXT_RESOURCE_VALUE        108
+#define _APS_NEXT_COMMAND_VALUE         40032
 #define _APS_NEXT_CONTROL_VALUE         1014
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

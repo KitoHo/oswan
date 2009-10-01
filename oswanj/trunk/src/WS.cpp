@@ -485,7 +485,7 @@ void  WriteIO(DWORD A, BYTE V)
     case 0xA2:
         if(V & 0x01)
         {
-            HTimer = *(WORD*)(IO + 0xA4);
+            HTimer = HPRE;
         }
         else
         {
@@ -493,7 +493,7 @@ void  WriteIO(DWORD A, BYTE V)
         }
         if(V & 0x04)
         {
-            VTimer = *(WORD*)(IO + 0xA6);
+            VTimer = VPRE;
         }
         else
         {
@@ -508,7 +508,7 @@ void  WriteIO(DWORD A, BYTE V)
         IO[A + 4] = V;
         if(TIMCTL & 0x04)
         {
-            VTimer = *(WORD*)(IO + 0xA6);
+            VTimer = VPRE;
         }
         break;
     case 0xB3:
@@ -742,6 +742,8 @@ void WsReset (void)
     WriteIO(0x8F, 0x03);
     WriteIO(0x91, 0x80);
     WriteIO(0xA0, 0x02);
+    WriteIO(0xA6, 0x4F);
+    WriteIO(0xA7, 0xFF);
     WriteIO(0xB3, 0x04);
     WriteIO(0xBA, 0x01);
     WriteIO(0xBB, 0x00);
@@ -830,7 +832,7 @@ int Interrupt(void)
                 }
                 Joyz = ButtonState;
                 // Vblankカウントアップ
-                VCounter = VCNTH << 16 || VCNTL;
+                VCounter = VCNTH << 16 | VCNTL;
                 VCounter++;
                 VCNTL = (WORD)VCounter;
                 VCNTH = (WORD)(VCounter >> 16);

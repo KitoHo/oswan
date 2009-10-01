@@ -247,8 +247,8 @@ static void  WriteCRam(DWORD A, BYTE V)
 		// FLASH ROM use SRAM bank(port 0xC1:8-14)(0xC1:15 0xF0000-0xFFFFF are write protected)
 		if (flashWriteEnable || flashWriteOne)
 		{
-			Page[IO[0xc1]][offset] = V;
-			flashWriteEnable    = 0;
+			Page[BNK1SEL][offset] = V;
+			flashWriteEnable = 0;
 			flashWriteOne = 0;
 		}
 		else if (flashWriteSet)
@@ -256,7 +256,7 @@ static void  WriteCRam(DWORD A, BYTE V)
 			switch (V)
 			{
 			case FLASH_CMD_WRITE:
-				flashWriteEnable      = 1;
+				flashWriteEnable = 1;
 				flashWriteReset = 0;
 				break;
 			case FLASH_CMD_CONTINUE_RES1:
@@ -266,7 +266,7 @@ static void  WriteCRam(DWORD A, BYTE V)
 			case FLASH_CMD_CONTINUE_RES3:
 				if (flashWriteReset)
 				{
-					flashWriteSet   = 0;
+					flashWriteSet = 0;
 					flashWriteReset = 0;
 				}
 				break;
@@ -555,8 +555,14 @@ void  WriteIO(DWORD A, BYTE V)
 		{
 			Page[1] = MemDummy;
 		}
-        else if (V >= RAMBanks) RAMEnable = 0;
-        else Page[1] = RAMMap[V];
+        else if (V >= RAMBanks)
+		{
+			RAMEnable = 0;
+		}
+        else
+		{
+			Page[1] = RAMMap[V];
+		}
         break;
     case 0xC2:
         Page[2] = ROMMap[V];

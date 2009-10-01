@@ -52,7 +52,7 @@ static LPCTSTR keyName[] = {
 	TEXT("B"),
 	TEXT("N"),
 	TEXT("M"),
-	TEXT("),"),
+	TEXT(","),
 	TEXT("."),              // . on main keyboard
 	TEXT("/"),              // / on main keyboard
 	TEXT("[RSHIFT]"),

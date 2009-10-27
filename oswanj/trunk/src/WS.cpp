@@ -824,7 +824,7 @@ int Interrupt(void)
     switch(LCount)
     {
         case 0:
-            if(RSTRL == 144)
+            if (RSTRL == 144)
             {
                 DWORD VCounter;
 
@@ -846,7 +846,7 @@ int Interrupt(void)
             break;
         case 2:
             // Hblank毎に1サンプルセットすることで12KHzのwaveデータが出来る
-            apuWaveSet();
+	        apuWaveSet();
 			NCSR = apuShiftReg();
             break;
         case 4:

@@ -1,3 +1,8 @@
+/*
+$Date$
+$Rev$
+*/
+
 #ifndef __startup__
 #define __startup__
 

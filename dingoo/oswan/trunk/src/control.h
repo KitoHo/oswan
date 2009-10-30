@@ -1,3 +1,8 @@
+/*
+$Date$
+$Rev$
+*/
+
 #ifndef __control_h__
 #define __control_h__
 

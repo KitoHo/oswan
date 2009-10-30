@@ -1,3 +1,7 @@
+/*
+$Date$
+$Rev$
+*/
 
 #include "entry.h"
 #include "display.h"

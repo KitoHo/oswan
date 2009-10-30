@@ -1,3 +1,8 @@
+/*
+$Date$
+$Rev$
+*/
+
 #ifndef __display_h__
 #define __display_h__
 

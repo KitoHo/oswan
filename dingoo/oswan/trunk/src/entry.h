@@ -1,3 +1,8 @@
+/*
+$Date$
+$Rev$
+*/
+
 #ifndef __entry_h__
 #define __entry_h__
 

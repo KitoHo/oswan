@@ -1,3 +1,8 @@
+/*
+$Date$
+$Rev$
+*/
+
 #include "entry.h"
 #include "control.h"
 

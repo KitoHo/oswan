@@ -503,12 +503,12 @@ void  WriteIO(DWORD A, BYTE V)
     case 0xA4:
     case 0xA5:
 		IO[A] = V;
-        HTimer = HPRE;
+        HTimer = HPRE; // FF
         return;
     case 0xA6:
     case 0xA7:
 		IO[A] = V;
-        IO[A + 4] = V;
+        IO[A + 4] = V; // Dark eyes
         if(TIMCTL & 0x04)
         {
             VTimer = VPRE;

@@ -502,15 +502,18 @@ void  WriteIO(DWORD A, BYTE V)
         break;
     case 0xA4:
     case 0xA5:
-        break;
+		IO[A] = V;
+        HTimer = HPRE;
+        return;
     case 0xA6:
     case 0xA7:
+		IO[A] = V;
         IO[A + 4] = V;
         if(TIMCTL & 0x04)
         {
             VTimer = VPRE;
         }
-        break;
+        return;
     case 0xB3:
         if(V & 0x20)
         {

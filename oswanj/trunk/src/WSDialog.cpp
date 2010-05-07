@@ -11,7 +11,7 @@ $Rev$
 #include "keycode.h"
 
 static WNDPROC OrgEditProc;
-static HWND hTab, hTabCtrl1, hTabCtrl2, hTabCtrl3, hTabCtrl4;
+static HWND hTabCtrl, hTab1, hTab2, hTab3, hTab4;
 static int TmpKeyboardH[12];
 static int TmpKeyboardV[12];
 static int TmpJoypadH[12];
@@ -30,39 +30,39 @@ void WsDlgConfInit(HWND hDlg)
 	memcpy(TmpJoypadH, WsJoypadH, sizeof(int) * 12);
 	memcpy(TmpJoypadV, WsJoypadV, sizeof(int) * 12);
 	hInst = (HINSTANCE)GetWindowLong(hDlg, GWLP_HINSTANCE);
-	hTab = GetDlgItem(hDlg, IDC_TAB1);
+	hTabCtrl = GetDlgItem(hDlg, IDC_TAB1);
 	// タブコントロールにタブシートを挿入
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("キー横");
-	TabCtrl_InsertItem(hTab , 0, &tc);
+	TabCtrl_InsertItem(hTabCtrl , 0, &tc);
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("キー縦");
-	TabCtrl_InsertItem(hTab , 1, &tc);
+	TabCtrl_InsertItem(hTabCtrl , 1, &tc);
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("コントローラー横");
-	TabCtrl_InsertItem(hTab , 2, &tc);
+	TabCtrl_InsertItem(hTabCtrl , 2, &tc);
 	tc.mask = TCIF_TEXT;
 	tc.pszText = TEXT("コントローラー縦");
-	TabCtrl_InsertItem(hTab , 3, &tc);
+	TabCtrl_InsertItem(hTabCtrl , 3, &tc);
 	// タブに貼り付けるダイアログを生成
-	hTabCtrl1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabCtrlProc1);
-	hTabCtrl2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabCtrlProc2);
-	hTabCtrl3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabCtrlProc3);
-	hTabCtrl4 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabCtrlProc4);
+	hTab1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabProc1);
+	hTab2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabProc2);
+	hTab3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabProc3);
+	hTab4 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabProc4);
 	// タブコントロールのクライアント領域の座標を取得
-	GetClientRect(hTab, &rt);
-	TabCtrl_AdjustRect(hTab, FALSE, &rt);
+	GetClientRect(hTabCtrl, &rt);
+	TabCtrl_AdjustRect(hTabCtrl, FALSE, &rt);
 	// 親ウィンドウがhDlgなのでタブのマップが必要
-	MapWindowPoints(hTab, hDlg, pt, 2);
+	MapWindowPoints(hTabCtrl, hDlg, pt, 2);
 	// タブのウィンドウの位置とサイズを変更する
-	MoveWindow(hTabCtrl1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	MoveWindow(hTabCtrl2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	MoveWindow(hTabCtrl3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	MoveWindow(hTabCtrl4, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTab1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTab2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTab3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
+	MoveWindow(hTab4, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	// デフォルトでタブ1を表示
-	ShowWindow(hTabCtrl1, SW_SHOW);
-	SetFocus(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1));
-	SendMessage(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+	ShowWindow(hTab1, SW_SHOW);
+	SetFocus(GetDlgItem(hTab1, IDC_EDIT_Y1));
+	SendMessage(GetDlgItem(hTab1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
 	lpKeyDevice->Acquire();
 }
 
@@ -81,44 +81,44 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		switch (nm->code)
 		{
 		case TCN_SELCHANGE:
-			if (nm->hwndFrom == hTab)
+			if (nm->hwndFrom == hTabCtrl)
 			{
-				SelectedTab = TabCtrl_GetCurSel(hTab);
+				SelectedTab = TabCtrl_GetCurSel(hTabCtrl);
 				switch (SelectedTab)
 				{
 				case 0:
-					ShowWindow(hTabCtrl1, SW_SHOW);
-					ShowWindow(hTabCtrl2, SW_HIDE);
-					ShowWindow(hTabCtrl3, SW_HIDE);
-					ShowWindow(hTabCtrl4, SW_HIDE);
-					SetFocus(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1));
-					SendMessage(GetDlgItem(hTabCtrl1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+					ShowWindow(hTab1, SW_SHOW);
+					ShowWindow(hTab2, SW_HIDE);
+					ShowWindow(hTab3, SW_HIDE);
+					ShowWindow(hTab4, SW_HIDE);
+					SetFocus(GetDlgItem(hTab1, IDC_EDIT_Y1));
+					SendMessage(GetDlgItem(hTab1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
 					lpKeyDevice->Acquire();
 					break;
 				case 1:
-					ShowWindow(hTabCtrl1, SW_HIDE);
-					ShowWindow(hTabCtrl2, SW_SHOW);
-					ShowWindow(hTabCtrl3, SW_HIDE);
-					ShowWindow(hTabCtrl4, SW_HIDE);
-					SetFocus(GetDlgItem(hTabCtrl2, IDC_EDIT_Y1));
-					SendMessage(GetDlgItem(hTabCtrl2, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+					ShowWindow(hTab1, SW_HIDE);
+					ShowWindow(hTab2, SW_SHOW);
+					ShowWindow(hTab3, SW_HIDE);
+					ShowWindow(hTab4, SW_HIDE);
+					SetFocus(GetDlgItem(hTab2, IDC_EDIT_Y1));
+					SendMessage(GetDlgItem(hTab2, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
 					lpKeyDevice->Acquire();
 					break;
 				case 2:
-					ShowWindow(hTabCtrl1, SW_HIDE);
-					ShowWindow(hTabCtrl2, SW_HIDE);
-					ShowWindow(hTabCtrl3, SW_SHOW);
-					ShowWindow(hTabCtrl4, SW_HIDE);
-					SetFocus(GetDlgItem(hTabCtrl3, IDC_EDIT_Y1));
-					SendMessage(GetDlgItem(hTabCtrl3, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+					ShowWindow(hTab1, SW_HIDE);
+					ShowWindow(hTab2, SW_HIDE);
+					ShowWindow(hTab3, SW_SHOW);
+					ShowWindow(hTab4, SW_HIDE);
+					SetFocus(GetDlgItem(hTab3, IDC_EDIT_Y1));
+					SendMessage(GetDlgItem(hTab3, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
 					break;
 				case 3:
-					ShowWindow(hTabCtrl1, SW_HIDE);
-					ShowWindow(hTabCtrl2, SW_HIDE);
-					ShowWindow(hTabCtrl3, SW_HIDE);
-					ShowWindow(hTabCtrl4, SW_SHOW);
-					SetFocus(GetDlgItem(hTabCtrl4, IDC_EDIT_Y1));
-					SendMessage(GetDlgItem(hTabCtrl4, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
+					ShowWindow(hTab1, SW_HIDE);
+					ShowWindow(hTab2, SW_HIDE);
+					ShowWindow(hTab3, SW_HIDE);
+					ShowWindow(hTab4, SW_SHOW);
+					SetFocus(GetDlgItem(hTab4, IDC_EDIT_Y1));
+					SendMessage(GetDlgItem(hTab4, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
 					break;
 				}
 				return TRUE;
@@ -221,7 +221,7 @@ LRESULT CALLBACK EditProcJoy(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lPar
 	return CallWindowProc(OrgEditProc, hEditWnd, msg, wParam, lParam);
 }
 
-LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK TabProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg) {
 	case WM_INITDIALOG:
@@ -254,7 +254,7 @@ LRESULT CALLBACK TabCtrlProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 	return FALSE;
 }
 
-LRESULT CALLBACK TabCtrlProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK TabProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg) {
 	case WM_INITDIALOG:
@@ -286,7 +286,7 @@ LRESULT CALLBACK TabCtrlProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 	return FALSE;
 }
 
-LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK TabProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	HWND hEditWnd;
 	int key, joy;
@@ -338,7 +338,7 @@ LRESULT CALLBACK TabCtrlProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam
 	return FALSE;
 }
 
-LRESULT CALLBACK TabCtrlProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK TabProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	HWND hEditWnd;
 	int key, joy;

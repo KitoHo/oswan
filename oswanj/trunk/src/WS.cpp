@@ -164,7 +164,7 @@ static void  WriteIRam(DWORD A, BYTE V)
     IRAM[A & 0xFFFF] = V;
     if((A & 0xFE00) == 0xFE00)
     {
-        SetPalette(A, V);
+        SetPalette(A);
     }
     if(!((A - WaveMap) & 0xFFC0))
     {

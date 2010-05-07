@@ -22,7 +22,7 @@ extern WORD SegmentBuffer[(144 * 4) * (8 * 4)];
 extern int Layer[3];
 extern int Segment[11];
 
-void SetPalette(int addr, BYTE PalData);
+void SetPalette(int addr);
 void RefreshLine(int Line);
 void RenderSegment(void);
 void RenderSleep(void);

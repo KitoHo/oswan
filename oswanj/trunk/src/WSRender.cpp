@@ -34,7 +34,7 @@ WORD SegmentBuffer[(144 * 4) * (8 * 4)]; // 8 * 144 ÇÃ4î{ÇÃÉTÉCÉYÇ≈ï`âÊ
 int Layer[3] = {1, 1, 1};
 int Segment[11];
 
-void SetPalette(int addr, BYTE PalData)
+void SetPalette(int addr)
 {
     WORD color;
 

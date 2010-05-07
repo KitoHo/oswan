@@ -13,10 +13,11 @@ $Rev$
 #include "WSFileio.h"
 #include "WSDialog.h"
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL InitApp(HINSTANCE);
 BOOL InitInstance(HINSTANCE);
-wchar_t* OpenWSFile(wchar_t* path, DWORD max);
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
+wchar_t* OpenWSFile(wchar_t*, DWORD);
 
 HINSTANCE hInst;
 HWND hWnd;
@@ -245,6 +246,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_CONFIG), hWnd, (DLGPROC)ConfProc);
 			WsInputInit(hWnd);
 			return 0L;
+		case ID_ABOUT:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_ABOUT), hWnd, (DLGPROC)AboutProc);
+			break;
         }
         break;
     case WM_PAINT:
@@ -258,6 +262,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
     } 
     return (DefWindowProc(hWnd, msg, wp, lp)); 
 } 
+
+//Aboutダイアログプロシージャ
+LRESULT CALLBACK AboutProc(HWND hDlgWnd, UINT msg, WPARAM wp, LPARAM lp)
+{
+	HDC			hDC;
+	HFONT		hFont;
+
+	switch (msg)
+	{
+    case WM_INITDIALOG:
+		SetWindowText(GetDlgItem(hDlgWnd, IDC_TEXT_VERSION), TEXT("バージョン 0.1"));
+        break;
+	case WM_CTLCOLORSTATIC:
+		if((HWND)lp == GetDlgItem(hDlgWnd, IDC_TEXT_VERSION))
+		{
+			hDC = (HDC)wp;
+			hFont = CreateFont(
+				18,							/* フォント高さ */
+				0,							/* 文字幅 */
+				0,							/* テキストの角度 */
+				0,							/* ベースラインとｘ軸との角度 */
+				FW_BOLD,					/* フォントの重さ（太さ） */
+				FALSE,						/* イタリック体 */
+				FALSE,						/* アンダーライン */
+				FALSE,						/* 打ち消し線 */
+				SHIFTJIS_CHARSET,			/* 文字セット */
+				OUT_DEFAULT_PRECIS,			/* 出力精度 */
+				CLIP_DEFAULT_PRECIS,		/* クリッピング精度 */
+				PROOF_QUALITY,				/* 出力品質 */
+				FIXED_PITCH | FF_MODERN,	/* ピッチとファミリー */
+				(LPCTSTR)"ＭＳ Ｐゴシック"	/* 書体名 */
+			);
+			SelectObject(hDC, hFont);
+			SetTextColor(hDC, RGB(0, 0, 255));
+			SetBkMode(hDC, TRANSPARENT);
+			return (BOOL)(HBRUSH)GetStockObject(NULL_BRUSH);
+		}
+		return DefWindowProc(hDlgWnd, msg, wp, lp);
+	case WM_COMMAND:
+		if(HIWORD(wp) == BN_CLICKED)
+		{
+			switch (LOWORD(wp))
+			{
+			case IDOK:
+			case IDCANCEL:
+				EndDialog(hDlgWnd, LOWORD(wp));
+				return 1;
+			}
+		}
+		break;
+	}
+	return 0;
+}
 
 wchar_t* OpenWSFile(wchar_t* path, DWORD max)
 {

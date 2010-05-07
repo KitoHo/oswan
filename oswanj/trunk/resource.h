@@ -9,6 +9,7 @@
 #define IDD_DIALOG_CONFIG               105
 #define IDD_CONFIG_TAB1                 106
 #define IDD_CONFIG_TAB2                 107
+#define IDD_DIALOG_ABOUT                108
 #define IDC_EDIT_B                      1001
 #define IDC_EDIT_A                      1002
 #define IDC_EDIT_START                  1003
@@ -22,6 +23,7 @@
 #define IDC_EDIT_Y2                     1011
 #define IDC_EDIT_Y1                     1012
 #define IDC_TAB1                        1013
+#define IDC_TEXT_VERSION                1014
 #define ID_PDATA_SET                    40001
 #define ID_FILE_OPENROM                 40002
 #define ID_SIZE_1                       40003
@@ -44,14 +46,15 @@
 #define ID_CONF_INPUT                   40029
 #define ID_STATE_LOAD_0                 40030
 #define ID_STATE_SAVE_0                 40031
+#define ID_ABOUT                        40032
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        108
-#define _APS_NEXT_COMMAND_VALUE         40032
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_RESOURCE_VALUE        109
+#define _APS_NEXT_COMMAND_VALUE         40033
+#define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

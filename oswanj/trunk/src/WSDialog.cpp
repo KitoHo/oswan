@@ -12,10 +12,10 @@ $Rev$
 
 static WNDPROC OrgEditProc;
 static HWND hTabCtrl, hTab1, hTab2, hTab3, hTab4;
-static int TmpKeyboardH[12];
-static int TmpKeyboardV[12];
-static int TmpJoypadH[12];
-static int TmpJoypadV[12];
+static int TmpKeyboardH[13];
+static int TmpKeyboardV[13];
+static int TmpJoypadH[13];
+static int TmpJoypadV[13];
 static int SelectedTab;
 
 void WsDlgConfInit(HWND hDlg)
@@ -25,10 +25,10 @@ void WsDlgConfInit(HWND hDlg)
 	RECT    rt;
 	LPPOINT pt = (LPPOINT)&rt;
 
-	memcpy(TmpKeyboardH, WsKeyboardH, sizeof(int) * 12);
-	memcpy(TmpKeyboardV, WsKeyboardV, sizeof(int) * 12);
-	memcpy(TmpJoypadH, WsJoypadH, sizeof(int) * 12);
-	memcpy(TmpJoypadV, WsJoypadV, sizeof(int) * 12);
+	memcpy(TmpKeyboardH, WsKeyboardH, sizeof(int) * 13);
+	memcpy(TmpKeyboardV, WsKeyboardV, sizeof(int) * 13);
+	memcpy(TmpJoypadH, WsJoypadH, sizeof(int) * 13);
+	memcpy(TmpJoypadV, WsJoypadV, sizeof(int) * 13);
 	hInst = (HINSTANCE)GetWindowLong(hDlg, GWLP_HINSTANCE);
 	hTabCtrl = GetDlgItem(hDlg, IDC_TAB1);
 	// タブコントロールにタブシートを挿入
@@ -226,6 +226,7 @@ LRESULT CALLBACK TabProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg) {
 	case WM_INITDIALOG:
 		OrgEditProc = (WNDPROC)GetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWLP_WNDPROC);
+		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
@@ -238,6 +239,7 @@ LRESULT CALLBACK TabProc1(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_A), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_B), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), keyName[TmpKeyboardH[12]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), keyName[TmpKeyboardH[11]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), keyName[TmpKeyboardH[10]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), keyName[TmpKeyboardH[9]]);
@@ -258,6 +260,7 @@ LRESULT CALLBACK TabProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg) {
 	case WM_INITDIALOG:
+		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
@@ -270,6 +273,7 @@ LRESULT CALLBACK TabProc2(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_A), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_B), GWLP_WNDPROC, (LONG_PTR)EditProcKey);
 
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), keyName[TmpKeyboardH[12]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), keyName[TmpKeyboardV[11]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), keyName[TmpKeyboardV[10]]);
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), keyName[TmpKeyboardV[9]]);
@@ -293,6 +297,7 @@ LRESULT CALLBACK TabProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	switch (msg) {
 	case WM_INITDIALOG:
+		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
@@ -305,6 +310,7 @@ LRESULT CALLBACK TabProc3(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_A), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_B), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), GetJoyName(TmpJoypadH[12]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), GetJoyName(TmpJoypadH[11]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), GetJoyName(TmpJoypadH[10]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), GetJoyName(TmpJoypadH[9]));
@@ -345,6 +351,7 @@ LRESULT CALLBACK TabProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	switch (msg) {
 	case WM_INITDIALOG:
+		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y1), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y2), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_Y3), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
@@ -357,6 +364,7 @@ LRESULT CALLBACK TabProc4(HWND hCtrl, UINT msg, WPARAM wParam, LPARAM lParam)
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_A), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 		SetWindowLongPtr(GetDlgItem(hCtrl, IDC_EDIT_B), GWLP_WNDPROC, (LONG_PTR)EditProcJoy);
 
+		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_NOWAIT), GetJoyName(TmpJoypadH[12]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y1), GetJoyName(TmpJoypadV[11]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y2), GetJoyName(TmpJoypadV[10]));
 		SetWindowText(GetDlgItem(hCtrl, IDC_EDIT_Y3), GetJoyName(TmpJoypadV[9]));

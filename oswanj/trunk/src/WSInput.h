@@ -44,10 +44,10 @@ $Rev$
 #define WS_JOY_SLIDER2_P  0x100E
 #define WS_JOY_SLIDER2_M  0x100F
 
-extern int WsKeyboardH[12];
-extern int WsKeyboardV[12];
-extern int WsJoypadH[12];
-extern int WsJoypadV[12];
+extern int WsKeyboardH[];
+extern int WsKeyboardV[];
+extern int WsJoypadH[];
+extern int WsJoypadV[];
 extern LPDIRECTINPUTDEVICE8 lpKeyDevice;
 extern LPDIRECTINPUTDEVICE8 lpJoyDevice;
 

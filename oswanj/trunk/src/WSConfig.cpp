@@ -12,7 +12,8 @@ $Rev$
 static LPCWSTR KeyName[] = {
 	L"B", L"A", L"START", L"OPTION", 
 	L"X4", L"X3", L"X2", L"X1", 
-	L"Y4", L"Y3", L"Y2", L"Y1"
+	L"Y4", L"Y3", L"Y2", L"Y1",
+	L"NOWAIT"
 };
 
 void ConfigCreate(void)
@@ -31,6 +32,7 @@ void ConfigCreate(void)
 	WsKeyboardH[9] = DIK_S; // Y3
 	WsKeyboardH[10] = DIK_D; // Y2
 	WsKeyboardH[11] = DIK_W; // Y1
+	WsKeyboardH[12] = DIK_SPACE; // NO WAIT
 
 	WsKeyboardV[0] = DIK_Z; // B
 	WsKeyboardV[1] = DIK_X; // A
@@ -44,6 +46,7 @@ void ConfigCreate(void)
 	WsKeyboardV[9] = DIK_RIGHT; // Y3
 	WsKeyboardV[10] = DIK_UP; // Y2
 	WsKeyboardV[11] = DIK_LEFT; // Y1
+	WsKeyboardV[12] = DIK_SPACE; // NO WAIT
 	
 	WsJoypadH[0] = 1; // B
 	WsJoypadH[1] = 2; // A
@@ -57,6 +60,7 @@ void ConfigCreate(void)
 	WsJoypadH[9] = WS_JOY_POV1_DOWN; // Y3
 	WsJoypadH[10] = WS_JOY_POV1_RIGHT; // Y2
 	WsJoypadH[11] = WS_JOY_POV1_UP; // Y1
+	WsJoypadH[12] = 9; // NO WAIT
 	
 	WsJoypadV[0] = 5; // B
 	WsJoypadV[1] = 6; // A
@@ -70,20 +74,21 @@ void ConfigCreate(void)
 	WsJoypadV[9] = WS_JOY_AXIS_X_P; // Y3
 	WsJoypadV[10] = WS_JOY_AXIS_Y_M; // Y2
 	WsJoypadV[11] = WS_JOY_AXIS_X_M; // Y1
+	WsJoypadV[12] = 9; // NO WAIT
 	
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		 WsKeyboardH[i] = GetPrivateProfileIntW(L"KEY_H", KeyName[i] , WsKeyboardH[i] , IniPath);
 	}
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WsKeyboardV[i] = GetPrivateProfileIntW(L"KEY_V", KeyName[i] , WsKeyboardV[i] , IniPath);
 	}
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WsJoypadH[i] = GetPrivateProfileIntW(L"JOY_H", KeyName[i] , WsJoypadH[i] , IniPath);
 	}
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WsJoypadV[i] = GetPrivateProfileIntW(L"JOY_V", KeyName[i] , WsJoypadV[i] , IniPath);
 	}
@@ -101,19 +106,19 @@ void ConfigRelease(void)
 {
 	int i;
 
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WritePrivateProfileIntW(L"KEY_H", KeyName[i] , WsKeyboardH[i] , IniPath);
 	}
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WritePrivateProfileIntW(L"KEY_V", KeyName[i] , WsKeyboardV[i] , IniPath);
 	}
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WritePrivateProfileIntW(L"JOY_H", KeyName[i] , WsJoypadH[i] , IniPath);
 	}
-	for (i = 11; i >= 0; i--)
+	for (i = 12; i >= 0; i--)
 	{
 		WritePrivateProfileIntW(L"JOY_V", KeyName[i] , WsJoypadV[i] , IniPath);
 	}

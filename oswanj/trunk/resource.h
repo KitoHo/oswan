@@ -14,6 +14,8 @@
 #define IDC_EDIT_A                      1002
 #define IDC_EDIT_START                  1003
 #define IDC_EDIT_OPTION                 1004
+#define IDC_EDIT_A2                     1004
+#define IDC_EDIT_NOWAIT                 1004
 #define IDC_EDIT_X4                     1005
 #define IDC_EDIT_X3                     1006
 #define IDC_EDIT_X2                     1007

@@ -1,4 +1,4 @@
-/*
+﻿/*
 $Date$
 $Rev$
 */
@@ -79,7 +79,7 @@ HRESULT drawInitialize(BOOL isFullScreen)
         if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
         {
             // 初期化失敗
-			MessageBox(hWnd, TEXT("グラフィックチップが未対応です"), TEXT("Direct3D Error"), MB_OK);
+			MessageBox(hWnd, TEXT(" グラフィックチップが未対応です "), TEXT("Direct3D Error"), MB_OK);
             return E_FAIL;
         }
     }

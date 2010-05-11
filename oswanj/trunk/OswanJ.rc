@@ -13,12 +13,12 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// “ú–{Œê resources
+// æ—¥æœ¬èªž resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_JPN)
 #ifdef _WIN32
 LANGUAGE LANG_JAPANESE, SUBLANG_DEFAULT
-#pragma code_page(932)
+#pragma code_page(65001)
 #endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
@@ -54,52 +54,52 @@ END
 
 IDR_MENU1 MENU 
 BEGIN
-    POPUP "ƒtƒ@ƒCƒ‹(&F)"
+    POPUP "ãƒ•ã‚¡ã‚¤ãƒ«(&F)"
     BEGIN
-        MENUITEM "ŠJ‚­(&O)",                      ID_FILE_OPENROM
+        MENUITEM "é–‹ã(&O)",                      ID_FILE_OPENROM
         MENUITEM SEPARATOR
-        MENUITEM "ƒp[ƒ\ƒiƒ‹ƒf[ƒ^(&P)",                ID_PDATA_SET
+        MENUITEM "ãƒ‘ãƒ¼ã‚½ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿(&P)",                ID_PDATA_SET
         MENUITEM SEPARATOR
-        MENUITEM "ƒXƒe[ƒgƒZ[ƒu(&S)",                 ID_STATE_SAVE_0
-        MENUITEM "ƒXƒe[ƒgƒ[ƒh(&L)",                 ID_STATE_LOAD_0
+        MENUITEM "ã‚¹ãƒ†ãƒ¼ãƒˆã‚»ãƒ¼ãƒ–(&S)",                 ID_STATE_SAVE_0
+        MENUITEM "ã‚¹ãƒ†ãƒ¼ãƒˆãƒ­ãƒ¼ãƒ‰(&L)",                 ID_STATE_LOAD_0
     END
-    POPUP "ƒrƒfƒI(&V)"
+    POPUP "ãƒ“ãƒ‡ã‚ª(&V)"
     BEGIN
-        POPUP "‰æ–ÊƒTƒCƒY(&G)"
+        POPUP "ç”»é¢ã‚µã‚¤ã‚º(&G)"
         BEGIN
             MENUITEM "X1(&1)",                      ID_SIZE_1
             MENUITEM "X2(&2)",                      ID_SIZE_2, CHECKED
             MENUITEM "X3(&3)",                      ID_SIZE_3
             MENUITEM "X4(&4)",                      ID_SIZE_4
         END
-        POPUP "•\Ž¦ƒŒƒCƒ„[(&L)"
+        POPUP "è¡¨ç¤ºãƒ¬ã‚¤ãƒ¤ãƒ¼(&L)"
         BEGIN
-            MENUITEM "ƒŒƒCƒ„[1(&B)",                   ID_LAYER_1, CHECKED
-            MENUITEM "ƒŒƒCƒ„[2(&F)",                   ID_LAYER_2, CHECKED
-            MENUITEM "ƒXƒvƒ‰ƒCƒg(&S)",                   ID_LAYER_S, CHECKED
+            MENUITEM "ãƒ¬ã‚¤ãƒ¤ãƒ¼1(&B)",                   ID_LAYER_1, CHECKED
+            MENUITEM "ãƒ¬ã‚¤ãƒ¤ãƒ¼2(&F)",                   ID_LAYER_2, CHECKED
+            MENUITEM "ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ(&S)",                   ID_LAYER_S, CHECKED
         END
-        MENUITEM "ƒPƒƒŠƒJƒ“(&K)",                   ID_KERORIKAN
+        MENUITEM "ã‚±ãƒ­ãƒªã‚«ãƒ³(&K)",                   ID_KERORIKAN
     END
-    POPUP "ƒTƒEƒ“ƒh(&S)"
+    POPUP "ã‚µã‚¦ãƒ³ãƒ‰(&S)"
     BEGIN
-        MENUITEM "ƒ`ƒƒƒ“ƒlƒ‹1(&1)",                  ID_SOUND_1, CHECKED
-        MENUITEM "ƒ`ƒƒƒ“ƒlƒ‹2(&2)",                  ID_SOUND_2, CHECKED
-        MENUITEM "ƒ`ƒƒƒ“ƒlƒ‹3(&3)",                  ID_SOUND_3, CHECKED
-        MENUITEM "ƒ`ƒƒƒ“ƒlƒ‹4(&4)",                  ID_SOUND_4, CHECKED
-        MENUITEM "ƒ{ƒCƒX(&V)",                     ID_SOUND_5, CHECKED
-        MENUITEM "ƒXƒC[ƒv(&S)",                    ID_SOUND_6, CHECKED
-        MENUITEM "ƒmƒCƒY(&N)",                     ID_SOUND_7, CHECKED
+        MENUITEM "ãƒãƒ£ãƒ³ãƒãƒ«1(&1)",                  ID_SOUND_1, CHECKED
+        MENUITEM "ãƒãƒ£ãƒ³ãƒãƒ«2(&2)",                  ID_SOUND_2, CHECKED
+        MENUITEM "ãƒãƒ£ãƒ³ãƒãƒ«3(&3)",                  ID_SOUND_3, CHECKED
+        MENUITEM "ãƒãƒ£ãƒ³ãƒãƒ«4(&4)",                  ID_SOUND_4, CHECKED
+        MENUITEM "ãƒœã‚¤ã‚¹(&V)",                     ID_SOUND_5, CHECKED
+        MENUITEM "ã‚¹ã‚¤ãƒ¼ãƒ—(&S)",                    ID_SOUND_6, CHECKED
+        MENUITEM "ãƒŽã‚¤ã‚º(&N)",                     ID_SOUND_7, CHECKED
         MENUITEM SEPARATOR
-        MENUITEM "‰¹—Ê { (&U)\tCtrl+U",           ID_SOUND_UP
-        MENUITEM "‰¹—Ê | (&D)\tCtrl+D",           ID_SOUND_DOWN
+        MENUITEM "éŸ³é‡ ï¼‹ (&U)\tCtrl+U",           ID_SOUND_UP
+        MENUITEM "éŸ³é‡ ï¼ (&D)\tCtrl+D",           ID_SOUND_DOWN
     END
-    POPUP "Ý’è(&C)"
+    POPUP "è¨­å®š(&C)"
     BEGIN
-        MENUITEM "“ü—ÍÝ’è(&I)...",                 ID_CONF_INPUT
+        MENUITEM "å…¥åŠ›è¨­å®š(&I)...",                 ID_CONF_INPUT
     END
-    POPUP "ƒwƒ‹ƒv(&H)"
+    POPUP "ãƒ˜ãƒ«ãƒ—(&H)"
     BEGIN
-        MENUITEM "ƒo[ƒWƒ‡ƒ“î•ñ(&A)",                 ID_ABOUT
+        MENUITEM "ãƒãƒ¼ã‚¸ãƒ§ãƒ³æƒ…å ±(&A)",                 ID_ABOUT
     END
 END
 
@@ -139,11 +139,11 @@ IDI_ICON1               ICON                    "icon1.ico"
 
 IDD_DIALOG_CONFIG DIALOGEX 0, 0, 343, 241
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "“ü—ÍÝ’è"
+CAPTION "å…¥åŠ›è¨­å®š "
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,91,219,50,14,NOT WS_TABSTOP
-    PUSHBUTTON      "ƒLƒƒƒ“ƒZƒ‹",IDCANCEL,196,219,50,14,NOT WS_TABSTOP
+    PUSHBUTTON      "ã‚­ãƒ£ãƒ³ã‚»ãƒ«",IDCANCEL,196,219,50,14,NOT WS_TABSTOP
     CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,7,9,328,204
 END
 
@@ -213,10 +213,10 @@ END
 
 IDD_DIALOG_ABOUT DIALOGEX 0, 0, 180, 70
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "OswanJ‚Ìƒo[ƒWƒ‡ƒ“î•ñ"
+CAPTION "OswanJã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³æƒ…å ±"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CTEXT           "ƒo[ƒWƒ‡ƒ“",IDC_TEXT_VERSION,25,20,130,25
+    CTEXT           "ãƒãƒ¼ã‚¸ãƒ§ãƒ³",IDC_TEXT_VERSION,25,20,130,25
     DEFPUSHBUTTON   "OK",IDOK,60,50,60,14
 END
 
@@ -246,7 +246,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // “ú–{Œê resources
+#endif    // æ—¥æœ¬èªž resources
 /////////////////////////////////////////////////////////////////////////////
 
 

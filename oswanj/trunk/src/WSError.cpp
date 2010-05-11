@@ -12,6 +12,6 @@ void  ErrorMsg(long err)
     TCHAR dst[512];
 
     _stprintf_s(dst, 512, TEXT("%lX"), err);
-    MessageBox(NULL, dst, TEXT("WS ÉGÉâÅ["), MB_OK);
+    MessageBox(NULL, dst, TEXT("WS „Ç®„É©„Éº"), MB_OK);
 }
 

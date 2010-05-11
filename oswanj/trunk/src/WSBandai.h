@@ -6,11 +6,11 @@ $Rev$
 #ifndef WSBANDAI_H_
 #define WSBANDAI_H_
 
-#define BANDAI_X (48) // 配列サイズ
+#define BANDAI_X (48) // 驟榊�励し繧､繧ｺ
 #define BANDAI_Y (48)
 
 RECT bandaiRect[6] = {
-     5,  9, 16, 23, // Bのrect(left, top, right, bottom)
+     5,  9, 16, 23, // B縺ｮrect(left, top, right, bottom)
     18,  9, 30, 23, // A
     32,  9, 42, 23, // N
      5, 25, 16, 39, // D

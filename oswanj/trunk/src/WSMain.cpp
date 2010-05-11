@@ -21,7 +21,7 @@ wchar_t* OpenWSFile(wchar_t*, DWORD);
 
 HINSTANCE hInst;
 HWND hWnd;
-static LPCTSTR szClassName = TEXT("OswanJ"); //ƒNƒ‰ƒX–¼
+static LPCTSTR szClassName = TEXT("OswanJ"); //ã‚¯ãƒ©ã‚¹å
 
 int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, int nCmdShow)
 {
@@ -77,7 +77,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     ConfigRelease();
     return msg.wParam;
 }
-//ƒEƒBƒ“ƒhƒEEƒNƒ‰ƒX‚Ì“o˜^
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ»ã‚¯ãƒ©ã‚¹ã®ç™»éŒ²
 BOOL InitApp(HINSTANCE hInst)
 {
     WNDCLASS wc;
@@ -93,23 +93,23 @@ BOOL InitApp(HINSTANCE hInst)
     wc.lpszClassName = szClassName;
     return (RegisterClass(&wc));
 }
-//ƒEƒBƒ“ƒhƒE‚Ì¶¬
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç”Ÿæˆ
 BOOL InitInstance(HINSTANCE hInst)
 {
-    hWnd = CreateWindow(szClassName, TEXT("OswanJ"),//ƒ^ƒCƒgƒ‹ƒo[‚É‚±‚Ì–¼‘O‚ª•\Ž¦‚³‚ê‚Ü‚·
-        WS_OVERLAPPEDWINDOW, //ƒEƒBƒ“ƒhƒE‚ÌŽí—Þ
-        CW_USEDEFAULT, //‚wÀ•W
-        CW_USEDEFAULT, //‚xÀ•W
-        CW_USEDEFAULT, //•
-        CW_USEDEFAULT, //‚‚³
-        NULL, //eƒEƒBƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹Ae‚ðì‚é‚Æ‚«‚ÍNULL
-        NULL, //ƒƒjƒ…[ƒnƒ“ƒhƒ‹AƒNƒ‰ƒXƒƒjƒ…[‚ðŽg‚¤‚Æ‚«‚ÍNUL
-        hInst, //ƒCƒ“ƒXƒ^ƒ“ƒXƒnƒ“ƒhƒ‹
+    hWnd = CreateWindow(szClassName, TEXT("OswanJ"),//ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ã«ã“ã®åå‰ãŒè¡¨ç¤ºã•ã‚Œã¾ã™
+        WS_OVERLAPPEDWINDOW, //ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç¨®é¡ž
+        CW_USEDEFAULT, //ï¼¸åº§æ¨™
+        CW_USEDEFAULT, //ï¼¹åº§æ¨™
+        CW_USEDEFAULT, //å¹…
+        CW_USEDEFAULT, //é«˜ã•
+        NULL, //è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ãƒãƒ³ãƒ‰ãƒ«ã€è¦ªã‚’ä½œã‚‹ã¨ãã¯NULL
+        NULL, //ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ³ãƒ‰ãƒ«ã€ã‚¯ãƒ©ã‚¹ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ä½¿ã†ã¨ãã¯NUL
+        hInst, //ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒãƒ³ãƒ‰ãƒ«
         NULL);
     if (!hWnd) return FALSE;
     return TRUE;
 }
-//ƒEƒBƒ“ƒhƒEƒvƒƒV[ƒWƒƒ
+//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     wchar_t RomPath[512] = {0};
@@ -263,7 +263,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
     return (DefWindowProc(hWnd, msg, wp, lp)); 
 } 
 
-//Aboutƒ_ƒCƒAƒƒOƒvƒƒV[ƒWƒƒ
+//Aboutãƒ€ã‚¤ã‚¢ãƒ­ã‚°ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 LRESULT CALLBACK AboutProc(HWND hDlgWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	HDC			hDC;
@@ -272,27 +272,27 @@ LRESULT CALLBACK AboutProc(HWND hDlgWnd, UINT msg, WPARAM wp, LPARAM lp)
 	switch (msg)
 	{
     case WM_INITDIALOG:
-		SetWindowText(GetDlgItem(hDlgWnd, IDC_TEXT_VERSION), TEXT("ƒo[ƒWƒ‡ƒ“ 0.1"));
+		SetWindowText(GetDlgItem(hDlgWnd, IDC_TEXT_VERSION), TEXT("ãƒãƒ¼ã‚¸ãƒ§ãƒ³ 0.1"));
         break;
 	case WM_CTLCOLORSTATIC:
 		if((HWND)lp == GetDlgItem(hDlgWnd, IDC_TEXT_VERSION))
 		{
 			hDC = (HDC)wp;
 			hFont = CreateFont(
-				18,							/* ƒtƒHƒ“ƒg‚‚³ */
-				0,							/* •¶Žš• */
-				0,							/* ƒeƒLƒXƒg‚ÌŠp“x */
-				0,							/* ƒx[ƒXƒ‰ƒCƒ“‚Æ‚˜Ž²‚Æ‚ÌŠp“x */
-				FW_BOLD,					/* ƒtƒHƒ“ƒg‚Ìd‚³i‘¾‚³j */
-				FALSE,						/* ƒCƒ^ƒŠƒbƒN‘Ì */
-				FALSE,						/* ƒAƒ“ƒ_[ƒ‰ƒCƒ“ */
-				FALSE,						/* ‘Å‚¿Á‚µü */
-				SHIFTJIS_CHARSET,			/* •¶ŽšƒZƒbƒg */
-				OUT_DEFAULT_PRECIS,			/* o—Í¸“x */
-				CLIP_DEFAULT_PRECIS,		/* ƒNƒŠƒbƒsƒ“ƒO¸“x */
-				PROOF_QUALITY,				/* o—Í•iŽ¿ */
-				FIXED_PITCH | FF_MODERN,	/* ƒsƒbƒ`‚Æƒtƒ@ƒ~ƒŠ[ */
-				(LPCTSTR)"‚l‚r ‚oƒSƒVƒbƒN"	/* ‘‘Ì–¼ */
+				18,							/* ãƒ•ã‚©ãƒ³ãƒˆé«˜ã• */
+				0,							/* æ–‡å­—å¹… */
+				0,							/* ãƒ†ã‚­ã‚¹ãƒˆã®è§’åº¦ */
+				0,							/* ãƒ™ãƒ¼ã‚¹ãƒ©ã‚¤ãƒ³ã¨ï½˜è»¸ã¨ã®è§’åº¦ */
+				FW_BOLD,					/* ãƒ•ã‚©ãƒ³ãƒˆã®é‡ã•ï¼ˆå¤ªã•ï¼‰ */
+				FALSE,						/* ã‚¤ã‚¿ãƒªãƒƒã‚¯ä½“ */
+				FALSE,						/* ã‚¢ãƒ³ãƒ€ãƒ¼ãƒ©ã‚¤ãƒ³ */
+				FALSE,						/* æ‰“ã¡æ¶ˆã—ç·š */
+				SHIFTJIS_CHARSET,			/* æ–‡å­—ã‚»ãƒƒãƒˆ */
+				OUT_DEFAULT_PRECIS,			/* å‡ºåŠ›ç²¾åº¦ */
+				CLIP_DEFAULT_PRECIS,		/* ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°ç²¾åº¦ */
+				PROOF_QUALITY,				/* å‡ºåŠ›å“è³ª */
+				FIXED_PITCH | FF_MODERN,	/* ãƒ”ãƒƒãƒã¨ãƒ•ã‚¡ãƒŸãƒªãƒ¼ */
+				(LPCTSTR)"ï¼­ï¼³ ï¼°ã‚´ã‚·ãƒƒã‚¯"	/* æ›¸ä½“å */
 			);
 			SelectObject(hDC, hFont);
 			SetTextColor(hDC, RGB(0, 0, 255));

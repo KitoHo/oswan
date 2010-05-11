@@ -14,7 +14,7 @@ $Rev$
 #include "WSRender.h"
 #include "nec/necintrf.h"
 
-// ƒtƒ@ƒCƒ‹‘€ì‚Í•\‚È‚Ç‚ÆƒfƒBƒŒƒNƒgƒŠƒZƒpƒŒ[ƒ^‚ª‚©‚Ô‚é‚Ì‚ÅUNICODE‚ğg‚¢‚Ü‚·
+// ãƒ•ã‚¡ã‚¤ãƒ«æ“ä½œã¯è¡¨ãªã©ã¨ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚»ãƒ‘ãƒ¬ãƒ¼ã‚¿ãŒã‹ã¶ã‚‹ã®ã§UNICODEã‚’ä½¿ã„ã¾ã™
 static wchar_t CurDir[512];
 static wchar_t *SaveDir = L"RAM";
 static wchar_t *StateDir = L"STATE";
@@ -286,7 +286,7 @@ int WsCreate(wchar_t *CartName)
 		}
     }
     WsReset();
-	SetDrawMode(buf[6] & 1); // 0:‰¡ 1:c
+	SetDrawMode(buf[6] & 1); // 0:æ¨ª 1:ç¸¦
     return 0;
 }
 

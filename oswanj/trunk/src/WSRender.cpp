@@ -30,7 +30,7 @@ BYTE SprTMap[512];
 WORD Palette[16][16];
 WORD MonoColor[8];
 WORD FrameBuffer[144][LINE_SIZE];
-WORD SegmentBuffer[(144 * 4) * (8 * 4)]; // 8 * 144 ‚Ì4”{‚ÌƒTƒCƒY‚Å•`‰æ
+WORD SegmentBuffer[(144 * 4) * (8 * 4)]; // 8 * 144 ã®4å€ã®ã‚µã‚¤ã‚ºã§æç”»
 int Layer[3] = {1, 1, 1};
 int Segment[11];
 
@@ -45,12 +45,12 @@ void SetPalette(int addr)
 
 void RefreshLine(int Line)
 {
-    WORD *pSBuf;            // ƒf[ƒ^‘‚«‚İƒoƒbƒtƒ@
-    WORD *pSWrBuf;          // ª‚Ì‘‚«‚İˆÊ’u—pƒ|ƒCƒ“ƒ^
-    int *pZ;                // «‚ÌƒCƒ“ƒNƒŠƒƒ“ƒg—pƒ|ƒCƒ“ƒ^
-    int ZBuf[0x100];        // FGƒŒƒCƒ„[‚Ì”ñ“§–¾•”‚ğ•Û‘¶
-    int *pW;                // «‚ÌƒCƒ“ƒNƒŠƒƒ“ƒg—pƒ|ƒCƒ“ƒ^
-    int WBuf[0x100];        // FGƒŒƒCƒ„[‚ÌƒEƒBƒ“ƒh[‚ğ•Û‘¶
+    WORD *pSBuf;            // ãƒ‡ãƒ¼ã‚¿æ›¸ãè¾¼ã¿ãƒãƒƒãƒ•ã‚¡
+    WORD *pSWrBuf;          // â†‘ã®æ›¸ãè¾¼ã¿ä½ç½®ç”¨ãƒã‚¤ãƒ³ã‚¿
+    int *pZ;                // â†“ã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨ãƒã‚¤ãƒ³ã‚¿
+    int ZBuf[0x100];        // FGãƒ¬ã‚¤ãƒ¤ãƒ¼ã®éé€æ˜éƒ¨ã‚’ä¿å­˜
+    int *pW;                // â†“ã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆç”¨ãƒã‚¤ãƒ³ã‚¿
+    int WBuf[0x100];        // FGãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¦ã‚£ãƒ³ãƒ‰ãƒ¼ã‚’ä¿å­˜
     int OffsetX;            // 
     int OffsetY;            // 
     BYTE *pbTMap;           // 
@@ -288,9 +288,9 @@ void RefreshLine(int Line)
     }
 /*********************************************************************/
     memset(ZBuf, 0, sizeof(ZBuf));
-    if((DSPCTL & 0x02) && Layer[1])          //FG layer•\¦
+    if((DSPCTL & 0x02) && Layer[1])          //FG layerè¡¨ç¤º
     {
-        if((DSPCTL & 0x30) == 0x20) // ƒEƒBƒ“ƒhƒE“à•”‚Ì‚İ‚É•\¦
+        if((DSPCTL & 0x30) == 0x20) // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å†…éƒ¨ã®ã¿ã«è¡¨ç¤º
         {
             for(i = 0, pW = WBuf + 8; i < 224; i++)
             {
@@ -304,7 +304,7 @@ void RefreshLine(int Line)
                 }
             }
         }
-        else if((DSPCTL & 0x30) == 0x30) // ƒEƒBƒ“ƒhƒEŠO•”‚Ì‚İ‚É•\¦
+        else if((DSPCTL & 0x30) == 0x30) // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å¤–éƒ¨ã®ã¿ã«è¡¨ç¤º
         {
             for(i = 0, pW = WBuf + 8; i < 224; i++)
             {
@@ -759,13 +759,13 @@ void RefreshLine(int Line)
 }
 
 /*
- 8 * 144 ‚ÌƒTƒCƒY‚ğ 32 * 576 ‚Å•`‰æ
+ 8 * 144 ã®ã‚µã‚¤ã‚ºã‚’ 32 * 576 ã§æç”»
 */
 void RenderSegment(void)
 {
 	int bit, x, y, i;
 	WORD* p = SegmentBuffer;
-	BYTE lcd[11] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x40, 0, 0, 0x01, 0x80, 0}; // ‘åA’†A¬A‰¡AcAƒwƒbƒhƒzƒ“A‰¹—ÊA“d’rAƒXƒŠ[ƒv
+	BYTE lcd[11] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x40, 0, 0, 0x01, 0x80, 0}; // å¤§ã€ä¸­ã€å°ã€æ¨ªã€ç¸¦ã€ãƒ˜ãƒƒãƒ‰ãƒ›ãƒ³ã€éŸ³é‡ã€é›»æ± ã€ã‚¹ãƒªãƒ¼ãƒ—
 
 	for (i = 0; i < 11; i++)
 	{
@@ -803,7 +803,7 @@ void RenderSleep(void)
     int x, y;
     WORD* p;
 
-    // ”wŒi‚ğƒOƒŒƒC‚ÅƒNƒŠƒA
+    // èƒŒæ™¯ã‚’ã‚°ãƒ¬ã‚¤ã§ã‚¯ãƒªã‚¢
     p = FrameBuffer[0] + 8;
     for (y = 0; y < 144; y++)
     {

@@ -31,35 +31,35 @@ void WsDlgConfInit(HWND hDlg)
 	memcpy(TmpJoypadV, WsJoypadV, sizeof(int) * 13);
 	hInst = (HINSTANCE)GetWindowLong(hDlg, GWLP_HINSTANCE);
 	hTabCtrl = GetDlgItem(hDlg, IDC_TAB1);
-	// ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Éƒ^ƒuƒV[ƒg‚ð‘}“ü
+	// ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã«ã‚¿ãƒ–ã‚·ãƒ¼ãƒˆã‚’æŒ¿å…¥
 	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("ƒL[‰¡");
+	tc.pszText = TEXT("ã‚­ãƒ¼æ¨ª");
 	TabCtrl_InsertItem(hTabCtrl , 0, &tc);
 	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("ƒL[c");
+	tc.pszText = TEXT("ã‚­ãƒ¼ç¸¦");
 	TabCtrl_InsertItem(hTabCtrl , 1, &tc);
 	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("ƒRƒ“ƒgƒ[ƒ‰[‰¡");
+	tc.pszText = TEXT("ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼æ¨ª");
 	TabCtrl_InsertItem(hTabCtrl , 2, &tc);
 	tc.mask = TCIF_TEXT;
-	tc.pszText = TEXT("ƒRƒ“ƒgƒ[ƒ‰[c");
+	tc.pszText = TEXT("ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ç¸¦");
 	TabCtrl_InsertItem(hTabCtrl , 3, &tc);
-	// ƒ^ƒu‚É“\‚è•t‚¯‚éƒ_ƒCƒAƒƒO‚ð¶¬
+	// ã‚¿ãƒ–ã«è²¼ã‚Šä»˜ã‘ã‚‹ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚’ç”Ÿæˆ
 	hTab1 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabProc1);
 	hTab2 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabProc2);
 	hTab3 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB1, hDlg, (DLGPROC)TabProc3);
 	hTab4 = CreateDialog(hInst, (LPCTSTR)IDD_CONFIG_TAB2, hDlg, (DLGPROC)TabProc4);
-	// ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚ÌƒNƒ‰ƒCƒAƒ“ƒg—Ìˆæ‚ÌÀ•W‚ðŽæ“¾
+	// ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆé ˜åŸŸã®åº§æ¨™ã‚’å–å¾—
 	GetClientRect(hTabCtrl, &rt);
 	TabCtrl_AdjustRect(hTabCtrl, FALSE, &rt);
-	// eƒEƒBƒ“ƒhƒE‚ªhDlg‚È‚Ì‚Åƒ^ƒu‚Ìƒ}ƒbƒv‚ª•K—v
+	// è¦ªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒhDlgãªã®ã§ã‚¿ãƒ–ã®ãƒžãƒƒãƒ—ãŒå¿…è¦
 	MapWindowPoints(hTabCtrl, hDlg, pt, 2);
-	// ƒ^ƒu‚ÌƒEƒBƒ“ƒhƒE‚ÌˆÊ’u‚ÆƒTƒCƒY‚ð•ÏX‚·‚é
+	// ã‚¿ãƒ–ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½ç½®ã¨ã‚µã‚¤ã‚ºã‚’å¤‰æ›´ã™ã‚‹
 	MoveWindow(hTab1, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	MoveWindow(hTab2, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	MoveWindow(hTab3, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
 	MoveWindow(hTab4, rt.left, rt.top, rt.right - rt.left, rt.bottom - rt.top, FALSE);
-	// ƒfƒtƒHƒ‹ƒg‚Åƒ^ƒu1‚ð•\Ž¦
+	// ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã‚¿ãƒ–1ã‚’è¡¨ç¤º
 	ShowWindow(hTab1, SW_SHOW);
 	SetFocus(GetDlgItem(hTab1, IDC_EDIT_Y1));
 	SendMessage(GetDlgItem(hTab1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
@@ -77,7 +77,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		WsDlgConfInit(hDlg);
 		return TRUE;
 	case WM_NOTIFY:
-		// ƒ^ƒuƒRƒ“ƒgƒ[ƒ‹‚Ì‘I‘ð‚³‚ê‚Ä‚¢‚éƒ^ƒu‚ª•ÏX‚³‚ê‚½‚±‚Æ‚ð’Ê’m
+		// ã‚¿ãƒ–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®é¸æŠžã•ã‚Œã¦ã„ã‚‹ã‚¿ãƒ–ãŒå¤‰æ›´ã•ã‚ŒãŸã“ã¨ã‚’é€šçŸ¥
 		switch (nm->code)
 		{
 		case TCN_SELCHANGE:

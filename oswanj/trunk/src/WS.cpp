@@ -18,19 +18,19 @@ $Rev$
 #define IPeriod 32          // HBlank/8 (256/8)
 
 int Run;
-BYTE *Page[16];             // ƒoƒ“ƒNŠ„‚è“–‚Ä
-BYTE IRAM[0x10000];         // “à•”RAM 64kB = Page[0]
+BYTE *Page[16];             // ãƒãƒ³ã‚¯å‰²ã‚Šå½“ã¦
+BYTE IRAM[0x10000];         // å†…éƒ¨RAM 64kB = Page[0]
 BYTE IO[0x100];             // IO
-BYTE MemDummy[0x10000];     // ƒ_ƒ~[ƒoƒ“ƒN 64kB
-BYTE *ROMMap[0x100];        // C-ROMƒoƒ“ƒNƒ}ƒbƒv
-int ROMBanks;               // C-ROMƒoƒ“ƒN”
-BYTE *RAMMap[0x100];        // C-RAMƒoƒ“ƒNƒ}ƒbƒv
-int RAMBanks;               // C-RAMƒoƒ“ƒN”
-int RAMSize;                // C-RAM‘—e—Ê
-WORD IEep[64];              // “à‘ EEPROM
-struct EEPROM sIEep;        // EEPROM“Ç‚İ‘‚«—p\‘¢‘Ìi“à‘ j
-struct EEPROM sCEep;        // EEPROM“Ç‚İ‘‚«—p\‘¢‘ÌiƒJ[ƒgƒŠƒbƒWj
-int CartKind;               // ƒZ[ƒuƒƒ‚ƒŠ‚Ìí—ŞiCK_EEP = EEPROMj
+BYTE MemDummy[0x10000];     // ãƒ€ãƒŸãƒ¼ãƒãƒ³ã‚¯ 64kB
+BYTE *ROMMap[0x100];        // C-ROMãƒãƒ³ã‚¯ãƒãƒƒãƒ—
+int ROMBanks;               // C-ROMãƒãƒ³ã‚¯æ•°
+BYTE *RAMMap[0x100];        // C-RAMãƒãƒ³ã‚¯ãƒãƒƒãƒ—
+int RAMBanks;               // C-RAMãƒãƒ³ã‚¯æ•°
+int RAMSize;                // C-RAMç·å®¹é‡
+WORD IEep[64];              // å†…è”µEEPROM
+struct EEPROM sIEep;        // EEPROMèª­ã¿æ›¸ãç”¨æ§‹é€ ä½“ï¼ˆå†…è”µï¼‰
+struct EEPROM sCEep;        // EEPROMèª­ã¿æ›¸ãç”¨æ§‹é€ ä½“ï¼ˆã‚«ãƒ¼ãƒˆãƒªãƒƒã‚¸ï¼‰
+int CartKind;               // ã‚»ãƒ¼ãƒ–ãƒ¡ãƒ¢ãƒªã®ç¨®é¡ï¼ˆCK_EEP = EEPROMï¼‰
 
 static int ButtonState = 0x0000;    // Button state: B.A.START.OPTION.X4.X3.X2.X1.Y4.Y3.Y2.Y1
 static WORD HTimer;
@@ -92,45 +92,45 @@ void  ComEEP(struct EEPROM *eeprom, WORD *cmd, WORD *data)
         addr = (*cmd & tblmask[i][2]) >> tblmask[i][3];
         switch(addr)
         {
-        case 0: // ‘‚İ‹Ö~
+        case 0: // æ›¸è¾¼ã¿ç¦æ­¢
             eeprom->we = 0;
             break;
-        case 1: // ‘SƒAƒhƒŒƒX‘‚«‚İ
+        case 1: // å…¨ã‚¢ãƒ‰ãƒ¬ã‚¹æ›¸ãè¾¼ã¿
             for(j = tblmask[i][4]; j >= 0; j--)
             {
                 eeprom->data[j] = *data;
             }
             break;
-        case 2: // ƒ`ƒbƒvÁ‹
+        case 2: // ãƒãƒƒãƒ—æ¶ˆå»
             if(eeprom->we)
             {
                 memset(eeprom->data, 0xFF, sizeof(eeprom->data)*2);
             }
             break;
-        case 3: // ‘‚«‚İ‰Â”\
+        case 3: // æ›¸ãè¾¼ã¿å¯èƒ½
             eeprom->we = 1;
             break;
         }
         *data = 0;
         break;
-    case 1: // ‘‚«‚İ
+    case 1: // æ›¸ãè¾¼ã¿
         if(eeprom->we)
         {
             addr = *cmd & tblmask[i][4];
             eeprom->data[addr] = *data;
-            if (ROMBanks == 1 && addr == 0x3A) // ƒAƒiƒUƒwƒuƒ“‚à‘‚«‚ñ‚Å‚½
+            if (ROMBanks == 1 && addr == 0x3A) // ã‚¢ãƒŠã‚¶ãƒ˜ãƒ–ãƒ³ã‚‚æ›¸ãè¾¼ã‚“ã§ãŸ
             {
                 WsSplash();
-                Run = 0; // ƒp[ƒ\ƒiƒ‹ƒf[ƒ^ÅŒã‚Ì‘‚«‚İ‚È‚Ì‚ÅI—¹
+                Run = 0; // ãƒ‘ãƒ¼ã‚½ãƒŠãƒ«ãƒ‡ãƒ¼ã‚¿æœ€å¾Œã®æ›¸ãè¾¼ã¿ãªã®ã§çµ‚äº†
             }
         }
         *data = 0;
         break;
-    case 2: // “Ç‚İo‚µ
+    case 2: // èª­ã¿å‡ºã—
         addr = *cmd & tblmask[i][4];
         *data = eeprom->data[addr];
         break;
-    case 3: // Á‹
+    case 3: // æ¶ˆå»
         if(eeprom->we)
         {
             addr = *cmd & tblmask[i][4];
@@ -477,7 +477,7 @@ void  WriteIO(DWORD A, BYTE V)
         Noise.on  = V & 0x80;
         break;
     case 0x91:
-        V |= 0x80; // ƒwƒbƒhƒzƒ“‚Íí‚ÉƒIƒ“
+        V |= 0x80; // ãƒ˜ãƒƒãƒ‰ãƒ›ãƒ³ã¯å¸¸ã«ã‚ªãƒ³
         break;
     case 0xA0:
         V=0x02;
@@ -754,8 +754,8 @@ void WsReset (void)
     WriteIO(0xB3, 0x04);
     WriteIO(0xBA, 0x01);
     WriteIO(0xBB, 0x00);
-    WriteIO(0xBC, 0x30); // “à‘ EEPROM
-    WriteIO(0xBD, 0x01); // ‘‚«‚İ‰Â”\
+    WriteIO(0xBC, 0x30); // å†…è”µEEPROM
+    WriteIO(0xBD, 0x01); // æ›¸ãè¾¼ã¿å¯èƒ½
     WriteIO(0xBE, 0x83);
     IO[0xC0] = 0x0F;
     j = 0xF0;
@@ -799,13 +799,13 @@ void WsRomPatch(BYTE *buf)
         RAMSize = 0x8000;
         CartKind = 0;
     }
-    if((buf[0] == 0x01) && (buf[1] == 0x00) && (buf[2] == 0x2C || buf[2] == 0x2F)) // SWJ-BAN02C,02F ƒfƒWƒ^ƒ‹ƒp[ƒgƒi[
+    if((buf[0] == 0x01) && (buf[1] == 0x00) && (buf[2] == 0x2C || buf[2] == 0x2F)) // SWJ-BAN02C,02F ãƒ‡ã‚¸ã‚¿ãƒ«ãƒ‘ãƒ¼ãƒˆãƒŠãƒ¼
     {
         RAMBanks = 1;
         RAMSize = 0x8000;
         CartKind = 0;
     }
-    if((buf[0] == 0x01) && (buf[1] == 0x01) && (buf[2] == 0x38)) // SWJ-BANC38 NARUTO –Øƒm—t”E–@’Ÿ
+    if((buf[0] == 0x01) && (buf[1] == 0x01) && (buf[2] == 0x38)) // SWJ-BANC38 NARUTO æœ¨ãƒè‘‰å¿æ³•å¸–
     {
         RAMBanks = 1;
         RAMSize = 0x10000;
@@ -818,7 +818,7 @@ int Interrupt(void)
     static int LCount=0, Joyz=0x0000;
     int i, j;
 
-    if(++LCount>=8) // 8‰ñ‚Å1HblankŠúŠÔ
+    if(++LCount>=8) // 8å›ã§1HblankæœŸé–“
     {
         LCount=0;
     }
@@ -838,7 +838,7 @@ int Interrupt(void)
                     }
                 }
                 Joyz = ButtonState;
-                // VblankƒJƒEƒ“ƒgƒAƒbƒv
+                // Vblankã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
                 VCounter = VCNTH << 16 | VCNTL;
                 VCounter++;
                 VCNTL = (WORD)VCounter;
@@ -846,7 +846,7 @@ int Interrupt(void)
             }
             break;
         case 2:
-            // Hblank–ˆ‚É1ƒTƒ“ƒvƒ‹ƒZƒbƒg‚·‚é‚±‚Æ‚Å12KHz‚Ìwaveƒf[ƒ^‚ªo—ˆ‚é
+            // Hblankæ¯ã«1ã‚µãƒ³ãƒ—ãƒ«ã‚»ãƒƒãƒˆã™ã‚‹ã“ã¨ã§12KHzã®waveãƒ‡ãƒ¼ã‚¿ãŒå‡ºæ¥ã‚‹
 	        apuWaveSet();
 			NCSR = apuShiftReg();
             break;
@@ -937,7 +937,7 @@ int Interrupt(void)
             {
                 RSTRL = 0;
             }
-            // HblankƒJƒEƒ“ƒgƒAƒbƒv
+            // Hblankã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
             HCNT++;
             break;
         default:
@@ -981,7 +981,7 @@ void WsSplash(void)
     WORD* p;
     char* name = (char*)(IEep + 0x30);
 
-    // ”wŒi‚ğ•‚ÅƒNƒŠƒA
+    // èƒŒæ™¯ã‚’é»’ã§ã‚¯ãƒªã‚¢
     p = FrameBuffer[0] + 8;
     for (y = 0; y < 144; y++)
     {
@@ -1002,7 +1002,7 @@ void WsSplash(void)
     for (i = 0; i < 6; i++)
     {
         WORD color[6] = {0xFF00, 0xFF80, 0xFFF0, 0xF0F0, 0xF0FF, 0xF00F};
-        // B,A,N,D,A,I,‚ğ1•¶š•\¦
+        // B,A,N,D,A,I,ã‚’1æ–‡å­—è¡¨ç¤º
         for (y = bandaiRect[i].top; y <= bandaiRect[i].bottom; y++)
         {
             p = FrameBuffer[POS_Y + y] + 8 + POS_X;
@@ -1016,7 +1016,7 @@ void WsSplash(void)
         }
         drawDraw();
         Sleep(70);
-        // •¶šÁ‹
+        // æ–‡å­—æ¶ˆå»
         p = FrameBuffer[0] + 8;
         for (y = 0; y < 144; y++)
         {
@@ -1029,7 +1029,7 @@ void WsSplash(void)
     }
     drawDraw();
     Sleep(200);
-    // ”wŒi‚ğ”’‚ÅƒNƒŠƒA
+    // èƒŒæ™¯ã‚’ç™½ã§ã‚¯ãƒªã‚¢
     p = FrameBuffer[0] + 8;
     for (y = 0; y < 144; y++)
     {
@@ -1039,7 +1039,7 @@ void WsSplash(void)
         }
         p += 32;
     }
-    // BANDAIƒƒS•\¦
+    // BANDAIãƒ­ã‚´è¡¨ç¤º
     p = FrameBuffer[POS_Y] + 8 + POS_X;
     for (y = 0; y < BANDAI_Y; y++)
     {
@@ -1050,7 +1050,7 @@ void WsSplash(void)
         p += (256-BANDAI_X);
     }
     drawDraw();
-    // Š—LÒ‚Ì–¼‘O•\¦
+    // æ‰€æœ‰è€…ã®åå‰è¡¨ç¤º
     for (len = 15; name[len] == 0 && len > 0; len--);
     pos = 108 - len * 4;
     for (n = 0; n <= len; n++)
@@ -1065,7 +1065,7 @@ void WsSplash(void)
                 p = FrameBuffer[NAME_Y + y] + 8 + pos + (i * 8);
                 for (x = 0; x < 8; x++)
                 {
-                    if (name[i] && (font & 0x80)) // ƒXƒy[ƒXƒtƒHƒ“ƒg‚Í¡‚É‚È‚Á‚Ä‚é‚Ì‚ÅƒXƒLƒbƒv
+                    if (name[i] && (font & 0x80)) // ã‚¹ãƒšãƒ¼ã‚¹ãƒ•ã‚©ãƒ³ãƒˆã¯â– ã«ãªã£ã¦ã‚‹ã®ã§ã‚¹ã‚­ãƒƒãƒ—
                     {
                         if (n == i)
                         {

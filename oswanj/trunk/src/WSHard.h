@@ -55,7 +55,7 @@ BYTE  ReadIO(DWORD A);
 #define COL     (BYTE*)(IO+0x1C)    // 
 #define PAL     (BYTE*)(IO+0x20)    // 
 
-#define DMASRC  (*(DWORD*)(IO+0x40))    //IO[]��4�o�C�g���E�ɂ��邱�Ƃ��K�v
+#define DMASRC  (*(DWORD*)(IO+0x40))    //IO[]が4バイト境界にあることが必要
 #define DMADST  (*(WORD*)(IO+0x44)) //
 #define DMACNT  (*(WORD*)(IO+0x46)) //
 

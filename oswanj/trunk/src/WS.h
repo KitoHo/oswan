@@ -19,11 +19,11 @@ extern BYTE *Page[0x10];
 extern BYTE IRAM[0x10000];
 extern BYTE IO[0x100];
 extern BYTE MemDummy[0x10000];
-extern BYTE *ROMMap[0x100];     // C-ROMƒoƒ“ƒNƒ}ƒbƒv
-extern int ROMBanks;            // C-ROMƒoƒ“ƒN”
-extern BYTE *RAMMap[0x100];     // C-RAMƒoƒ“ƒNƒ}ƒbƒv
-extern int RAMBanks;            // C-RAMƒoƒ“ƒN”
-extern int RAMSize;             // C-RAM‘—e—Ê
+extern BYTE *ROMMap[0x100];     // C-ROMãƒãƒ³ã‚¯ãƒãƒƒãƒ—
+extern int ROMBanks;            // C-ROMãƒãƒ³ã‚¯æ•°
+extern BYTE *RAMMap[0x100];     // C-RAMãƒãƒ³ã‚¯ãƒãƒƒãƒ—
+extern int RAMBanks;            // C-RAMãƒãƒ³ã‚¯æ•°
+extern int RAMSize;             // C-RAMç·å®¹é‡
 extern WORD IEep[64];
 extern struct EEPROM sIEep;
 extern struct EEPROM sCEep;

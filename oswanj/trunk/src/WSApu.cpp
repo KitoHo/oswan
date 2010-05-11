@@ -12,7 +12,7 @@ $Rev$
 #include "WSInput.h"
 
 #define BUFSIZEN    0x10000
-#define BPSWAV      12000 // WS��Hblank��12KHz
+#define BPSWAV      12000 // WSのHblankが12KHz
 #define BUFSIZEW    64
 #define BUFCOUNT    30
 
@@ -372,7 +372,7 @@ void apuWaveSet(void)
         }
     }
     vVol = ((short)apuVoice() - 0x80);
-    // mix 16bits wave -32768 �` +32767 32768/120 = 273
+    // mix 16bits wave -32768 ～ +32767 32768/120 = 273
     LL = (lVol[0] + lVol[1] + lVol[2] + lVol[3] + vVol) * WsWaveVol;
     RR = (rVol[0] + rVol[1] + rVol[2] + rVol[3] + vVol) * WsWaveVol;
     dataAdr = (short*)(whdr[wBuf]->lpData);
@@ -388,9 +388,9 @@ void apuWaveSet(void)
         }
 		if (wait == 0)
 		{
-			while (wBuf == rBuf) // �������݂��Đ��ɒǂ�����
+			while (wBuf == rBuf) // 書き込みが再生に追いついた
 			{
-				Sleep(1); // WaveOut�̃R�[���o�b�N�֐���rBuf���X�V�����܂ő҂�
+				Sleep(1); // WaveOutのコールバック関数でrBufが更新されるまで待つ
 			}
 		}
     }

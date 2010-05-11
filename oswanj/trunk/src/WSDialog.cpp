@@ -132,10 +132,10 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			switch (LOWORD(wParam))
 			{
 			case IDOK:
-				memcpy(WsKeyboardH, TmpKeyboardH, sizeof(int) * 12);
-				memcpy(WsKeyboardV, TmpKeyboardV, sizeof(int) * 12);
-				memcpy(WsJoypadH, TmpJoypadH, sizeof(int) * 12);
-				memcpy(WsJoypadV, TmpJoypadV, sizeof(int) * 12);
+				memcpy(WsKeyboardH, TmpKeyboardH, sizeof(int) * 13);
+				memcpy(WsKeyboardV, TmpKeyboardV, sizeof(int) * 13);
+				memcpy(WsJoypadH, TmpJoypadH, sizeof(int) * 13);
+				memcpy(WsJoypadV, TmpJoypadV, sizeof(int) * 13);
 				EndDialog(hDlg, LOWORD(wParam));
 				return TRUE;
 			case IDCANCEL:

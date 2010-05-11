@@ -298,7 +298,7 @@ int WsInputGetNowait(void)
 		}
 		hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
 		if (hRet == DI_OK){
-			flag = WsInputCheckJoy(WsJoypad[12]);
+			flag |= WsInputCheckJoy(WsJoypad[12]);
 		}
 	}
 	return flag;

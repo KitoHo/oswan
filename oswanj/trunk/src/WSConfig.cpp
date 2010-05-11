@@ -51,7 +51,7 @@ void ConfigCreate(void)
 	WsJoypadH[0] = 1; // B
 	WsJoypadH[1] = 2; // A
 	WsJoypadH[2] = 8; // START
-	WsJoypadH[3] = 7; // OPTION
+	WsJoypadH[3] = 0; // OPTION
 	WsJoypadH[4] = WS_JOY_AXIS_X_M; // X4
 	WsJoypadH[5] = WS_JOY_AXIS_Y_P; // X3
 	WsJoypadH[6] = WS_JOY_AXIS_X_P; // X2
@@ -65,7 +65,7 @@ void ConfigCreate(void)
 	WsJoypadV[0] = 5; // B
 	WsJoypadV[1] = 6; // A
 	WsJoypadV[2] = 8; // START
-	WsJoypadV[3] = 7; // OPTION
+	WsJoypadV[3] = 0; // OPTION
 	WsJoypadV[4] = 1; // X4
 	WsJoypadV[5] = 2; // X3
 	WsJoypadV[6] = 4; // X2

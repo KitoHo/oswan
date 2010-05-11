@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     drawFinalize();
     apuEnd();
     ConfigRelease();
-    return msg.wParam;
+    return 0;
 }
 //ウィンドウ・クラスの登録
 BOOL InitApp(HINSTANCE hInst)

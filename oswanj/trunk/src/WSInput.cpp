@@ -263,7 +263,6 @@ void WsInputSetKeyMap(int mode)
 
 int WsInputGetNowait(void)
 {
-	int i;
 	HRESULT hRet;
 	BYTE diKeys[256];
 	int flag = 0;

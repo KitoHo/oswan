@@ -46,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     drawCreate();
     SetDrawSize(DS_2);
     WsInputInit(hWnd);
-    SetKeyMap(0);
+    WsInputSetKeyMap(0);
     WsSplash();
     while (1) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))

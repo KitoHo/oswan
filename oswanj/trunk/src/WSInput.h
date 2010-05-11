@@ -57,6 +57,7 @@ void WsInputJoyRelease(void);
 void WsInputRelease(void);
 int WsInputCheckJoy(int value);
 WORD WsInputGetState(void);
-void SetKeyMap(int mode);
+void WsInputSetKeyMap(int mode);
+int WsInputGetNowait(void);
 
 #endif

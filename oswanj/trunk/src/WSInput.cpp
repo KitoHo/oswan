@@ -200,31 +200,10 @@ WORD WsInputGetState(void)
 	HRESULT hRet;
 	BYTE diKeys[256];
 	WORD JoyState = 0;
-	WORD ButtonState = 0;
+	WORD KeyState = 0;
 
 	ZeroMemory(&js, sizeof(DIJOYSTATE2));
 	ZeroMemory(diKeys, 256);
-	if (lpJoyDevice != NULL)
-	{
-		hRet = lpJoyDevice->Poll();
-		if (FAILED(hRet))
-		{
-			hRet = lpJoyDevice->Acquire();
-			while(hRet == DIERR_INPUTLOST)
-				hRet = lpJoyDevice->Acquire();
-			return 0;
-		}
-
-		hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
-		if (hRet == DI_OK){
-			for (i = 0; i < 12; i++)
-			{
-				JoyState <<= 1;
-				JoyState |= WsInputCheckJoy(WsJoypad[i]);
-			}
-		}
-	}
-
 	if (lpKeyDevice != NULL)
 	{
 		hRet = lpKeyDevice->Acquire();
@@ -235,19 +214,40 @@ WORD WsInputGetState(void)
 			{
 				for (i = 0; i < 12; i++)
 				{
-					ButtonState <<= 1;
+					KeyState <<= 1;
 					if (diKeys[WsKeyboard[i]] & 0x80)
 					{
-						ButtonState |= 1;
+						KeyState |= 1;
 					}
 				}
 			}
 		}
 	}
-	return JoyState | ButtonState;
+	if (lpJoyDevice != NULL)
+	{
+		hRet = lpJoyDevice->Poll();
+		if (FAILED(hRet))
+		{
+			hRet = lpJoyDevice->Acquire();
+			while (hRet == DIERR_INPUTLOST)
+			{
+				hRet = lpJoyDevice->Acquire();
+			}
+			return KeyState;
+		}
+		hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+		if (hRet == DI_OK){
+			for (i = 0; i < 12; i++)
+			{
+				JoyState <<= 1;
+				JoyState |= WsInputCheckJoy(WsJoypad[i]);
+			}
+		}
+	}
+	return JoyState | KeyState;
 }
 
-void SetKeyMap(int mode)
+void WsInputSetKeyMap(int mode)
 {
 	if (mode & 1)
 	{
@@ -259,4 +259,48 @@ void SetKeyMap(int mode)
 		WsJoypad = WsJoypadH;
 		WsKeyboard = WsKeyboardH;
 	}
+}
+
+int WsInputGetNowait(void)
+{
+	int i;
+	HRESULT hRet;
+	BYTE diKeys[256];
+	int flag = 0;
+
+	ZeroMemory(&js, sizeof(DIJOYSTATE2));
+	ZeroMemory(diKeys, 256);
+	if (lpKeyDevice != NULL)
+	{
+		hRet = lpKeyDevice->Acquire();
+		if (hRet == DI_OK || hRet == S_FALSE)
+		{
+			hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+			if (hRet == DI_OK)
+			{
+				if (diKeys[WsKeyboard[12]] & 0x80)
+				{
+					flag = 1;
+				}
+			}
+		}
+	}
+	if (lpJoyDevice != NULL)
+	{
+		hRet = lpJoyDevice->Poll();
+		if (FAILED(hRet))
+		{
+			hRet = lpJoyDevice->Acquire();
+			while (hRet == DIERR_INPUTLOST)
+			{
+				hRet = lpJoyDevice->Acquire();
+			}
+			return flag;
+		}
+		hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+		if (hRet == DI_OK){
+			flag = WsInputCheckJoy(WsJoypad[12]);
+		}
+	}
+	return flag;
 }

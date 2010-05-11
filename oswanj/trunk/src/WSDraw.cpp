@@ -319,7 +319,7 @@ int SetDrawMode(int Mode)
     if(DrawMode != Mode)
     {
         DrawMode = Mode;
-        SetKeyMap(Mode);
+        WsInputSetKeyMap(Mode);
         WsResize();
     }
     return 0;

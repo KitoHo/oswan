@@ -156,7 +156,7 @@ typedef void (*WriteMemFn)(DWORD A, BYTE V);
 
 static void  WriteRom(DWORD A, BYTE V)
 {
-	//ErrorMsg(ERR_WRITE_ROM);
+    //ErrorMsg(ERR_WRITE_ROM);
 }
 
 static void  WriteIRam(DWORD A, BYTE V)
@@ -172,109 +172,109 @@ static void  WriteIRam(DWORD A, BYTE V)
     }
 }
 
-#define	FLASH_CMD_ADDR1			0x0AAA
-#define	FLASH_CMD_ADDR2			0x0555
-#define	FLASH_CMD_DATA1			0xAA
-#define	FLASH_CMD_DATA2			0x55
-#define	FLASH_CMD_RESET			0xF0
-#define	FLASH_CMD_ERASE			0x80
-#define	FLASH_CMD_ERASE_CHIP	0x10
-#define	FLASH_CMD_ERASE_SECT	0x30
-#define	FLASH_CMD_CONTINUE_SET	0x20
-#define	FLASH_CMD_CONTINUE_RES1	0x90
-#define	FLASH_CMD_CONTINUE_RES2	0xF0
-#define	FLASH_CMD_CONTINUE_RES3	0x00
-#define	FLASH_CMD_WRITE			0xA0
+#define FLASH_CMD_ADDR1         0x0AAA
+#define FLASH_CMD_ADDR2         0x0555
+#define FLASH_CMD_DATA1         0xAA
+#define FLASH_CMD_DATA2         0x55
+#define FLASH_CMD_RESET         0xF0
+#define FLASH_CMD_ERASE         0x80
+#define FLASH_CMD_ERASE_CHIP    0x10
+#define FLASH_CMD_ERASE_SECT    0x30
+#define FLASH_CMD_CONTINUE_SET  0x20
+#define FLASH_CMD_CONTINUE_RES1 0x90
+#define FLASH_CMD_CONTINUE_RES2 0xF0
+#define FLASH_CMD_CONTINUE_RES3 0x00
+#define FLASH_CMD_WRITE         0xA0
 static void  WriteCRam(DWORD A, BYTE V)
 {
-	static int flashCommand1 = 0;
-	static int flashCommand2 = 0;
-	static int flashWriteSet = 0;
-	static int flashWriteOne = 0;
-	static int flashWriteReset = 0;
-	static int flashWriteEnable = 0;
-	int offset = A & 0xFFFF;
+    static int flashCommand1 = 0;
+    static int flashCommand2 = 0;
+    static int flashWriteSet = 0;
+    static int flashWriteOne = 0;
+    static int flashWriteReset = 0;
+    static int flashWriteEnable = 0;
+    int offset = A & 0xFFFF;
 
     if (offset >= RAMSize)
     {
         ErrorMsg(ERR_OVER_RAMSIZE);
     }
-	// WonderWitch
-	// FLASH ROM command sequence
-	if (flashCommand2)
-	{
-		if (offset == FLASH_CMD_ADDR1)
-		{
-			switch (V) {
-			case FLASH_CMD_CONTINUE_SET:
-				flashWriteSet   = 1;
-				flashWriteReset = 0;
-				break;
-			case FLASH_CMD_WRITE:
-				flashWriteOne = 1;
-				break;
-			case FLASH_CMD_RESET:
-				break;
-			case FLASH_CMD_ERASE:
-				break;
-			case FLASH_CMD_ERASE_CHIP:
-				break;
-			case FLASH_CMD_ERASE_SECT:
-				break;
-			}
-		}
-		flashCommand2 = 0;
-	}
-	else if (flashCommand1)
-	{
-		if (offset == FLASH_CMD_ADDR2 && V == FLASH_CMD_DATA2)
-		{
-			flashCommand2 = 1;
-		}
-		flashCommand1 = 0;
-	}
-	else if (offset == FLASH_CMD_ADDR1 && V == FLASH_CMD_DATA1)
-	{
-		flashCommand1 = 1;
-	}
-	if (RAMSize != 0x40000 || BNK1SEL < 8)
-	{
-		// normal sram
-		Page[1][offset] = V;
-	}
-	else if (BNK1SEL >= 8 && BNK1SEL < 15)
-	{
-		// FLASH ROM use SRAM bank(port 0xC1:8-14)(0xC1:15 0xF0000-0xFFFFF are write protected)
-		if (flashWriteEnable || flashWriteOne)
-		{
-			Page[BNK1SEL][offset] = V;
-			flashWriteEnable = 0;
-			flashWriteOne = 0;
-		}
-		else if (flashWriteSet)
-		{
-			switch (V)
-			{
-			case FLASH_CMD_WRITE:
-				flashWriteEnable = 1;
-				flashWriteReset = 0;
-				break;
-			case FLASH_CMD_CONTINUE_RES1:
-				flashWriteReset = 1;
-				break;
-			case FLASH_CMD_CONTINUE_RES2:
-			case FLASH_CMD_CONTINUE_RES3:
-				if (flashWriteReset)
-				{
-					flashWriteSet = 0;
-					flashWriteReset = 0;
-				}
-				break;
-			default:
-				flashWriteReset = 0;
-			}
-		}
-	}
+    // WonderWitch
+    // FLASH ROM command sequence
+    if (flashCommand2)
+    {
+        if (offset == FLASH_CMD_ADDR1)
+        {
+            switch (V) {
+            case FLASH_CMD_CONTINUE_SET:
+                flashWriteSet   = 1;
+                flashWriteReset = 0;
+                break;
+            case FLASH_CMD_WRITE:
+                flashWriteOne = 1;
+                break;
+            case FLASH_CMD_RESET:
+                break;
+            case FLASH_CMD_ERASE:
+                break;
+            case FLASH_CMD_ERASE_CHIP:
+                break;
+            case FLASH_CMD_ERASE_SECT:
+                break;
+            }
+        }
+        flashCommand2 = 0;
+    }
+    else if (flashCommand1)
+    {
+        if (offset == FLASH_CMD_ADDR2 && V == FLASH_CMD_DATA2)
+        {
+            flashCommand2 = 1;
+        }
+        flashCommand1 = 0;
+    }
+    else if (offset == FLASH_CMD_ADDR1 && V == FLASH_CMD_DATA1)
+    {
+        flashCommand1 = 1;
+    }
+    if (RAMSize != 0x40000 || BNK1SEL < 8)
+    {
+        // normal sram
+        Page[1][offset] = V;
+    }
+    else if (BNK1SEL >= 8 && BNK1SEL < 15)
+    {
+        // FLASH ROM use SRAM bank(port 0xC1:8-14)(0xC1:15 0xF0000-0xFFFFF are write protected)
+        if (flashWriteEnable || flashWriteOne)
+        {
+            Page[BNK1SEL][offset] = V;
+            flashWriteEnable = 0;
+            flashWriteOne = 0;
+        }
+        else if (flashWriteSet)
+        {
+            switch (V)
+            {
+            case FLASH_CMD_WRITE:
+                flashWriteEnable = 1;
+                flashWriteReset = 0;
+                break;
+            case FLASH_CMD_CONTINUE_RES1:
+                flashWriteReset = 1;
+                break;
+            case FLASH_CMD_CONTINUE_RES2:
+            case FLASH_CMD_CONTINUE_RES3:
+                if (flashWriteReset)
+                {
+                    flashWriteSet = 0;
+                    flashWriteReset = 0;
+                }
+                break;
+            default:
+                flashWriteReset = 0;
+            }
+        }
+    }
 }
 
 void  WriteIO(DWORD A, BYTE V)
@@ -295,12 +295,12 @@ void  WriteIO(DWORD A, BYTE V)
         if (V & 0x01)
         {
             Segment[8] = 1;
-			RenderSleep();
+            RenderSleep();
         }
-		else
-		{
+        else
+        {
             Segment[8] = 0;
-		}
+        }
         if (V & 0x02)
         {
             SetDrawMode(1);
@@ -323,26 +323,26 @@ void  WriteIO(DWORD A, BYTE V)
         {
             Segment[2] = 1;
         }
-		else
-		{
+        else
+        {
             Segment[2] = 0;
-		}
+        }
         if (V & 0x10)
         {
             Segment[1] = 1;
         }
-		else
-		{
+        else
+        {
             Segment[1] = 0;
-		}
+        }
         if (V & 0x20)
         {
             Segment[0] = 1;
         }
-		else
-		{
+        else
+        {
             Segment[0] = 0;
-		}
+        }
         break;
     case 0x1C:
     case 0x1D:
@@ -502,12 +502,12 @@ void  WriteIO(DWORD A, BYTE V)
         break;
     case 0xA4:
     case 0xA5:
-		IO[A] = V;
+        IO[A] = V;
         HTimer = HPRE; // FF
         return;
     case 0xA6:
     case 0xA7:
-		IO[A] = V;
+        IO[A] = V;
         IO[A + 4] = V; // Dark eyes
         if(TIMCTL & 0x04)
         {
@@ -554,18 +554,18 @@ void  WriteIO(DWORD A, BYTE V)
         Page[0xF] = ROMMap[0xF | j];
         break;
     case 0xC1:
-		if (V >= 8) // WonderWitch
-		{
-			Page[1] = MemDummy;
-		}
+        if (V >= 8) // WonderWitch
+        {
+            Page[1] = MemDummy;
+        }
         else if (V >= RAMBanks)
-		{
-			RAMEnable = 0;
-		}
+        {
+            RAMEnable = 0;
+        }
         else
-		{
-			Page[1] = RAMMap[V];
-		}
+        {
+            Page[1] = RAMMap[V];
+        }
         break;
     case 0xC2:
         Page[2] = ROMMap[V];
@@ -783,10 +783,10 @@ void WsReset (void)
     IRAM[0x75B3]=0x31;
     apuWaveClear();
     ButtonState = 0x0000;
-	for (i = 0; i < 11; i++)
-	{
-		Segment[i] = 0;
-	}
+    for (i = 0; i < 11; i++)
+    {
+        Segment[i] = 0;
+    }
     nec_reset(NULL);
     nec_set_reg(NEC_SP, 0x2000);
 }
@@ -847,8 +847,8 @@ int Interrupt(void)
             break;
         case 2:
             // Hblank毎に1サンプルセットすることで12KHzのwaveデータが出来る
-	        apuWaveSet();
-			NCSR = apuShiftReg();
+            apuWaveSet();
+            NCSR = apuShiftReg();
             break;
         case 4:
             if(RSTRL == 140)
@@ -995,10 +995,10 @@ void WsSplash(void)
     Sleep(300);
     apuStartupSound();
     Sleep(150);
-	Segment[3] = 1;
-	Segment[5] = 1;
-	Segment[9] = 1;
-	Segment[10] = 1;
+    Segment[3] = 1;
+    Segment[5] = 1;
+    Segment[9] = 1;
+    Segment[10] = 1;
     for (i = 0; i < 6; i++)
     {
         WORD color[6] = {0xFF00, 0xFF80, 0xFFF0, 0xF0F0, 0xF0FF, 0xF00F};
@@ -1110,9 +1110,9 @@ void WsSplash(void)
             }
         }
     }
-	Segment[3] = 0;
-	Segment[5] = 0;
-	Segment[9] = 0;
+    Segment[3] = 0;
+    Segment[5] = 0;
+    Segment[9] = 0;
     drawDraw();
 }
 

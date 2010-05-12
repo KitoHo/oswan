@@ -763,39 +763,39 @@ void RefreshLine(int Line)
 */
 void RenderSegment(void)
 {
-	int bit, x, y, i;
-	WORD* p = SegmentBuffer;
-	BYTE lcd[11] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x40, 0, 0, 0x01, 0x80, 0}; // 大、中、小、横、縦、ヘッドホン、音量、電池、スリープ
+    int bit, x, y, i;
+    WORD* p = SegmentBuffer;
+    BYTE lcd[11] = {0x20, 0x10, 0x08, 0x04, 0x02, 0x40, 0, 0, 0x01, 0x80, 0}; // 大、中、小、横、縦、ヘッドホン、音量、電池、スリープ
 
-	for (i = 0; i < 11; i++)
-	{
-		for (y = 0; y < segLine[i]; y++)
-		{
-			for (x = 0; x < 4; x++)
-			{
-				BYTE ch = seg[i][y * 4 + x];
-				for (bit = 0; bit < 8; bit++)
-				{
-					if (ch & 0x80)
-					{
-						if (Segment[i])
-						{
-							*p++ = 0xFCCC;
-						}
-						else
-						{
-							*p++ = 0xF222;
-						}
-					}
-					else
-					{
-						*p++ = 0xF000;
-					}
-					ch <<= 1;
-				}
-			}
-		}
-	}
+    for (i = 0; i < 11; i++)
+    {
+        for (y = 0; y < segLine[i]; y++)
+        {
+            for (x = 0; x < 4; x++)
+            {
+                BYTE ch = seg[i][y * 4 + x];
+                for (bit = 0; bit < 8; bit++)
+                {
+                    if (ch & 0x80)
+                    {
+                        if (Segment[i])
+                        {
+                            *p++ = 0xFCCC;
+                        }
+                        else
+                        {
+                            *p++ = 0xF222;
+                        }
+                    }
+                    else
+                    {
+                        *p++ = 0xF000;
+                    }
+                    ch <<= 1;
+                }
+            }
+        }
+    }
 }
 
 void RenderSleep(void)

@@ -34,8 +34,8 @@ void WsSetDir(void)
         return;
     }
     *(++p) = 0;
-	wcscpy(IniPath, CurDir);
-	wcscat(IniPath, L"OswanJ.ini");
+    wcscpy(IniPath, CurDir);
+    wcscat(IniPath, L"OswanJ.ini");
 }
 
 int WsSetPdata(void)
@@ -230,11 +230,11 @@ int WsCreate(wchar_t *CartName)
                 CreateDirectoryW(SaveName, NULL);
             }
             wcscat(SaveName, p);
-			p = wcsrchr(SaveName, L'.');
-			if (p)
-			{
-				*p = 0;
-			}
+            p = wcsrchr(SaveName, L'.');
+            if (p)
+            {
+                *p = 0;
+            }
             wcscat(SaveName, L".sav");
         }
         else
@@ -250,7 +250,7 @@ int WsCreate(wchar_t *CartName)
                     if (fread(RAMMap[i], 1, RAMSize, fp) != (size_t)RAMSize)
                     {
                         ErrorMsg(ERR_FREAD_SAVE);
-						break;
+                        break;
                     }
                 }
                 else
@@ -279,14 +279,14 @@ int WsCreate(wchar_t *CartName)
             CreateDirectoryW(StateName, NULL);
         }
         wcscat(StateName, p);
-		p = wcsrchr(StateName, L'.');
-		if (p)
-		{
-			*p = 0;
-		}
+        p = wcsrchr(StateName, L'.');
+        if (p)
+        {
+            *p = 0;
+        }
     }
     WsReset();
-	SetDrawMode(buf[6] & 1); // 0:横 1:縦
+    SetDrawMode(buf[6] & 1); // 0:横 1:縦
     return 0;
 }
 
@@ -343,11 +343,11 @@ void WsLoadIEep(void)
         fread(IEep, sizeof(WORD), 64, fp);
         fclose(fp);
     }
-	else
-	{
-		memset(IEep, 0xFF, 0x60);
-		memset(IEep + 0x60, 0, 0x20);
-	}
+    else
+    {
+        memset(IEep, 0xFF, 0x60);
+        memset(IEep + 0x60, 0, 0x20);
+    }
 }
 
 void WsSaveIEep(void)
@@ -365,38 +365,38 @@ void WsSaveIEep(void)
 }
 
 #define MacroLoadNecRegisterFromFile(F,R) \
-		fread(&value, sizeof(unsigned int), 1, fp); \
-	    nec_set_reg(R,value); 
+        fread(&value, sizeof(unsigned int), 1, fp); \
+        nec_set_reg(R,value); 
 void WsLoadState(int num)
 {
     FILE* fp;
     wchar_t buf[512];
-	unsigned int value;
-	int i;
+    unsigned int value;
+    int i;
 
-	wsprintf(buf, L"%s.%03d", StateName, num);
+    wsprintf(buf, L"%s.%03d", StateName, num);
     if ((fp = _wfopen(buf, L"rb")) == NULL)
     {
-		return;
-	}
-	MacroLoadNecRegisterFromFile(fp,NEC_IP);
-	MacroLoadNecRegisterFromFile(fp,NEC_AW);
-	MacroLoadNecRegisterFromFile(fp,NEC_BW);
-	MacroLoadNecRegisterFromFile(fp,NEC_CW);
-	MacroLoadNecRegisterFromFile(fp,NEC_DW);
-	MacroLoadNecRegisterFromFile(fp,NEC_CS);
-	MacroLoadNecRegisterFromFile(fp,NEC_DS);
-	MacroLoadNecRegisterFromFile(fp,NEC_ES);
-	MacroLoadNecRegisterFromFile(fp,NEC_SS);
-	MacroLoadNecRegisterFromFile(fp,NEC_IX);
-	MacroLoadNecRegisterFromFile(fp,NEC_IY);
-	MacroLoadNecRegisterFromFile(fp,NEC_BP);
-	MacroLoadNecRegisterFromFile(fp,NEC_SP);
-	MacroLoadNecRegisterFromFile(fp,NEC_FLAGS);
-	MacroLoadNecRegisterFromFile(fp,NEC_VECTOR);
-	MacroLoadNecRegisterFromFile(fp,NEC_PENDING);
-	MacroLoadNecRegisterFromFile(fp,NEC_NMI_STATE);
-	MacroLoadNecRegisterFromFile(fp,NEC_IRQ_STATE);
+        return;
+    }
+    MacroLoadNecRegisterFromFile(fp,NEC_IP);
+    MacroLoadNecRegisterFromFile(fp,NEC_AW);
+    MacroLoadNecRegisterFromFile(fp,NEC_BW);
+    MacroLoadNecRegisterFromFile(fp,NEC_CW);
+    MacroLoadNecRegisterFromFile(fp,NEC_DW);
+    MacroLoadNecRegisterFromFile(fp,NEC_CS);
+    MacroLoadNecRegisterFromFile(fp,NEC_DS);
+    MacroLoadNecRegisterFromFile(fp,NEC_ES);
+    MacroLoadNecRegisterFromFile(fp,NEC_SS);
+    MacroLoadNecRegisterFromFile(fp,NEC_IX);
+    MacroLoadNecRegisterFromFile(fp,NEC_IY);
+    MacroLoadNecRegisterFromFile(fp,NEC_BP);
+    MacroLoadNecRegisterFromFile(fp,NEC_SP);
+    MacroLoadNecRegisterFromFile(fp,NEC_FLAGS);
+    MacroLoadNecRegisterFromFile(fp,NEC_VECTOR);
+    MacroLoadNecRegisterFromFile(fp,NEC_PENDING);
+    MacroLoadNecRegisterFromFile(fp,NEC_NMI_STATE);
+    MacroLoadNecRegisterFromFile(fp,NEC_IRQ_STATE);
     fread(IRAM, sizeof(BYTE), 0x10000, fp);
     fread(IO, sizeof(BYTE), 0x100, fp);
     for (i  =0; i < RAMBanks; i++)
@@ -410,55 +410,55 @@ void WsLoadState(int num)
             fread(RAMMap[i], 1, 0x10000, fp);
         }
     }
-	fread(Palette, sizeof(WORD), 16 * 16, fp);
+    fread(Palette, sizeof(WORD), 16 * 16, fp);
     fclose(fp);
-	WriteIO(0xC1, IO[0xC1]);
-	WriteIO(0xC2, IO[0xC2]);
-	WriteIO(0xC3, IO[0xC3]);
-	WriteIO(0xC0, IO[0xC0]);
-	for (i = 0x80; i <= 0x90; i++)
-	{
-		WriteIO(i, IO[i]);
-	}
+    WriteIO(0xC1, IO[0xC1]);
+    WriteIO(0xC2, IO[0xC2]);
+    WriteIO(0xC3, IO[0xC3]);
+    WriteIO(0xC0, IO[0xC0]);
+    for (i = 0x80; i <= 0x90; i++)
+    {
+        WriteIO(i, IO[i]);
+    }
 }
 
 #define MacroStoreNecRegisterToFile(F,R) \
-	    value = nec_get_reg(R); \
-		fwrite(&value, sizeof(unsigned int), 1, fp);
+        value = nec_get_reg(R); \
+        fwrite(&value, sizeof(unsigned int), 1, fp);
 void WsSaveState(int num)
 {
     FILE* fp;
     wchar_t buf[512];
-	unsigned int value;
-	int i;
+    unsigned int value;
+    int i;
 
-	if (StateName[0] == 0)
-	{
-		return;
-	}
-	wsprintf(buf, L"%s.%03d", StateName, num);
+    if (StateName[0] == 0)
+    {
+        return;
+    }
+    wsprintf(buf, L"%s.%03d", StateName, num);
     if ((fp = _wfopen(buf, L"wb")) == NULL)
     {
-		return;
-	}
-	MacroStoreNecRegisterToFile(fp,NEC_IP);
-	MacroStoreNecRegisterToFile(fp,NEC_AW);
-	MacroStoreNecRegisterToFile(fp,NEC_BW);
-	MacroStoreNecRegisterToFile(fp,NEC_CW);
-	MacroStoreNecRegisterToFile(fp,NEC_DW);
-	MacroStoreNecRegisterToFile(fp,NEC_CS);
-	MacroStoreNecRegisterToFile(fp,NEC_DS);
-	MacroStoreNecRegisterToFile(fp,NEC_ES);
-	MacroStoreNecRegisterToFile(fp,NEC_SS);
-	MacroStoreNecRegisterToFile(fp,NEC_IX);
-	MacroStoreNecRegisterToFile(fp,NEC_IY);
-	MacroStoreNecRegisterToFile(fp,NEC_BP);
-	MacroStoreNecRegisterToFile(fp,NEC_SP);
-	MacroStoreNecRegisterToFile(fp,NEC_FLAGS);
-	MacroStoreNecRegisterToFile(fp,NEC_VECTOR);
-	MacroStoreNecRegisterToFile(fp,NEC_PENDING);
-	MacroStoreNecRegisterToFile(fp,NEC_NMI_STATE);
-	MacroStoreNecRegisterToFile(fp,NEC_IRQ_STATE);
+        return;
+    }
+    MacroStoreNecRegisterToFile(fp,NEC_IP);
+    MacroStoreNecRegisterToFile(fp,NEC_AW);
+    MacroStoreNecRegisterToFile(fp,NEC_BW);
+    MacroStoreNecRegisterToFile(fp,NEC_CW);
+    MacroStoreNecRegisterToFile(fp,NEC_DW);
+    MacroStoreNecRegisterToFile(fp,NEC_CS);
+    MacroStoreNecRegisterToFile(fp,NEC_DS);
+    MacroStoreNecRegisterToFile(fp,NEC_ES);
+    MacroStoreNecRegisterToFile(fp,NEC_SS);
+    MacroStoreNecRegisterToFile(fp,NEC_IX);
+    MacroStoreNecRegisterToFile(fp,NEC_IY);
+    MacroStoreNecRegisterToFile(fp,NEC_BP);
+    MacroStoreNecRegisterToFile(fp,NEC_SP);
+    MacroStoreNecRegisterToFile(fp,NEC_FLAGS);
+    MacroStoreNecRegisterToFile(fp,NEC_VECTOR);
+    MacroStoreNecRegisterToFile(fp,NEC_PENDING);
+    MacroStoreNecRegisterToFile(fp,NEC_NMI_STATE);
+    MacroStoreNecRegisterToFile(fp,NEC_IRQ_STATE);
     fwrite(IRAM, sizeof(BYTE), 0x10000, fp);
     fwrite(IO, sizeof(BYTE), 0x100, fp);
     for (i  =0; i < RAMBanks; i++)
@@ -472,7 +472,7 @@ void WsSaveState(int num)
             fwrite(RAMMap[i], 1, 0x10000, fp);
         }
     }
-	fwrite(Palette, sizeof(WORD), 16 * 16, fp);
+    fwrite(Palette, sizeof(WORD), 16 * 16, fp);
     fclose(fp);
 }
 

@@ -9,7 +9,7 @@ $Rev$
 #include "WSRender.h"
 
 extern HWND hWnd;
-int	Kerorikan = 0;
+int Kerorikan = 0;
 static enum DRAWSIZE DrawSize = DS_1;           // 描画サイズ フルスクリーン、x1 x2 x3
 static int DrawMode = 0;                        // 縦横フラグ 0:横
 static LPDIRECT3D9                 pD3D;        // IDirect3D9インターフェイスへのポインタ
@@ -79,7 +79,7 @@ HRESULT drawInitialize(BOOL isFullScreen)
         if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
         {
             // 初期化失敗
-			MessageBox(hWnd, TEXT(" グラフィックチップが未対応です "), TEXT("Direct3D Error"), MB_OK);
+            MessageBox(hWnd, TEXT(" グラフィックチップが未対応です "), TEXT("Direct3D Error"), MB_OK);
             return E_FAIL;
         }
     }
@@ -202,39 +202,39 @@ void drawDraw()
     //頂点バッファの中身を埋める
     MY_VERTEX* v;
     pMyVB->Lock( 0, 0, (void**)&v, 0 );
-	if (Kerorikan)
-	{
-		// 頂点座標の設定
-		v[0].p = D3DXVECTOR3(-112*KERO,  72*KERO, 0.0f);
-		v[1].p = D3DXVECTOR3( 112*KERO,  72*KERO, 0.0f);
-		v[2].p = D3DXVECTOR3(-112*KERO, -72*KERO, 0.0f);
-		v[3].p = D3DXVECTOR3( 112*KERO, -72*KERO, 0.0f);
-		v[4].p = D3DXVECTOR3( 114*KERO,  72*KERO, 0.0f);
-		v[5].p = D3DXVECTOR3( 122*KERO,  72*KERO, 0.0f);
-		v[6].p = D3DXVECTOR3( 114*KERO, -72*KERO, 0.0f);
-		v[7].p = D3DXVECTOR3( 122*KERO, -72*KERO, 0.0f);
-	}
-	else
-	{
-		// 頂点座標の設定
-		v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
-		v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
-		v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
-		v[3].p = D3DXVECTOR3(MAIN_W,-1.0f, 0.0f);
-		v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
-		v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
-		v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
-		v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
-	}
-	// テクスチャ座標の設定
-	v[0].t = D3DXVECTOR2(0.0f, 0.0f);
-	v[1].t = D3DXVECTOR2(MAIN_X, 0.0f);
-	v[2].t = D3DXVECTOR2(0.0f, MAIN_Y);
-	v[3].t = D3DXVECTOR2(MAIN_X, MAIN_Y);
-	v[4].t = D3DXVECTOR2(0.0f, 0.0f);
-	v[5].t = D3DXVECTOR2(SEG_X, 0.0f);
-	v[6].t = D3DXVECTOR2(0.0f, SEG_Y);
-	v[7].t = D3DXVECTOR2(SEG_X, SEG_Y);
+    if (Kerorikan)
+    {
+        // 頂点座標の設定
+        v[0].p = D3DXVECTOR3(-112*KERO,  72*KERO, 0.0f);
+        v[1].p = D3DXVECTOR3( 112*KERO,  72*KERO, 0.0f);
+        v[2].p = D3DXVECTOR3(-112*KERO, -72*KERO, 0.0f);
+        v[3].p = D3DXVECTOR3( 112*KERO, -72*KERO, 0.0f);
+        v[4].p = D3DXVECTOR3( 114*KERO,  72*KERO, 0.0f);
+        v[5].p = D3DXVECTOR3( 122*KERO,  72*KERO, 0.0f);
+        v[6].p = D3DXVECTOR3( 114*KERO, -72*KERO, 0.0f);
+        v[7].p = D3DXVECTOR3( 122*KERO, -72*KERO, 0.0f);
+    }
+    else
+    {
+        // 頂点座標の設定
+        v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
+        v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
+        v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
+        v[3].p = D3DXVECTOR3(MAIN_W,-1.0f, 0.0f);
+        v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
+        v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
+        v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
+        v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
+    }
+    // テクスチャ座標の設定
+    v[0].t = D3DXVECTOR2(0.0f, 0.0f);
+    v[1].t = D3DXVECTOR2(MAIN_X, 0.0f);
+    v[2].t = D3DXVECTOR2(0.0f, MAIN_Y);
+    v[3].t = D3DXVECTOR2(MAIN_X, MAIN_Y);
+    v[4].t = D3DXVECTOR2(0.0f, 0.0f);
+    v[5].t = D3DXVECTOR2(SEG_X, 0.0f);
+    v[6].t = D3DXVECTOR2(0.0f, SEG_Y);
+    v[7].t = D3DXVECTOR2(SEG_X, SEG_Y);
     // 頂点カラーの設定
     v[0].color = v[1].color = v[2].color = v[3].color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
     v[4].color = v[5].color = v[6].color = v[7].color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
@@ -248,10 +248,10 @@ void drawDraw()
         D3DXMatrixRotationZ(&mat, 0.4636476f); // atanf(0.5f)だと最適化されないかもしれないので
     }
     // 縦（左90度回転）
-	else if (DrawMode & 0x01)
-	{
+    else if (DrawMode & 0x01)
+    {
         D3DXMatrixRotationZ(&mat, D3DXToRadian(90));
-	}
+    }
     // 描画開始宣言
     if(SUCCEEDED(pD3DDevice->BeginScene()))
     {

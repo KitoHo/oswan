@@ -47,7 +47,7 @@ void CALLBACK apuWaveOutProc(HWAVEOUT hwo, UINT uMsg, DWORD dwInstance, DWORD dw
     case WOM_DONE:
         rBuf++;
         if (rBuf >= BUFCOUNT)
-		{
+        {
             rBuf = 0;
         }
         break;
@@ -75,12 +75,12 @@ int apuWaveCreate(void)
     wfe.nAvgBytesPerSec = wfe.nSamplesPerSec * wfe.nBlockAlign;
     result = waveOutOpen(&hWaveOut, WAVE_MAPPER, &wfe, (DWORD_PTR)apuWaveOutProc, NULL, CALLBACK_FUNCTION);
     if (result != MMSYSERR_NOERROR )
-	{
+    {
         waveOutGetErrorText(result, msg, sizeof(msg));
         ErrorMsg(ERR_WAVEOUT_OPEN);
     }
     for (i = 0; i < BUFCOUNT; i++)
-	{
+    {
         whdr[i] = (WAVEHDR*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WAVEHDR));
         whdr[i]->lpData = (char*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, BUFSIZEW * 4);
         whdr[i]->dwBufferLength = BUFSIZEW * 4;
@@ -88,7 +88,7 @@ int apuWaveCreate(void)
         whdr[i]->dwLoops = 0;
         result = waveOutPrepareHeader(hWaveOut, whdr[i], sizeof(WAVEHDR));
         if (result != MMSYSERR_NOERROR )
-		{
+        {
             waveOutGetErrorText(result, msg, sizeof(msg));
             ErrorMsg(ERR_WAVEOUT_PREPAREHEADER);
         }
@@ -98,13 +98,13 @@ int apuWaveCreate(void)
 
 void apuWaveRelease(void)
 {
-	int i;
+    int i;
 
     waveOutReset(hWaveOut);
     for(i = 0; i < BUFCOUNT; i++)
-	{
+    {
         if (whdr[i])
-		{
+        {
             waveOutUnprepareHeader(hWaveOut,whdr[i],sizeof(WAVEHDR));
             HeapFree(GetProcessHeap(),0,whdr[i]->lpData);
             HeapFree(GetProcessHeap(),0,whdr[i]);
@@ -121,7 +121,7 @@ void apuWaveClear(void)
 
     waveOutReset(hWaveOut);
     for (i = 0; i < BUFCOUNT; i++)
-	{
+    {
         ZeroMemory(whdr[i]->lpData, BUFSIZEW * 4);
     }
     rBuf = 0;
@@ -134,22 +134,22 @@ int apuInit(void)
     int i, j;
 
     for (i = 0; i < 4; i++)
-	{
+    {
         for (j = 0; j < 32; j++)
-		{
+        {
             PData[i][j] = 8;
         }
     }
     for (i = 0; i < 8; i++)
-	{
+    {
         for (j = 0; j < BUFSIZEN; j++)
-		{
+        {
             PDataN[i][j] = ((apuMrand(15 - i) & 1) ? 15 : 0);
         }
     }
 
     for (i = 0; i < BUFSIZEN; i++)
-	{
+    {
         RandData[i] = apuMrand(15);
     }
     apuWaveCreate();
@@ -159,14 +159,14 @@ int apuInit(void)
 void apuEnd(void)
 {
     apuWaveRelease();
-	apuDestroySound();
+    apuDestroySound();
 }
 
 unsigned int apuMrand(unsigned int Degree)
 {
 #define BIT(n) (1<<n)
     typedef struct
-	{
+    {
         unsigned int N;
         int InputBit;
         int Mask;
@@ -196,37 +196,37 @@ unsigned int apuMrand(unsigned int Degree)
     int Masked;
 
     if(pTbl->N != Degree)
-	{
+    {
         pTbl = TblMask;
         while(pTbl->N) {
             if(pTbl->N == Degree)
-			{
+            {
                 break;
             }
             pTbl++;
         }
         if(!pTbl->N)
-		{
+        {
             pTbl--;
         }
         ShiftReg &= pTbl->InputBit-1;
         if(!ShiftReg)
-		{
+        {
             ShiftReg = pTbl->InputBit-1;
         }
     }
     Masked = ShiftReg & pTbl->Mask;
     while(Masked)
-	{
+    {
         XorReg ^= Masked & 0x01;
         Masked >>= 1;
     }
     if(XorReg)
-	{
+    {
         ShiftReg |= pTbl->InputBit;
     }
     else
-	{
+    {
         ShiftReg &= ~pTbl->InputBit;
     }
     ShiftReg >>= 1;
@@ -255,15 +255,15 @@ unsigned char apuVoice(void)
             b++;
         }
         if (v < 0x80)
-		{
+        {
             v += 0x80;
         }
         else
-		{
+        {
             v -= 0x80;
         }
         if (SDMACNT <= index)
-		{
+        {
             index = 0;
             b = 0;
         }
@@ -276,7 +276,7 @@ unsigned char apuVoice(void)
             b++;
         }
         if (SDMACNT <= index)
-		{
+        {
             SDMACTL &= 0x7F; // DMA end
             SDMACNT = 0;
             index = 0;
@@ -289,9 +289,9 @@ unsigned char apuVoice(void)
 void apuSweep(void)
 {
     if ((Swp.step) && Swp.on) // sweep on
-	{
+    {
         if (Swp.cnt < 0)
-		{
+        {
             Swp.cnt = Swp.time;
             Ch[2].freq += Swp.step;
             Ch[2].freq &= 0x7ff;
@@ -305,7 +305,7 @@ WORD apuShiftReg(void)
     static int nPos = 0;
     // Noise counter
     if (++nPos >= BUFSIZEN)
-	{
+    {
         nPos = 0;
     }
     return RandData[nPos];
@@ -321,47 +321,47 @@ void apuWaveSet(void)
     static int wait = 0;
     short   *dataAdr;
 
-	if (WsInputGetNowait())
-	{
-		wait = 1;
-	}
-	else if (wait)
-	{
-		wait = 0;
-		apuWaveClear();
-	}
+    if (WsInputGetNowait())
+    {
+        wait = 1;
+    }
+    else if (wait)
+    {
+        wait = 0;
+        apuWaveClear();
+    }
     apuSweep();
     for (channel = 0; channel < 4; channel++)
-	{
+    {
         lVol[channel] = 0;
         rVol[channel] = 0;
         if (Ch[channel].on)
-		{
+        {
             if (channel == 1 && VoiceOn && Sound[4])
-			{
+            {
                 continue;
             }
             else if (channel == 2 && Swp.on && !Sound[5])
-			{
+            {
                 continue;
             }
             else if (channel == 3 && Noise.on && Sound[6])
-			{
+            {
                 index = (3072000 / BPSWAV) * point[3] / (2048 - Ch[3].freq);
                 if ((index %= BUFSIZEN) == 0 && preindex[3])
-				{
+                {
                     point[3] = 0;
                 }
                 value = (short)PDataN[Noise.pattern][index] - 8;
             }
             else if (Sound[channel] == 0)
-			{
+            {
                 continue;
             }
             else {
                 index = (3072000 / BPSWAV) * point[channel] / (2048 - Ch[channel].freq);
                 if ((index %= 32) == 0 && preindex[channel])
-				{
+                {
                     point[channel] = 0;
                 }
                 value = (short)PData[channel][index] - 8;
@@ -380,20 +380,20 @@ void apuWaveSet(void)
     dataAdr[wPos * 2] = LL;
     dataAdr[wPos * 2 + 1] = RR;
     if (++wPos >= BUFSIZEW)
-	{
+    {
         waveOutWrite(hWaveOut, whdr[wBuf], sizeof(WAVEHDR));
         wPos = 0;
         if (++wBuf >= BUFCOUNT)
-		{
+        {
             wBuf = 0;
         }
-		if (wait == 0)
-		{
-			while (wBuf == rBuf) // 書き込みが再生に追いついた
-			{
-				Sleep(1); // WaveOutのコールバック関数でrBufが更新されるまで待つ
-			}
-		}
+        if (wait == 0)
+        {
+            while (wBuf == rBuf) // 書き込みが再生に追いついた
+            {
+                Sleep(1); // WaveOutのコールバック関数でrBufが更新されるまで待つ
+            }
+        }
     }
 }
 
@@ -403,86 +403,86 @@ static DWORD SSDataLen, SSHeadLen;
 
 void apuLoadSound(void)
 {
-	HINSTANCE hInst;
-	HRSRC hRsrc;
-	HGLOBAL hG;
-	BYTE* lock;
-	BYTE* wave;
-	DWORD wfesize;
-	size_t bufsize;
+    HINSTANCE hInst;
+    HRSRC hRsrc;
+    HGLOBAL hG;
+    BYTE* lock;
+    BYTE* wave;
+    DWORD wfesize;
+    size_t bufsize;
 
-	hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
-	hRsrc = FindResource(hInst, MAKEINTRESOURCE(IDR_WAVE1), TEXT("WAVE"));
-	bufsize = SizeofResource(hInst, hRsrc);
-	SSMasterBuf = malloc(bufsize);
-	SSPlayBuf = malloc(bufsize);
-	hG = LoadResource(hInst, hRsrc);
-	lock = (BYTE*)LockResource(hG);	//RIFFヘッダの確認
-	memcpy(SSMasterBuf, lock, bufsize);
-	memcpy(SSPlayBuf, lock, bufsize);
-	if (*(LPDWORD)SSMasterBuf != *(LPDWORD)"RIFF")
-	{
-		ErrorMsg(ERR_WAVERESOURCE);
-		return;
-	}
-	wave = (BYTE*)SSMasterBuf;
-	wave += 4; //ポインタは次を指しておく
-	wave += 4; //ポインタは次を指しておく
-	//WAVEヘッダの確認
-	if (*(LPDWORD)wave != *(LPDWORD)"WAVE")
-	{
-		ErrorMsg(ERR_WAVERESOURCE);
-		return;
-	}
-	wave += 4; //ポインタは次を指しておく
-	//fmtチャンクの確認
-	if (*(LPDWORD)wave != *(LPDWORD)"fmt ")
-	{
-		ErrorMsg(ERR_WAVERESOURCE);
-		return;
-	}
-	wave += 4; //ポインタは次を指しておく
-	//fmtチャンクサイズの取得
-	wfesize = *(DWORD *)wave;
-	wave += 4; //ポインタは次を指しておく
-	wave += wfesize; //WAVEFORMATEX構造体分だけポインタを進めておく
-	//dataチャンクの確認
-	if (*(LPDWORD)wave != *(LPDWORD)"data")
-	{
-		ErrorMsg(ERR_WAVERESOURCE);
-		return;
-	}
-	wave += 4; //ポインタは次を指しておく
-	//波形データのバイト数の取得
-	SSDataLen = *(DWORD *)wave;
-	SSHeadLen = bufsize - SSDataLen;
-	FreeResource(hG);
+    hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
+    hRsrc = FindResource(hInst, MAKEINTRESOURCE(IDR_WAVE1), TEXT("WAVE"));
+    bufsize = SizeofResource(hInst, hRsrc);
+    SSMasterBuf = malloc(bufsize);
+    SSPlayBuf = malloc(bufsize);
+    hG = LoadResource(hInst, hRsrc);
+    lock = (BYTE*)LockResource(hG); //RIFFヘッダの確認
+    memcpy(SSMasterBuf, lock, bufsize);
+    memcpy(SSPlayBuf, lock, bufsize);
+    if (*(LPDWORD)SSMasterBuf != *(LPDWORD)"RIFF")
+    {
+        ErrorMsg(ERR_WAVERESOURCE);
+        return;
+    }
+    wave = (BYTE*)SSMasterBuf;
+    wave += 4; //ポインタは次を指しておく
+    wave += 4; //ポインタは次を指しておく
+    //WAVEヘッダの確認
+    if (*(LPDWORD)wave != *(LPDWORD)"WAVE")
+    {
+        ErrorMsg(ERR_WAVERESOURCE);
+        return;
+    }
+    wave += 4; //ポインタは次を指しておく
+    //fmtチャンクの確認
+    if (*(LPDWORD)wave != *(LPDWORD)"fmt ")
+    {
+        ErrorMsg(ERR_WAVERESOURCE);
+        return;
+    }
+    wave += 4; //ポインタは次を指しておく
+    //fmtチャンクサイズの取得
+    wfesize = *(DWORD *)wave;
+    wave += 4; //ポインタは次を指しておく
+    wave += wfesize; //WAVEFORMATEX構造体分だけポインタを進めておく
+    //dataチャンクの確認
+    if (*(LPDWORD)wave != *(LPDWORD)"data")
+    {
+        ErrorMsg(ERR_WAVERESOURCE);
+        return;
+    }
+    wave += 4; //ポインタは次を指しておく
+    //波形データのバイト数の取得
+    SSDataLen = *(DWORD *)wave;
+    SSHeadLen = bufsize - SSDataLen;
+    FreeResource(hG);
 }
 
 void apuDestroySound(void)
 {
-	free(SSMasterBuf);
-	SSMasterBuf = NULL;
-	free(SSPlayBuf);
-	SSPlayBuf = NULL;
+    free(SSMasterBuf);
+    SSMasterBuf = NULL;
+    free(SSPlayBuf);
+    SSPlayBuf = NULL;
 }
 
 void apuStartupSound(void)
 {
-	short *src, *dst;
-	int i;
-	int size = SSDataLen / sizeof(short);
+    short *src, *dst;
+    int i;
+    int size = SSDataLen / sizeof(short);
 
-	if (SSMasterBuf == NULL || SSPlayBuf == NULL)
-	{
-		return;
-	}
-	src = (short*)((BYTE*)SSMasterBuf + SSHeadLen);
-	dst = (short*)((BYTE*)SSPlayBuf + SSHeadLen);
-	// マスターの音量を変更してプレイバッファーにコピー
-	for (i = 0; i < size; i++)
-	{
-		*dst++ = (*src++) * WsWaveVol / 32;
-	}
-	PlaySound((LPCTSTR)SSPlayBuf, NULL, SND_MEMORY | SND_ASYNC);
+    if (SSMasterBuf == NULL || SSPlayBuf == NULL)
+    {
+        return;
+    }
+    src = (short*)((BYTE*)SSMasterBuf + SSHeadLen);
+    dst = (short*)((BYTE*)SSPlayBuf + SSHeadLen);
+    // マスターの音量を変更してプレイバッファーにコピー
+    for (i = 0; i < size; i++)
+    {
+        *dst++ = (*src++) * WsWaveVol / 32;
+    }
+    PlaySound((LPCTSTR)SSPlayBuf, NULL, SND_MEMORY | SND_ASYNC);
 }

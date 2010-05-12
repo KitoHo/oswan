@@ -37,13 +37,13 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     {
         return FALSE;
     }
-	hInst = hCurInst;
+    hInst = hCurInst;
     accel = LoadAccelerators(hCurInst, MAKEINTRESOURCE(IDR_ACCELERATOR1));
     WsSetDir();
     WsLoadIEep();
     ConfigCreate();
     apuInit();
-	apuLoadSound();
+    apuLoadSound();
     drawInitialize(FALSE);
     drawCreate();
     SetDrawSize(DS_2);
@@ -57,10 +57,10 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
             {
                 break;
             }
-			if (!TranslateAccelerator(hWnd, accel, &msg)) {
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+            if (!TranslateAccelerator(hWnd, accel, &msg)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
         }
         if (Run)
         {
@@ -141,17 +141,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             WsCreate(NULL);
             return 0L;
         case ID_STATE_SAVE_0:
-			WsSaveState(0);
-			return 0L;
+            WsSaveState(0);
+            return 0L;
         case ID_STATE_LOAD_0:
-			WsLoadState(0);
-			return 0L;
+            WsLoadState(0);
+            return 0L;
         case ID_PAUSE:
-			WsPause();
-			return 0L;
+            WsPause();
+            return 0L;
         case ID_RESET:
-			WsReset();
-			return 0L;
+            WsReset();
+            return 0L;
         case ID_SIZE_1:
             menu = GetMenu(hWnd);
             CheckMenuItem(menu, ID_SIZE_1, MF_CHECKED);
@@ -202,21 +202,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             return 0L;
         case ID_KERORIKAN:
             menu = GetMenu(hWnd);
-			if (Kerorikan)
-			{
-				Kerorikan = 0;
+            if (Kerorikan)
+            {
+                Kerorikan = 0;
                 CheckMenuItem(menu, LOWORD(wp), MF_UNCHECKED);
-				WsResize();
-				drawDraw();
-			}
-			else
-			{
-				Kerorikan = 1;
+                WsResize();
+                drawDraw();
+            }
+            else
+            {
+                Kerorikan = 1;
                 CheckMenuItem(menu, LOWORD(wp), MF_CHECKED);
-				WsResize();
-				drawDraw();
-			}
-			return 0L;
+                WsResize();
+                drawDraw();
+            }
+            return 0L;
         case ID_SOUND_1:
         case ID_SOUND_2:
         case ID_SOUND_3:
@@ -250,13 +250,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             }
             return 0L;
         case ID_CONF_INPUT:
-			WsInputRelease();
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_CONFIG), hWnd, (DLGPROC)ConfProc);
-			WsInputInit(hWnd);
-			return 0L;
-		case ID_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_ABOUT), hWnd, (DLGPROC)AboutProc);
-			break;
+            WsInputRelease();
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_CONFIG), hWnd, (DLGPROC)ConfProc);
+            WsInputInit(hWnd);
+            return 0L;
+        case ID_ABOUT:
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG_ABOUT), hWnd, (DLGPROC)AboutProc);
+            break;
         }
         break;
     case WM_PAINT:
@@ -274,54 +274,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
 //Aboutダイアログプロシージャ
 LRESULT CALLBACK AboutProc(HWND hDlgWnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-	HDC			hDC;
-	HFONT		hFont;
+    HDC         hDC;
+    HFONT       hFont;
 
-	switch (msg)
-	{
+    switch (msg)
+    {
     case WM_INITDIALOG:
-		SetWindowText(GetDlgItem(hDlgWnd, IDC_TEXT_VERSION), TEXT("バージョン 0.1"));
+        SetWindowText(GetDlgItem(hDlgWnd, IDC_TEXT_VERSION), TEXT("バージョン 0.1"));
         break;
-	case WM_CTLCOLORSTATIC:
-		if((HWND)lp == GetDlgItem(hDlgWnd, IDC_TEXT_VERSION))
-		{
-			hDC = (HDC)wp;
-			hFont = CreateFont(
-				18,							/* フォント高さ */
-				0,							/* 文字幅 */
-				0,							/* テキストの角度 */
-				0,							/* ベースラインとｘ軸との角度 */
-				FW_BOLD,					/* フォントの重さ（太さ） */
-				FALSE,						/* イタリック体 */
-				FALSE,						/* アンダーライン */
-				FALSE,						/* 打ち消し線 */
-				SHIFTJIS_CHARSET,			/* 文字セット */
-				OUT_DEFAULT_PRECIS,			/* 出力精度 */
-				CLIP_DEFAULT_PRECIS,		/* クリッピング精度 */
-				PROOF_QUALITY,				/* 出力品質 */
-				FIXED_PITCH | FF_MODERN,	/* ピッチとファミリー */
-				(LPCTSTR)"ＭＳ Ｐゴシック"	/* 書体名 */
-			);
-			SelectObject(hDC, hFont);
-			SetTextColor(hDC, RGB(0, 0, 255));
-			SetBkMode(hDC, TRANSPARENT);
-			return (BOOL)(HBRUSH)GetStockObject(NULL_BRUSH);
-		}
-		return DefWindowProc(hDlgWnd, msg, wp, lp);
-	case WM_COMMAND:
-		if(HIWORD(wp) == BN_CLICKED)
-		{
-			switch (LOWORD(wp))
-			{
-			case IDOK:
-			case IDCANCEL:
-				EndDialog(hDlgWnd, LOWORD(wp));
-				return 1;
-			}
-		}
-		break;
-	}
-	return 0;
+    case WM_CTLCOLORSTATIC:
+        if((HWND)lp == GetDlgItem(hDlgWnd, IDC_TEXT_VERSION))
+        {
+            hDC = (HDC)wp;
+            hFont = CreateFont(
+                18,                         /* フォント高さ */
+                0,                          /* 文字幅 */
+                0,                          /* テキストの角度 */
+                0,                          /* ベースラインとｘ軸との角度 */
+                FW_BOLD,                    /* フォントの重さ（太さ） */
+                FALSE,                      /* イタリック体 */
+                FALSE,                      /* アンダーライン */
+                FALSE,                      /* 打ち消し線 */
+                SHIFTJIS_CHARSET,           /* 文字セット */
+                OUT_DEFAULT_PRECIS,         /* 出力精度 */
+                CLIP_DEFAULT_PRECIS,        /* クリッピング精度 */
+                PROOF_QUALITY,              /* 出力品質 */
+                FIXED_PITCH | FF_MODERN,    /* ピッチとファミリー */
+                (LPCTSTR)"ＭＳ Ｐゴシック"  /* 書体名 */
+            );
+            SelectObject(hDC, hFont);
+            SetTextColor(hDC, RGB(0, 0, 255));
+            SetBkMode(hDC, TRANSPARENT);
+            return (BOOL)(HBRUSH)GetStockObject(NULL_BRUSH);
+        }
+        return DefWindowProc(hDlgWnd, msg, wp, lp);
+    case WM_COMMAND:
+        if(HIWORD(wp) == BN_CLICKED)
+        {
+            switch (LOWORD(wp))
+            {
+            case IDOK:
+            case IDCANCEL:
+                EndDialog(hDlgWnd, LOWORD(wp));
+                return 1;
+            }
+        }
+        break;
+    }
+    return 0;
 }
 
 wchar_t* OpenWSFile(wchar_t* path, DWORD max)
@@ -349,20 +349,20 @@ wchar_t* OpenWSFile(wchar_t* path, DWORD max)
 
 void WsPause(void)
 {
-	static int pause = 0;
-	HMENU	menu = GetMenu(hWnd);
+    static int pause = 0;
+    HMENU   menu = GetMenu(hWnd);
 
-	if (Run)
-	{
-		pause = 1;
-		Run = 0;
-		CheckMenuItem(menu, ID_PAUSE, MF_CHECKED);
-		apuWaveClear();
-	}
-	else if (pause)
-	{
-		Run = 1;
-		pause = 0;
-		CheckMenuItem(menu, ID_PAUSE, MF_UNCHECKED);
-	}
+    if (Run)
+    {
+        pause = 1;
+        Run = 0;
+        CheckMenuItem(menu, ID_PAUSE, MF_CHECKED);
+        apuWaveClear();
+    }
+    else if (pause)
+    {
+        Run = 1;
+        pause = 0;
+        CheckMenuItem(menu, ID_PAUSE, MF_UNCHECKED);
+    }
 }

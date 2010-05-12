@@ -56,23 +56,24 @@ IDR_MENU1 MENU
 BEGIN
     POPUP "ファイル(&F)"
     BEGIN
-        MENUITEM "開く(&O)",                      ID_FILE_OPENROM
+        MENUITEM "開く(&O)...",                   ID_FILE_OPENROM
         MENUITEM SEPARATOR
         MENUITEM "パーソナルデータ(&P)",                ID_PDATA_SET
         MENUITEM SEPARATOR
         MENUITEM "セーブ(&S)",                     ID_STATE_SAVE_0
         MENUITEM "ロード(&L)",                     ID_STATE_LOAD_0
         MENUITEM SEPARATOR
-        MENUITEM "一時停止",                        ID_PAUSE
-        MENUITEM "リセット",                        40034
+        MENUITEM "一時停止(&A)",                    ID_PAUSE
+        MENUITEM "リセット(&R)",                    40034
         MENUITEM SEPARATOR
-        POPUP "最近開いたファイル"
+        POPUP "最近開いたファイル(&F)"
         BEGIN
             MENUITEM "&1",                          ID_FILE_RECENT0
             MENUITEM "&2",                          ID_FILE_RECENT1
             MENUITEM "&3",                          ID_FILE_RECENT2
             MENUITEM "&4",                          ID_FILE_RECENT3
             MENUITEM "&5",                          ID_FILE_RECENT4
+            MENUITEM "&6",                          ID_FILE_RECENT5
         END
     END
     POPUP "ビデオ(&V)"

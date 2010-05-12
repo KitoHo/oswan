@@ -9,6 +9,7 @@ $Rev$
 #include "WSInput.h"
 #include "WSFileio.h"
 
+extern wchar_t* RecentOfn[];
 static LPCWSTR KeyName[] = {
     L"B", L"A", L"START", L"OPTION", 
     L"X4", L"X3", L"X2", L"X1", 
@@ -78,20 +79,26 @@ void ConfigCreate(void)
     
     for (i = 12; i >= 0; i--)
     {
-         WsKeyboardH[i] = GetPrivateProfileIntW(L"KEY_H", KeyName[i] , WsKeyboardH[i] , IniPath);
+         WsKeyboardH[i] = GetPrivateProfileIntW(L"KEY_H", KeyName[i], WsKeyboardH[i], IniPath);
     }
     for (i = 12; i >= 0; i--)
     {
-        WsKeyboardV[i] = GetPrivateProfileIntW(L"KEY_V", KeyName[i] , WsKeyboardV[i] , IniPath);
+        WsKeyboardV[i] = GetPrivateProfileIntW(L"KEY_V", KeyName[i], WsKeyboardV[i], IniPath);
     }
     for (i = 12; i >= 0; i--)
     {
-        WsJoypadH[i] = GetPrivateProfileIntW(L"JOY_H", KeyName[i] , WsJoypadH[i] , IniPath);
+        WsJoypadH[i] = GetPrivateProfileIntW(L"JOY_H", KeyName[i], WsJoypadH[i], IniPath);
     }
     for (i = 12; i >= 0; i--)
     {
-        WsJoypadV[i] = GetPrivateProfileIntW(L"JOY_V", KeyName[i] , WsJoypadV[i] , IniPath);
+        WsJoypadV[i] = GetPrivateProfileIntW(L"JOY_V", KeyName[i], WsJoypadV[i], IniPath);
     }
+    GetPrivateProfileStringW(L"RECENT_ROMS", L"0", L"", RecentOfn[0], 512, IniPath);
+    GetPrivateProfileStringW(L"RECENT_ROMS", L"1", L"", RecentOfn[1], 512, IniPath);
+    GetPrivateProfileStringW(L"RECENT_ROMS", L"2", L"", RecentOfn[2], 512, IniPath);
+    GetPrivateProfileStringW(L"RECENT_ROMS", L"3", L"", RecentOfn[3], 512, IniPath);
+    GetPrivateProfileStringW(L"RECENT_ROMS", L"4", L"", RecentOfn[4], 512, IniPath);
+    GetPrivateProfileStringW(L"RECENT_ROMS", L"5", L"", RecentOfn[5], 512, IniPath);
 }
 
 static void WritePrivateProfileIntW(LPCWSTR lpAppName, LPCWSTR lpKeyName, int nInt, LPCWSTR lpFileName)
@@ -108,18 +115,24 @@ void ConfigRelease(void)
 
     for (i = 12; i >= 0; i--)
     {
-        WritePrivateProfileIntW(L"KEY_H", KeyName[i] , WsKeyboardH[i] , IniPath);
+        WritePrivateProfileIntW(L"KEY_H", KeyName[i], WsKeyboardH[i], IniPath);
     }
     for (i = 12; i >= 0; i--)
     {
-        WritePrivateProfileIntW(L"KEY_V", KeyName[i] , WsKeyboardV[i] , IniPath);
+        WritePrivateProfileIntW(L"KEY_V", KeyName[i], WsKeyboardV[i], IniPath);
     }
     for (i = 12; i >= 0; i--)
     {
-        WritePrivateProfileIntW(L"JOY_H", KeyName[i] , WsJoypadH[i] , IniPath);
+        WritePrivateProfileIntW(L"JOY_H", KeyName[i], WsJoypadH[i], IniPath);
     }
     for (i = 12; i >= 0; i--)
     {
-        WritePrivateProfileIntW(L"JOY_V", KeyName[i] , WsJoypadV[i] , IniPath);
+        WritePrivateProfileIntW(L"JOY_V", KeyName[i], WsJoypadV[i], IniPath);
     }
+    WritePrivateProfileStringW(L"RECENT_ROMS", L"0", RecentOfn[0], IniPath);
+    WritePrivateProfileStringW(L"RECENT_ROMS", L"1", RecentOfn[1], IniPath);
+    WritePrivateProfileStringW(L"RECENT_ROMS", L"2", RecentOfn[2], IniPath);
+    WritePrivateProfileStringW(L"RECENT_ROMS", L"3", RecentOfn[3], IniPath);
+    WritePrivateProfileStringW(L"RECENT_ROMS", L"4", RecentOfn[4], IniPath);
+    WritePrivateProfileStringW(L"RECENT_ROMS", L"5", RecentOfn[5], IniPath);
 }

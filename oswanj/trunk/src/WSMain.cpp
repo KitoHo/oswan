@@ -29,7 +29,8 @@ static wchar_t  RecentOfn1[512];
 static wchar_t  RecentOfn2[512];
 static wchar_t  RecentOfn3[512];
 static wchar_t  RecentOfn4[512];
-static wchar_t* RecentOfn[5] = {RecentOfn0, RecentOfn1, RecentOfn2, RecentOfn3, RecentOfn4};
+static wchar_t  RecentOfn5[512];
+wchar_t* RecentOfn[] = {RecentOfn0, RecentOfn1, RecentOfn2, RecentOfn3, RecentOfn4, RecentOfn5};
 
 int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, int nCmdShow)
 {
@@ -49,6 +50,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     WsSetDir();
     WsLoadIEep();
     ConfigCreate();
+    SetRecentRoms(NULL);
     apuInit();
     apuLoadSound();
     drawInitialize(FALSE);
@@ -143,13 +145,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             }
             return 0L;
         case ID_FILE_RECENT0:
-            if (*RecentOfn[0])
+        case ID_FILE_RECENT1:
+        case ID_FILE_RECENT2:
+        case ID_FILE_RECENT3:
+        case ID_FILE_RECENT4:
+        case ID_FILE_RECENT5:
+            id = LOWORD(wp) - ID_FILE_RECENT0;
+            if (*RecentOfn[id])
             {
                 apuWaveClear();
                 WsRelease();
                 Run = 1;
-                WsCreate(RecentOfn[0]);
-                SetRecentRoms(RecentOfn[0]);
+                WsCreate(RecentOfn[id]);
+                SetRecentRoms(RecentOfn[id]);
             }
             return 0L;
         case ID_PDATA_SET:
@@ -400,7 +408,7 @@ void SetRecentRoms(wchar_t* RomPath)
 
     if (RomPath && *RomPath)
     {
-        for (i = 0; i < 5; i++)
+        for (i = 0; i < 6; i++)
         {
             if (wcscmp(RomPath, RecentOfn[i]) == 0)
             {
@@ -415,7 +423,8 @@ void SetRecentRoms(wchar_t* RomPath)
         }
         if (i)
         {
-            temp         = RecentOfn[4];
+            temp         = RecentOfn[5];
+            RecentOfn[5] = RecentOfn[4];
             RecentOfn[4] = RecentOfn[3];
             RecentOfn[3] = RecentOfn[2];
             RecentOfn[2] = RecentOfn[1];
@@ -425,7 +434,7 @@ void SetRecentRoms(wchar_t* RomPath)
         }
     }
     HMENU menu = GetMenu(hWnd);
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < 6; i++)
     {
         if (*RecentOfn[i])
         {

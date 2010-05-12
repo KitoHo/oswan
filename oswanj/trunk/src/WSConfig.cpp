@@ -10,6 +10,7 @@ $Rev$
 #include "WSFileio.h"
 
 extern wchar_t* RecentOfn[];
+extern int WsWaveVol;
 static LPCWSTR KeyName[] = {
     L"B", L"A", L"START", L"OPTION", 
     L"X4", L"X3", L"X2", L"X1", 
@@ -21,6 +22,7 @@ void ConfigCreate(void)
 {
     int i;
 
+    /* default values */
     WsKeyboardH[0] = DIK_Z; // B
     WsKeyboardH[1] = DIK_X; // A
     WsKeyboardH[2] = DIK_RETURN; // START
@@ -99,6 +101,7 @@ void ConfigCreate(void)
     GetPrivateProfileStringW(L"RECENT_ROMS", L"3", L"", RecentOfn[3], 512, IniPath);
     GetPrivateProfileStringW(L"RECENT_ROMS", L"4", L"", RecentOfn[4], 512, IniPath);
     GetPrivateProfileStringW(L"RECENT_ROMS", L"5", L"", RecentOfn[5], 512, IniPath);
+    WsWaveVol = GetPrivateProfileIntW(L"VOLUME", L"VOL", 4, IniPath);
 }
 
 static void WritePrivateProfileIntW(LPCWSTR lpAppName, LPCWSTR lpKeyName, int nInt, LPCWSTR lpFileName)
@@ -135,4 +138,5 @@ void ConfigRelease(void)
     WritePrivateProfileStringW(L"RECENT_ROMS", L"3", RecentOfn[3], IniPath);
     WritePrivateProfileStringW(L"RECENT_ROMS", L"4", RecentOfn[4], IniPath);
     WritePrivateProfileStringW(L"RECENT_ROMS", L"5", RecentOfn[5], IniPath);
+    WritePrivateProfileIntW(L"VOLUME", L"VOL", WsWaveVol, IniPath);
 }

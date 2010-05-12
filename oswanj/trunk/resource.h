@@ -10,7 +10,7 @@
 #define IDD_CONFIG_TAB1                 106
 #define IDD_CONFIG_TAB2                 107
 #define IDD_DIALOG_ABOUT                108
-#define IDC_EDIT_B                      1001 //以下のエディットボックスIDは連続すること
+#define IDC_EDIT_B                      1001
 #define IDC_EDIT_A                      1002
 #define IDC_EDIT_START                  1003
 #define IDC_EDIT_OPTION                 1004
@@ -48,13 +48,15 @@
 #define ID_STATE_LOAD_0                 40030
 #define ID_STATE_SAVE_0                 40031
 #define ID_ABOUT                        40032
+#define ID_PAUSE                        40033
+#define ID_RESET                        40034
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        109
-#define _APS_NEXT_COMMAND_VALUE         40033
+#define _APS_NEXT_COMMAND_VALUE         40035
 #define _APS_NEXT_CONTROL_VALUE         1016
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

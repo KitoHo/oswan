@@ -22,7 +22,7 @@ int VoiceOn;
 SWEEP Swp;
 NOISE Noise;
 int Sound[7] = {1, 1, 1, 1, 1, 1, 1};
-int WsWaveVol = 20;
+int WsWaveVol = 4;
 
 static unsigned char PData[4][32];
 static unsigned char PDataN[8][BUFSIZEN];
@@ -159,6 +159,7 @@ int apuInit(void)
 void apuEnd(void)
 {
     apuWaveRelease();
+	apuDestroySound();
 }
 
 unsigned int apuMrand(unsigned int Degree)
@@ -396,7 +397,92 @@ void apuWaveSet(void)
     }
 }
 
+static void* SSMasterBuf;
+static void* SSPlayBuf;
+static DWORD SSDataLen, SSHeadLen;
+
+void apuLoadSound(void)
+{
+	HINSTANCE hInst;
+	HRSRC hRsrc;
+	HGLOBAL hG;
+	BYTE* lock;
+	BYTE* wave;
+	DWORD wfesize;
+	size_t bufsize;
+
+	hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
+	hRsrc = FindResource(hInst, MAKEINTRESOURCE(IDR_WAVE1), TEXT("WAVE"));
+	bufsize = SizeofResource(hInst, hRsrc);
+	SSMasterBuf = malloc(bufsize);
+	SSPlayBuf = malloc(bufsize);
+	hG = LoadResource(hInst, hRsrc);
+	lock = (BYTE*)LockResource(hG);	//RIFFヘッダの確認
+	memcpy(SSMasterBuf, lock, bufsize);
+	memcpy(SSPlayBuf, lock, bufsize);
+	if (*(LPDWORD)SSMasterBuf != *(LPDWORD)"RIFF")
+	{
+		ErrorMsg(ERR_WAVERESOURCE);
+		return;
+	}
+	wave = (BYTE*)SSMasterBuf;
+	wave += 4; //ポインタは次を指しておく
+	wave += 4; //ポインタは次を指しておく
+	//WAVEヘッダの確認
+	if (*(LPDWORD)wave != *(LPDWORD)"WAVE")
+	{
+		ErrorMsg(ERR_WAVERESOURCE);
+		return;
+	}
+	wave += 4; //ポインタは次を指しておく
+	//fmtチャンクの確認
+	if (*(LPDWORD)wave != *(LPDWORD)"fmt ")
+	{
+		ErrorMsg(ERR_WAVERESOURCE);
+		return;
+	}
+	wave += 4; //ポインタは次を指しておく
+	//fmtチャンクサイズの取得
+	wfesize = *(DWORD *)wave;
+	wave += 4; //ポインタは次を指しておく
+	wave += wfesize; //WAVEFORMATEX構造体分だけポインタを進めておく
+	//dataチャンクの確認
+	if (*(LPDWORD)wave != *(LPDWORD)"data")
+	{
+		ErrorMsg(ERR_WAVERESOURCE);
+		return;
+	}
+	wave += 4; //ポインタは次を指しておく
+	//波形データのバイト数の取得
+	SSDataLen = *(DWORD *)wave;
+	SSHeadLen = bufsize - SSDataLen;
+	FreeResource(hG);
+}
+
+void apuDestroySound(void)
+{
+	free(SSMasterBuf);
+	SSMasterBuf = NULL;
+	free(SSPlayBuf);
+	SSPlayBuf = NULL;
+}
+
 void apuStartupSound(void)
 {
-    PlaySound(MAKEINTRESOURCE(IDR_WAVE1), NULL, SND_RESOURCE | SND_ASYNC);
+	short *src, *dst;
+	int i;
+	int size = SSDataLen / sizeof(short);
+
+	if (SSMasterBuf == NULL || SSPlayBuf == NULL)
+	{
+		return;
+	}
+	src = (short*)((BYTE*)SSMasterBuf + SSHeadLen);
+	dst = (short*)((BYTE*)SSPlayBuf + SSHeadLen);
+	// マスターの音量を変更してプレイバッファーにコピー
+	for (i = 0; i < size; i++)
+	{
+		*dst++ = (*src++) * WsWaveVol / 32;
+	}
+	PlaySound((LPCTSTR)SSPlayBuf, NULL, SND_MEMORY | SND_ASYNC);
 }

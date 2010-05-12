@@ -18,6 +18,7 @@ BOOL InitInstance(HINSTANCE);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
 wchar_t* OpenWSFile(wchar_t*, DWORD);
+void WsPause(void);
 
 HINSTANCE hInst;
 HWND hWnd;
@@ -42,6 +43,7 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     WsLoadIEep();
     ConfigCreate();
     apuInit();
+	apuLoadSound();
     drawInitialize(FALSE);
     drawCreate();
     SetDrawSize(DS_2);
@@ -144,6 +146,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
         case ID_STATE_LOAD_0:
 			WsLoadState(0);
 			return 0L;
+        case ID_PAUSE:
+			WsPause();
+			return 0L;
+        case ID_RESET:
+			WsReset();
+			return 0L;
         case ID_SIZE_1:
             menu = GetMenu(hWnd);
             CheckMenuItem(menu, ID_SIZE_1, MF_CHECKED);
@@ -230,15 +238,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             }
             return 0L;
         case ID_SOUND_UP:
-            if (WsWaveVol < 100)
+            if (WsWaveVol < 50)
             {
-                WsWaveVol += 2;
+                WsWaveVol++;
             }
             return 0L;
         case ID_SOUND_DOWN:
-            if (WsWaveVol >= 2)
+            if (WsWaveVol >= 1)
             {
-                WsWaveVol -= 2;
+                WsWaveVol--;
             }
             return 0L;
         case ID_CONF_INPUT:
@@ -337,4 +345,24 @@ wchar_t* OpenWSFile(wchar_t* path, DWORD max)
         return NULL;
     }
     return path;
+}
+
+void WsPause(void)
+{
+	static int pause = 0;
+	HMENU	menu = GetMenu(hWnd);
+
+	if (Run)
+	{
+		pause = 1;
+		Run = 0;
+		CheckMenuItem(menu, ID_PAUSE, MF_CHECKED);
+		apuWaveClear();
+	}
+	else if (pause)
+	{
+		Run = 1;
+		pause = 0;
+		CheckMenuItem(menu, ID_PAUSE, MF_UNCHECKED);
+	}
 }

@@ -43,6 +43,8 @@ unsigned char apuVoice(void);
 void apuSweep(void);
 WORD apuShiftReg(void);
 void apuWaveSet(void);
+void apuLoadSound(void);
+void apuDestroySound(void);
 void apuStartupSound(void);
 
 #endif

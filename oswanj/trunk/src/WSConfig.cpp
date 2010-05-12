@@ -60,7 +60,7 @@ void ConfigCreate(void)
 	WsJoypadH[9] = WS_JOY_POV1_DOWN; // Y3
 	WsJoypadH[10] = WS_JOY_POV1_RIGHT; // Y2
 	WsJoypadH[11] = WS_JOY_POV1_UP; // Y1
-	WsJoypadH[12] = 9; // NO WAIT
+	WsJoypadH[12] = 7; // NO WAIT
 	
 	WsJoypadV[0] = 5; // B
 	WsJoypadV[1] = 6; // A
@@ -74,7 +74,7 @@ void ConfigCreate(void)
 	WsJoypadV[9] = WS_JOY_AXIS_X_P; // Y3
 	WsJoypadV[10] = WS_JOY_AXIS_Y_M; // Y2
 	WsJoypadV[11] = WS_JOY_AXIS_X_M; // Y1
-	WsJoypadV[12] = 9; // NO WAIT
+	WsJoypadV[12] = 7; // NO WAIT
 	
 	for (i = 12; i >= 0; i--)
 	{

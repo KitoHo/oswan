@@ -20,6 +20,7 @@ LRESULT CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
 wchar_t* OpenWSFile(wchar_t*, DWORD);
 void WsPause(void);
 void SetRecentRoms(wchar_t* RomPath);
+void SetStateInfo(void);
 
 HINSTANCE hInst;
 HWND hWnd;
@@ -31,6 +32,7 @@ static wchar_t  RecentOfn3[512];
 static wchar_t  RecentOfn4[512];
 static wchar_t  RecentOfn5[512];
 wchar_t* RecentOfn[] = {RecentOfn0, RecentOfn1, RecentOfn2, RecentOfn3, RecentOfn4, RecentOfn5};
+extern wchar_t StateName[512];
 
 int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, int nCmdShow)
 {
@@ -142,15 +144,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 Run = 1;
                 WsCreate(RomPath);
                 SetRecentRoms(RomPath);
+                SetStateInfo();
             }
             return 0L;
-        case ID_FILE_RECENT0:
-        case ID_FILE_RECENT1:
-        case ID_FILE_RECENT2:
-        case ID_FILE_RECENT3:
-        case ID_FILE_RECENT4:
-        case ID_FILE_RECENT5:
-            id = LOWORD(wp) - ID_FILE_RECENT0;
+        case ID_FILE_RECENT_0:
+        case ID_FILE_RECENT_1:
+        case ID_FILE_RECENT_2:
+        case ID_FILE_RECENT_3:
+        case ID_FILE_RECENT_4:
+        case ID_FILE_RECENT_5:
+            id = LOWORD(wp) - ID_FILE_RECENT_0;
             if (*RecentOfn[id])
             {
                 apuWaveClear();
@@ -158,6 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 Run = 1;
                 WsCreate(RecentOfn[id]);
                 SetRecentRoms(RecentOfn[id]);
+                SetStateInfo();
             }
             return 0L;
         case ID_PDATA_SET:
@@ -167,10 +171,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             WsCreate(NULL);
             return 0L;
         case ID_STATE_SAVE_0:
-            WsSaveState(0);
+        case ID_STATE_SAVE_1:
+        case ID_STATE_SAVE_2:
+        case ID_STATE_SAVE_3:
+            id = LOWORD(wp) - ID_STATE_SAVE_0;
+            WsSaveState(id);
+            SetStateInfo();
             return 0L;
         case ID_STATE_LOAD_0:
-            WsLoadState(0);
+        case ID_STATE_LOAD_1:
+        case ID_STATE_LOAD_2:
+        case ID_STATE_LOAD_3:
+            id = LOWORD(wp) - ID_STATE_LOAD_0;
+            WsLoadState(id);
             return 0L;
         case ID_PAUSE:
             WsPause();
@@ -395,17 +408,18 @@ void WsPause(void)
 
 void SetRecentRoms(wchar_t* RomPath)
 {
-    int          i;
-    wchar_t*     temp;
-    wchar_t*     filename;
-    wchar_t      buf[256];
+    int         i;
+    wchar_t*    temp;
+    wchar_t*    filename;
+    wchar_t     buf[256];
     MENUITEMINFOW minfo;
+    HMENU       menu = GetMenu(hWnd);
+
     minfo.cbSize     = sizeof(MENUITEMINFOW);
     minfo.fMask      = MIIM_STATE | MIIM_TYPE;
     minfo.fType      = MFT_STRING;
     minfo.fState     = MFS_ENABLED;
     minfo.dwTypeData = buf;
-
     if (RomPath && *RomPath)
     {
         for (i = 0; i < 6; i++)
@@ -433,18 +447,57 @@ void SetRecentRoms(wchar_t* RomPath)
             wcscpy(RecentOfn[0], RomPath);
         }
     }
-    HMENU menu = GetMenu(hWnd);
     for (i = 0; i < 6; i++)
     {
         if (*RecentOfn[i])
         {
             filename = wcsrchr(RecentOfn[i], '\\');
-            wsprintf(buf, TEXT("&%d %s"), i + 1, ++filename);
+            wsprintf(buf, L"&%d: %s", i + 1, ++filename);
         }
         else
         {
-            buf[0] = '\0';
+            wsprintf(buf, L"%d:", i + 1);
         }
-        SetMenuItemInfo(menu, ID_FILE_RECENT0 + i, FALSE, &minfo);
+        SetMenuItemInfo(menu, ID_FILE_RECENT_0 + i, FALSE, &minfo);
+    }
+}
+
+void SetStateInfo(void)
+{
+    int         i;
+    wchar_t     buf[512];
+    MENUITEMINFOW minfo;
+    HMENU       menu = GetMenu(hWnd);
+    HANDLE      file;
+    FILETIME    ft, lt;
+    SYSTEMTIME  st;
+
+    minfo.cbSize     = sizeof(MENUITEMINFOW);
+    minfo.fMask      = MIIM_STATE | MIIM_TYPE;
+    minfo.fType      = MFT_STRING;
+    minfo.fState     = MFS_ENABLED;
+    minfo.dwTypeData = buf;
+    if (StateName[0])
+    {
+        for (i = 0; i < 4; i++)
+        {
+            wsprintf(buf, L"%s.%03d", StateName, i);
+            file = CreateFileW(buf, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+            if (file != INVALID_HANDLE_VALUE)
+            {
+                GetFileTime(file, NULL, NULL, &ft);
+                FileTimeToLocalFileTime(&ft, &lt);
+                FileTimeToSystemTime(&lt, &st);
+                wsprintf(buf, L"&%d: %04d/%02d/%02d %02d:%02d:%02d",
+                    i + 1, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+                CloseHandle(file);
+            }
+            else
+            {
+                wsprintf(buf, L"%d:", i + 1);
+            }
+            SetMenuItemInfo(menu, ID_STATE_SAVE_0 + i, FALSE, &minfo);
+            SetMenuItemInfo(menu, ID_STATE_LOAD_0 + i, FALSE, &minfo);
+        }
     }
 }

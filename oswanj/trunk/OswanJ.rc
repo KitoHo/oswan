@@ -56,24 +56,36 @@ IDR_MENU1 MENU
 BEGIN
     POPUP "ファイル(&F)"
     BEGIN
-        MENUITEM "開く(&O)...",                   ID_FILE_OPENROM
+        MENUITEM "開く(&O)...",                     ID_FILE_OPENROM
         MENUITEM SEPARATOR
-        MENUITEM "パーソナルデータ(&P)",                ID_PDATA_SET
+        MENUITEM "パーソナルデータ(&P)",            ID_PDATA_SET
         MENUITEM SEPARATOR
-        MENUITEM "セーブ(&S)",                     ID_STATE_SAVE_0
-        MENUITEM "ロード(&L)",                     ID_STATE_LOAD_0
+        POPUP "セーブ(&S)"
+        BEGIN
+            MENUITEM "1:",                          ID_STATE_SAVE_0
+            MENUITEM "2:",                          ID_STATE_SAVE_1
+            MENUITEM "3:",                          ID_STATE_SAVE_2
+            MENUITEM "4:",                          ID_STATE_SAVE_3
+        END
+        POPUP "ロード(&L)"
+        BEGIN
+            MENUITEM "1:",                          ID_STATE_LOAD_0
+            MENUITEM "2:",                          ID_STATE_LOAD_1
+            MENUITEM "3:",                          ID_STATE_LOAD_2
+            MENUITEM "4:",                          ID_STATE_LOAD_3
+        END
         MENUITEM SEPARATOR
         MENUITEM "一時停止(&A)",                    ID_PAUSE
-        MENUITEM "リセット(&R)",                    40034
+        MENUITEM "リセット(&R)",                    ID_RESET
         MENUITEM SEPARATOR
         POPUP "最近開いたファイル(&F)"
         BEGIN
-            MENUITEM "&1",                          ID_FILE_RECENT0
-            MENUITEM "&2",                          ID_FILE_RECENT1
-            MENUITEM "&3",                          ID_FILE_RECENT2
-            MENUITEM "&4",                          ID_FILE_RECENT3
-            MENUITEM "&5",                          ID_FILE_RECENT4
-            MENUITEM "&6",                          ID_FILE_RECENT5
+            MENUITEM "1:",                          ID_FILE_RECENT_0
+            MENUITEM "2:",                          ID_FILE_RECENT_1
+            MENUITEM "3:",                          ID_FILE_RECENT_2
+            MENUITEM "4:",                          ID_FILE_RECENT_3
+            MENUITEM "5:",                          ID_FILE_RECENT_4
+            MENUITEM "6:",                          ID_FILE_RECENT_5
         END
     END
     POPUP "ビデオ(&V)"
@@ -87,24 +99,24 @@ BEGIN
         END
         POPUP "表示レイヤー(&L)"
         BEGIN
-            MENUITEM "レイヤー1(&B)",                   ID_LAYER_1, CHECKED
-            MENUITEM "レイヤー2(&F)",                   ID_LAYER_2, CHECKED
-            MENUITEM "スプライト(&S)",                   ID_LAYER_S, CHECKED
+            MENUITEM "レイヤー1(&B)",               ID_LAYER_1, CHECKED
+            MENUITEM "レイヤー2(&F)",               ID_LAYER_2, CHECKED
+            MENUITEM "スプライト(&S)",              ID_LAYER_S, CHECKED
         END
-        MENUITEM "ケロリカン(&K)",                   ID_KERORIKAN
+        MENUITEM "ケロリカン(&K)",                  ID_KERORIKAN
     END
     POPUP "サウンド(&S)"
     BEGIN
-        MENUITEM "チャンネル1(&1)",                  ID_SOUND_1, CHECKED
-        MENUITEM "チャンネル2(&2)",                  ID_SOUND_2, CHECKED
-        MENUITEM "チャンネル3(&3)",                  ID_SOUND_3, CHECKED
-        MENUITEM "チャンネル4(&4)",                  ID_SOUND_4, CHECKED
-        MENUITEM "ボイス(&V)",                     ID_SOUND_5, CHECKED
+        MENUITEM "チャンネル1(&1)",                 ID_SOUND_1, CHECKED
+        MENUITEM "チャンネル2(&2)",                 ID_SOUND_2, CHECKED
+        MENUITEM "チャンネル3(&3)",                 ID_SOUND_3, CHECKED
+        MENUITEM "チャンネル4(&4)",                 ID_SOUND_4, CHECKED
+        MENUITEM "ボイス(&V)",                      ID_SOUND_5, CHECKED
         MENUITEM "スイープ(&S)",                    ID_SOUND_6, CHECKED
-        MENUITEM "ノイズ(&N)",                     ID_SOUND_7, CHECKED
+        MENUITEM "ノイズ(&N)",                      ID_SOUND_7, CHECKED
         MENUITEM SEPARATOR
-        MENUITEM "音量 ＋ (&U)\tCtrl+U",           ID_SOUND_UP
-        MENUITEM "音量 － (&D)\tCtrl+D",           ID_SOUND_DOWN
+        MENUITEM "音量 ＋ (&U)\tCtrl+U",            ID_SOUND_UP
+        MENUITEM "音量 － (&D)\tCtrl+D",            ID_SOUND_DOWN
     END
     POPUP "設定(&C)"
     BEGIN
@@ -112,7 +124,7 @@ BEGIN
     END
     POPUP "ヘルプ(&H)"
     BEGIN
-        MENUITEM "バージョン情報(&A)",                 ID_ABOUT
+        MENUITEM "バージョン情報(&A)",              ID_ABOUT
     END
 END
 
@@ -124,8 +136,8 @@ END
 
 IDR_ACCELERATOR1 ACCELERATORS 
 BEGIN
-    "U",            ID_SOUND_UP,            VIRTKEY, CONTROL, NOINVERT
-    "D",            ID_SOUND_DOWN,          VIRTKEY, CONTROL, NOINVERT
+    "^U",            ID_SOUND_UP
+    "^D",            ID_SOUND_DOWN
 END
 
 

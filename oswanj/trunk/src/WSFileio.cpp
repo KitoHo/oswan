@@ -19,7 +19,7 @@ static wchar_t CurDir[512];
 static wchar_t *SaveDir = L"RAM";
 static wchar_t *StateDir = L"STATE";
 static wchar_t SaveName[512];   // ".sav"
-static wchar_t StateName[512];
+wchar_t StateName[512];
 wchar_t IniPath[512];
 
 void WsSetDir(void)
@@ -295,7 +295,7 @@ void WsRelease(void)
     FILE* fp;
     int i;
 
-    if (SaveName[0] != 0)
+    if (SaveName[0] != '\0')
     {
         if ((fp = _wfopen(SaveName, L"wb"))!= NULL)
         {
@@ -316,9 +316,11 @@ void WsRelease(void)
                     }
                 }
                 free(RAMMap[i]);
+                RAMMap[i] = NULL;
             }
             fclose(fp);
         }
+        SaveName[0] = '\0';
     }
     for (i = 0xFF; i >= 0; i--)
     {
@@ -329,6 +331,7 @@ void WsRelease(void)
         free(ROMMap[i]);
         ROMMap[i] = MemDummy;
     }
+    StateName[0] = '\0';
 }
 
 void WsLoadIEep(void)
@@ -432,7 +435,7 @@ void WsSaveState(int num)
     unsigned int value;
     int i;
 
-    if (StateName[0] == 0)
+    if (StateName[0] == '\0')
     {
         return;
     }

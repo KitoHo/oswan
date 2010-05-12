@@ -10,12 +10,12 @@ $Rev$
 #define BANDAI_Y (48)
 
 RECT bandaiRect[6] = {
-     5,  9, 16, 23, // Bのrect(left, top, right, bottom)
-    18,  9, 30, 23, // A
-    32,  9, 42, 23, // N
-     5, 25, 16, 39, // D
-    18, 25, 30, 39, // A
-    32, 25, 34, 39  // I
+    { 5,  9, 16, 23}, // Bのrect(left, top, right, bottom)
+    {18,  9, 30, 23}, // A
+    {32,  9, 42, 23}, // N
+    { 5, 25, 16, 39}, // D
+    {18, 25, 30, 39}, // A
+    {32, 25, 34, 39}  // I
 };
 
 #define W (0xFFFF)

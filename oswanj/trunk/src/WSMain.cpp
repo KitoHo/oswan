@@ -19,10 +19,17 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
 wchar_t* OpenWSFile(wchar_t*, DWORD);
 void WsPause(void);
+void SetRecentRoms(wchar_t* RomPath);
 
 HINSTANCE hInst;
 HWND hWnd;
 static LPCTSTR szClassName = TEXT("OswanJ"); //クラス名
+static wchar_t  RecentOfn0[512];
+static wchar_t  RecentOfn1[512];
+static wchar_t  RecentOfn2[512];
+static wchar_t  RecentOfn3[512];
+static wchar_t  RecentOfn4[512];
+static wchar_t* RecentOfn[5] = {RecentOfn0, RecentOfn1, RecentOfn2, RecentOfn3, RecentOfn4};
 
 int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, int nCmdShow)
 {
@@ -132,6 +139,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 WsRelease();
                 Run = 1;
                 WsCreate(RomPath);
+                SetRecentRoms(RomPath);
+            }
+            return 0L;
+        case ID_FILE_RECENT0:
+            if (*RecentOfn[0])
+            {
+                apuWaveClear();
+                WsRelease();
+                Run = 1;
+                WsCreate(RecentOfn[0]);
+                SetRecentRoms(RecentOfn[0]);
             }
             return 0L;
         case ID_PDATA_SET:
@@ -364,5 +382,60 @@ void WsPause(void)
         Run = 1;
         pause = 0;
         CheckMenuItem(menu, ID_PAUSE, MF_UNCHECKED);
+    }
+}
+
+void SetRecentRoms(wchar_t* RomPath)
+{
+    int          i;
+    wchar_t*     temp;
+    wchar_t*     filename;
+    wchar_t      buf[256];
+    MENUITEMINFOW minfo;
+    minfo.cbSize     = sizeof(MENUITEMINFOW);
+    minfo.fMask      = MIIM_STATE | MIIM_TYPE;
+    minfo.fType      = MFT_STRING;
+    minfo.fState     = MFS_ENABLED;
+    minfo.dwTypeData = buf;
+
+    if (RomPath && *RomPath)
+    {
+        for (i = 0; i < 5; i++)
+        {
+            if (wcscmp(RomPath, RecentOfn[i]) == 0)
+            {
+                temp = RecentOfn[i];
+                while (i) {
+                    RecentOfn[i] = RecentOfn[i - 1];
+                    i--;
+                }
+                RecentOfn[0] = temp;
+                break;
+            }
+        }
+        if (i)
+        {
+            temp         = RecentOfn[4];
+            RecentOfn[4] = RecentOfn[3];
+            RecentOfn[3] = RecentOfn[2];
+            RecentOfn[2] = RecentOfn[1];
+            RecentOfn[1] = RecentOfn[0];
+            RecentOfn[0] = temp;
+            wcscpy(RecentOfn[0], RomPath);
+        }
+    }
+    HMENU menu = GetMenu(hWnd);
+    for (i = 0; i < 5; i++)
+    {
+        if (*RecentOfn[i])
+        {
+            filename = wcsrchr(RecentOfn[i], '\\');
+            wsprintf(buf, TEXT("&%d %s"), i + 1, ++filename);
+        }
+        else
+        {
+            buf[0] = '\0';
+        }
+        SetMenuItemInfo(menu, ID_FILE_RECENT0 + i, FALSE, &minfo);
     }
 }

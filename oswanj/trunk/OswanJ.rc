@@ -65,6 +65,15 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "一時停止",                        ID_PAUSE
         MENUITEM "リセット",                        40034
+        MENUITEM SEPARATOR
+        POPUP "最近開いたファイル"
+        BEGIN
+            MENUITEM "&1",                          ID_FILE_RECENT0
+            MENUITEM "&2",                          ID_FILE_RECENT1
+            MENUITEM "&3",                          ID_FILE_RECENT2
+            MENUITEM "&4",                          ID_FILE_RECENT3
+            MENUITEM "&5",                          ID_FILE_RECENT4
+        END
     END
     POPUP "ビデオ(&V)"
     BEGIN

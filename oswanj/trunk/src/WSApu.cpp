@@ -397,6 +397,10 @@ void apuWaveSet(void)
     }
 }
 
+/*
+PlaySound()は音量調節が出来ないのでいったんメモリに読み込んで
+プレイ時にデータを加工する
+*/
 static void* SSMasterBuf;
 static void* SSPlayBuf;
 static DWORD SSDataLen, SSHeadLen;
@@ -479,7 +483,7 @@ void apuStartupSound(void)
     {
         return;
     }
-    src = (short*)((BYTE*)SSMasterBuf);
+    src = (short*)SSMasterBuf;
     dst = (short*)((BYTE*)SSPlayBuf + SSHeadLen);
     // マスターの音量を変更してプレイバッファーにコピー
     for (i = 0; i < size; i++)

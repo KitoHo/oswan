@@ -406,26 +406,20 @@ void apuLoadSound(void)
     HINSTANCE hInst;
     HRSRC hRsrc;
     HGLOBAL hG;
-    BYTE* lock;
     BYTE* wave;
+    BYTE* tmp;
     DWORD wfesize;
-    size_t bufsize;
 
     hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
     hRsrc = FindResource(hInst, MAKEINTRESOURCE(IDR_WAVE1), TEXT("WAVE"));
-    bufsize = SizeofResource(hInst, hRsrc);
-    SSMasterBuf = malloc(bufsize);
-    SSPlayBuf = malloc(bufsize);
     hG = LoadResource(hInst, hRsrc);
-    lock = (BYTE*)LockResource(hG); //RIFFヘッダの確認
-    memcpy(SSMasterBuf, lock, bufsize);
-    memcpy(SSPlayBuf, lock, bufsize);
-    if (*(LPDWORD)SSMasterBuf != *(LPDWORD)"RIFF")
+    wave = (BYTE*)LockResource(hG); //RIFFヘッダの確認
+    tmp = wave;
+    if (*(LPDWORD)wave != *(LPDWORD)"RIFF")
     {
         ErrorMsg(ERR_WAVERESOURCE);
         return;
     }
-    wave = (BYTE*)SSMasterBuf;
     wave += 4; //ポインタは次を指しておく
     wave += 4; //ポインタは次を指しておく
     //WAVEヘッダの確認
@@ -455,7 +449,15 @@ void apuLoadSound(void)
     wave += 4; //ポインタは次を指しておく
     //波形データのバイト数の取得
     SSDataLen = *(DWORD *)wave;
-    SSHeadLen = bufsize - SSDataLen;
+    wave += 4; //ポインタは次を指しておく
+    SSHeadLen = wave - tmp;
+    SSMasterBuf = malloc(SSDataLen);
+    SSPlayBuf = malloc(SSHeadLen + SSDataLen);
+    if (SSMasterBuf != NULL && SSPlayBuf != NULL)
+    {
+        memcpy(SSMasterBuf, wave, SSDataLen);
+        memcpy(SSPlayBuf, tmp, SSHeadLen);
+    }
     FreeResource(hG);
 }
 
@@ -477,7 +479,7 @@ void apuStartupSound(void)
     {
         return;
     }
-    src = (short*)((BYTE*)SSMasterBuf + SSHeadLen);
+    src = (short*)((BYTE*)SSMasterBuf);
     dst = (short*)((BYTE*)SSPlayBuf + SSHeadLen);
     // マスターの音量を変更してプレイバッファーにコピー
     for (i = 0; i < size; i++)

@@ -248,9 +248,9 @@ unsigned char apuVoice(void)
     static int index = 0, b = 0;
     unsigned char v;
 
-    if ((SDMACTL & 0x98) == 0x98) { // Hyper voice
-        v = Page[SDMASB + b][SDMASA + index++];
-        if ((SDMASA + index) == 0)
+    if ((IO[SDMACTL] & 0x98) == 0x98) { // Hyper voice
+        v = Page[IO[SDMASB] + b][*(WORD*)(IO+SDMASA) + index++];
+        if ((*(WORD*)(IO+SDMASA) + index) == 0)
         {
             b++;
         }
@@ -262,23 +262,23 @@ unsigned char apuVoice(void)
         {
             v -= 0x80;
         }
-        if (SDMACNT <= index)
+        if (*(WORD*)(IO+SDMACNT) <= index)
         {
             index = 0;
             b = 0;
         }
         return v;
     }
-    else if ((SDMACTL & 0x88) == 0x80) { // DMA start
-        IO[0x89] = Page[SDMASB + b][SDMASA + index++];
-        if ((SDMASA + index) == 0)
+    else if ((IO[SDMACTL] & 0x88) == 0x80) { // DMA start
+        IO[0x89] = Page[IO[SDMASB] + b][*(WORD*)(IO+SDMASA) + index++];
+        if ((*(WORD*)(IO+SDMASA) + index) == 0)
         {
             b++;
         }
-        if (SDMACNT <= index)
+        if (*(WORD*)(IO+SDMACNT) <= index)
         {
-            SDMACTL &= 0x7F; // DMA end
-            SDMACNT = 0;
+            IO[SDMACTL] &= 0x7F; // DMA end
+            *(WORD*)(IO+SDMACNT) = 0;
             index = 0;
             b = 0;
         }

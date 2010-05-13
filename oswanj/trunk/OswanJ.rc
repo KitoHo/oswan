@@ -58,34 +58,34 @@ BEGIN
     BEGIN
         MENUITEM "開く(&O)...",                     ID_FILE_OPENROM
         MENUITEM SEPARATOR
-        MENUITEM "パーソナルデータ(&P)",            ID_PDATA_SET
+        MENUITEM "パーソナルデータ(&D)",            ID_PDATA_SET
         MENUITEM SEPARATOR
         POPUP "セーブ(&S)"
         BEGIN
-            MENUITEM "1:",                          ID_STATE_SAVE_0
-            MENUITEM "2:",                          ID_STATE_SAVE_1
-            MENUITEM "3:",                          ID_STATE_SAVE_2
-            MENUITEM "4:",                          ID_STATE_SAVE_3
+            MENUITEM "1 ",                          ID_STATE_SAVE_0
+            MENUITEM "2 ",                          ID_STATE_SAVE_1
+            MENUITEM "3 ",                          ID_STATE_SAVE_2
+            MENUITEM "4 ",                          ID_STATE_SAVE_3
         END
         POPUP "ロード(&L)"
         BEGIN
-            MENUITEM "1:",                          ID_STATE_LOAD_0
-            MENUITEM "2:",                          ID_STATE_LOAD_1
-            MENUITEM "3:",                          ID_STATE_LOAD_2
-            MENUITEM "4:",                          ID_STATE_LOAD_3
+            MENUITEM "1 ",                          ID_STATE_LOAD_0
+            MENUITEM "2 ",                          ID_STATE_LOAD_1
+            MENUITEM "3 ",                          ID_STATE_LOAD_2
+            MENUITEM "4 ",                          ID_STATE_LOAD_3
         END
         MENUITEM SEPARATOR
-        MENUITEM "一時停止(&A)",                    ID_PAUSE
+        MENUITEM "一時停止(&P)",                    ID_PAUSE
         MENUITEM "リセット(&R)",                    ID_RESET
         MENUITEM SEPARATOR
         POPUP "最近開いたファイル(&F)"
         BEGIN
-            MENUITEM "1:",                          ID_FILE_RECENT_0
-            MENUITEM "2:",                          ID_FILE_RECENT_1
-            MENUITEM "3:",                          ID_FILE_RECENT_2
-            MENUITEM "4:",                          ID_FILE_RECENT_3
-            MENUITEM "5:",                          ID_FILE_RECENT_4
-            MENUITEM "6:",                          ID_FILE_RECENT_5
+            MENUITEM "1 ",                          ID_FILE_RECENT_0
+            MENUITEM "2 ",                          ID_FILE_RECENT_1
+            MENUITEM "3 ",                          ID_FILE_RECENT_2
+            MENUITEM "4 ",                          ID_FILE_RECENT_3
+            MENUITEM "5 ",                          ID_FILE_RECENT_4
+            MENUITEM "6 ",                          ID_FILE_RECENT_5
         END
     END
     POPUP "ビデオ(&V)"
@@ -136,8 +136,16 @@ END
 
 IDR_ACCELERATOR1 ACCELERATORS 
 BEGIN
-    "^U",            ID_SOUND_UP
-    "^D",            ID_SOUND_DOWN
+    "^U",           ID_SOUND_UP
+    "^D",           ID_SOUND_DOWN
+    VK_F1,          ID_STATE_LOAD_0, VIRTKEY
+    VK_F1,          ID_STATE_SAVE_0, VIRTKEY, SHIFT
+    VK_F2,          ID_STATE_LOAD_1, VIRTKEY
+    VK_F2,          ID_STATE_SAVE_1, VIRTKEY, SHIFT
+    VK_F3,          ID_STATE_LOAD_2, VIRTKEY
+    VK_F3,          ID_STATE_SAVE_2, VIRTKEY, SHIFT
+    VK_F4,          ID_STATE_LOAD_3, VIRTKEY
+    VK_F4,          ID_STATE_SAVE_3, VIRTKEY, SHIFT
 END
 
 

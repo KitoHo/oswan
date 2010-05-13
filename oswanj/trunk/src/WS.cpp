@@ -237,17 +237,17 @@ static void  WriteCRam(DWORD A, BYTE V)
     {
         flashCommand1 = 1;
     }
-    if (RAMSize != 0x40000 || BNK1SEL < 8)
+    if (RAMSize != 0x40000 || IO[BNK1SEL] < 8)
     {
         // normal sram
         Page[1][offset] = V;
     }
-    else if (BNK1SEL >= 8 && BNK1SEL < 15)
+    else if (IO[BNK1SEL] >= 8 && IO[BNK1SEL] < 15)
     {
         // FLASH ROM use SRAM bank(port 0xC1:8-14)(0xC1:15 0xF0000-0xFFFFF are write protected)
         if (flashWriteEnable || flashWriteOne)
         {
-            Page[BNK1SEL][offset] = V;
+            Page[IO[BNK1SEL]][offset] = V;
             flashWriteEnable = 0;
             flashWriteOne = 0;
         }
@@ -348,7 +348,7 @@ void  WriteIO(DWORD A, BYTE V)
     case 0x1D:
     case 0x1E:
     case 0x1F:
-        if(COLCTL & 0x80) break;
+        if(IO[COLCTL] & 0x80) break;
         i = (A - 0x1C) << 1;
         MonoColor[i] = DefColor[V & 0x0F];
         MonoColor[i + 1] = DefColor[(V & 0xF0) >> 4];
@@ -393,7 +393,7 @@ void  WriteIO(DWORD A, BYTE V)
     case 0x3D:
     case 0x3E:
     case 0x3F:
-        if (COLCTL & 0x80) break;
+        if (IO[COLCTL] & 0x80) break;
         i = (A & 0x1E) >> 1;
         j = 0;
         if (A & 0x01) j = 2;
@@ -403,38 +403,38 @@ void  WriteIO(DWORD A, BYTE V)
     case 0x48:
         if(V & 0x80)
         {
-            i = DMASRC;
-            j = DMADST;
-            k = DMACNT;
+            i = *(DWORD*)(IO + DMASRC); // IO[]が4バイト境界にあることが必要
+            j = *(WORD*)(IO + DMADST);
+            k = *(WORD*)(IO + DMACNT);
             while(k--)
             {
                 WriteMem(j++, ReadMem(i++));
             }
-            DMACNT = 0;
-            DMASRC = i;
-            DMADST = j;
+            *(WORD*)(IO + DMACNT) = 0;
+            *(DWORD*)(IO + DMASRC) = i; // IO[]が4バイト境界にあることが必要
+            *(WORD*)(IO + DMADST) = j;
             V &= 0x7F;
         }
         break;
     case 0x80:
     case 0x81:
         IO[A] = V;
-        Ch[0].freq = *(unsigned short*)(IO + 0x80);
+        Ch[0].freq = *(WORD*)(IO + SND1FRQ);
         return;
     case 0x82:
     case 0x83:
         IO[A] = V;
-        Ch[1].freq = *(unsigned short*)(IO + 0x82);
+        Ch[1].freq = *(WORD*)(IO + SND2FRQ);
         return;
     case 0x84:
     case 0x85:
         IO[A] = V;
-        Ch[2].freq = *(unsigned short*)(IO + 0x84);
+        Ch[2].freq = *(WORD*)(IO + SND3FRQ);
         return;
     case 0x86:
     case 0x87:
         IO[A] = V;
-        Ch[3].freq = *(unsigned short*)(IO + 0x86);
+        Ch[3].freq = *(WORD*)(IO + SND4FRQ);
         return;
     case 0x88:
         Ch[0].volL = (V >> 4) & 0x0F;
@@ -485,7 +485,7 @@ void  WriteIO(DWORD A, BYTE V)
     case 0xA2:
         if(V & 0x01)
         {
-            HTimer = HPRE;
+            HTimer = *(WORD*)(IO + HPRE);
         }
         else
         {
@@ -493,7 +493,7 @@ void  WriteIO(DWORD A, BYTE V)
         }
         if(V & 0x04)
         {
-            VTimer = VPRE;
+            VTimer = *(WORD*)(IO + VPRE);
         }
         else
         {
@@ -503,15 +503,15 @@ void  WriteIO(DWORD A, BYTE V)
     case 0xA4:
     case 0xA5:
         IO[A] = V;
-        HTimer = HPRE; // FF
+        HTimer = *(WORD*)(IO + HPRE); // FF
         return;
     case 0xA6:
     case 0xA7:
         IO[A] = V;
         IO[A + 4] = V; // Dark eyes
-        if(TIMCTL & 0x04)
+        if(IO[TIMCTL] & 0x04)
         {
-            VTimer = VPRE;
+            VTimer = *(WORD*)(IO + VPRE);
         }
         return;
     case 0xB3:
@@ -522,16 +522,16 @@ void  WriteIO(DWORD A, BYTE V)
         V |= 0x04;
         break;
     case 0xB5:
-        KEYCTL = (BYTE)(V & 0xF0);
-        if(KEYCTL & 0x40) KEYCTL |= (BYTE)((ButtonState >> 8) & 0x0F);
-        if(KEYCTL & 0x20) KEYCTL |= (BYTE)((ButtonState >> 4) & 0x0F);
-        if(KEYCTL & 0x10) KEYCTL |= (BYTE)(ButtonState & 0x0F);
+        IO[KEYCTL] = (BYTE)(V & 0xF0);
+        if(IO[KEYCTL] & 0x40) IO[KEYCTL] |= (BYTE)((ButtonState >> 8) & 0x0F);
+        if(IO[KEYCTL] & 0x20) IO[KEYCTL] |= (BYTE)((ButtonState >> 4) & 0x0F);
+        if(IO[KEYCTL] & 0x10) IO[KEYCTL] |= (BYTE)(ButtonState & 0x0F);
         return;
     case 0xB6:
-        IRQACK &= (BYTE)~V;
+        IO[IRQACK] &= (BYTE)~V;
         return;
     case 0xBE:
-        ComEEP(&sIEep, (WORD*)(IO + 0xBC), (WORD*)(IO + 0xBA));
+        ComEEP(&sIEep, (WORD*)(IO + EEPCMD), (WORD*)(IO + EEPDATA));
         V >>= 4;
         break;
     case 0xC0:
@@ -574,7 +574,7 @@ void  WriteIO(DWORD A, BYTE V)
         Page[3] = ROMMap[V];
         break;
     case 0xC8:
-        ComEEP(&sCEep, (WORD*)(IO + 0xC6), (WORD*)(IO + 0xC4));
+        ComEEP(&sCEep, (WORD*)(IO + CEEPCMD), (WORD*)(IO + CEEPDATA));
         if(V & 0x10)
         {
             V >>= 4;
@@ -608,9 +608,9 @@ BYTE ReadIO(DWORD A)
     switch(A)
     {
     case 0xCA:
-        return IO[0xCA] | 0x80;
+        return IO[RTCCMD] | 0x80;
     case 0xCB:
-        if (IO[0xCA] == 0x15)  // get time command
+        if (IO[RTCCMD] == 0x15)  // get time command
         { 
             BYTE year, mon, mday, wday, hour, min, sec, j;
             struct tm *newtime;
@@ -658,7 +658,7 @@ BYTE ReadIO(DWORD A)
         }
         else {
             // set ack
-            return (IO[0xCB] | 0x80);
+            return (IO[RTCDATA] | 0x80);
         }
     }
     return IO[A];
@@ -703,9 +703,9 @@ void WsReset (void)
         sCEep.we = 0;
     }
     Page[0xF] = ROMMap[0xFF];
-    i = (SPRTAB & 0x1F) << 9;
-    i += SPRBGN << 2;
-    j = SPRCNT << 2;
+    i = (IO[SPRTAB] & 0x1F) << 9;
+    i += IO[SPRBGN] << 2;
+    j = IO[SPRCNT] << 2;
     memcpy(SprTMap, IRAM + i, j);
     SprTTMap = SprTMap;
     SprETMap = SprTMap + j - 4;
@@ -825,45 +825,45 @@ int Interrupt(void)
     switch(LCount)
     {
         case 0:
-            if (RSTRL == 144)
+            if (IO[RSTRL] == 144)
             {
                 DWORD VCounter;
 
                 ButtonState = WsInputGetState();
                 if((ButtonState ^ Joyz) & Joyz)
                 {
-                    if(IRQENA & KEY_IFLAG)
+                    if(IO[IRQENA] & KEY_IFLAG)
                     {
-                        IRQACK |= KEY_IFLAG;
+                        IO[IRQACK] |= KEY_IFLAG;
                     }
                 }
                 Joyz = ButtonState;
                 // Vblankカウントアップ
-                VCounter = VCNTH << 16 | VCNTL;
+                VCounter = *(WORD*)(IO + VCNTH) << 16 | *(WORD*)(IO + VCNTL);
                 VCounter++;
-                VCNTL = (WORD)VCounter;
-                VCNTH = (WORD)(VCounter >> 16);
+                *(WORD*)(IO + VCNTL) = (WORD)VCounter;
+                *(WORD*)(IO + VCNTH) = (WORD)(VCounter >> 16);
             }
             break;
         case 2:
             // Hblank毎に1サンプルセットすることで12KHzのwaveデータが出来る
             apuWaveSet();
-            NCSR = apuShiftReg();
+            *(WORD*)(IO + NCSR) = apuShiftReg();
             break;
         case 4:
-            if(RSTRL == 140)
+            if(IO[RSTRL] == 140)
             {
-                i = (SPRTAB & 0x1F) << 9;
-                i += SPRBGN << 2;
-                j = SPRCNT << 2;
+                i = (IO[SPRTAB] & 0x1F) << 9;
+                i += IO[SPRBGN] << 2;
+                j = IO[SPRCNT] << 2;
                 memcpy(SprTMap, IRAM + i, j);
                 SprTTMap = SprTMap;
                 SprETMap= SprTMap + j - 4;
             }
 
-            if(LCDSLP & 0x01)
+            if(IO[LCDSLP] & 0x01)
             {
-                if(RSTRL == 0)
+                if(IO[RSTRL] == 0)
                 {
                     SkipCnt--;
                     if(SkipCnt < 0)
@@ -873,11 +873,11 @@ int Interrupt(void)
                 }
                 if(TblSkip[FrameSkip][SkipCnt])
                 {
-                    if(RSTRL < 144)
+                    if(IO[RSTRL] < 144)
                     {
-                        RefreshLine(RSTRL);
+                        RefreshLine(IO[RSTRL]);
                     }
-                    if(RSTRL == 144)
+                    if(IO[RSTRL] == 144)
                     {
                         drawDraw();
                     }
@@ -885,65 +885,65 @@ int Interrupt(void)
             }
             break;
         case 6:
-            if((TIMCTL & 0x01) && HTimer)
+            if((IO[TIMCTL] & 0x01) && HTimer)
             {
                 HTimer--;
                 if(!HTimer)
                 {
-                    if(TIMCTL & 0x02)
+                    if(IO[TIMCTL] & 0x02)
                     {
-                        HTimer = HPRE;
+                        HTimer = *(WORD*)(IO + HPRE);
                     }
-                    if(IRQENA & HTM_IFLAG)
+                    if(IO[IRQENA] & HTM_IFLAG)
                     {
-                        IRQACK |= HTM_IFLAG;
+                        IO[IRQACK] |= HTM_IFLAG;
                     }
                 }
             }
-            else if(HPRE == 1)
+            else if(*(WORD*)(IO + HPRE) == 1)
             {
-                if(IRQENA & HTM_IFLAG)
+                if(IO[IRQENA] & HTM_IFLAG)
                 {
-                    IRQACK |= HTM_IFLAG;
+                    IO[IRQACK] |= HTM_IFLAG;
                 }
             }
-            if((IRQENA & VBB_IFLAG) && (RSTRL == 144))
+            if((IO[IRQENA] & VBB_IFLAG) && (IO[RSTRL] == 144))
             {
-                IRQACK |= VBB_IFLAG;
+                IO[IRQACK] |= VBB_IFLAG;
             }
-            if((TIMCTL & 0x04) && (RSTRL == 144) && VTimer)
+            if((IO[TIMCTL] & 0x04) && (IO[RSTRL] == 144) && VTimer)
             {
                 VTimer--;
                 if(!VTimer)
                 {
-                    if(TIMCTL & 0x08)
+                    if(IO[TIMCTL] & 0x08)
                     {
-                        VTimer = VPRE;
+                        VTimer = *(WORD*)(IO + VPRE);
                     }
-                    if(IRQENA & VTM_IFLAG)
+                    if(IO[IRQENA] & VTM_IFLAG)
                     {
-                        IRQACK |= VTM_IFLAG;
+                        IO[IRQACK] |= VTM_IFLAG;
                     }
                 }
             }
-            if((IRQENA & RST_IFLAG) && (RSTRL == RSTRLC))
+            if((IO[IRQENA] & RST_IFLAG) && (IO[RSTRL] == IO[RSTRLC]))
             {
-                IRQACK |= RST_IFLAG;
+                IO[IRQACK] |= RST_IFLAG;
             }
             break;
         case 7:
-            RSTRL++;
-            if(RSTRL >= 159)
+            IO[RSTRL]++;
+            if(IO[RSTRL] >= 159)
             {
-                RSTRL = 0;
+                IO[RSTRL] = 0;
             }
             // Hblankカウントアップ
-            HCNT++;
+            (*(WORD*)(IO + HCNT))++;
             break;
         default:
             break;
     }
-    return IRQACK;
+    return IO[IRQACK];
 }
 
 int WsRun(void)
@@ -957,7 +957,7 @@ int WsRun(void)
         period += IPeriod - cycle;
         if(Interrupt())
         {
-            iack = IRQACK;
+            iack = IO[IRQACK];
             for(inum = 7; inum >= 0; inum--)
             {
                 if(iack & 0x80)
@@ -966,7 +966,7 @@ int WsRun(void)
                 }
                 iack <<= 1;
             }
-            nec_int((inum + IRQBSE) << 2);
+            nec_int((inum + IO[IRQBSE]) << 2);
         }
     }
     return 0;

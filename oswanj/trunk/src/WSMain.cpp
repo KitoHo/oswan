@@ -452,11 +452,11 @@ void SetRecentRoms(wchar_t* RomPath)
         if (*RecentOfn[i])
         {
             filename = wcsrchr(RecentOfn[i], '\\');
-            wsprintf(buf, L"&%d: %s", i + 1, ++filename);
+            wsprintf(buf, L"&%d %s", i + 1, ++filename);
         }
         else
         {
-            wsprintf(buf, L"%d:", i + 1);
+            wsprintf(buf, L"%d", i + 1);
         }
         SetMenuItemInfo(menu, ID_FILE_RECENT_0 + i, FALSE, &minfo);
     }
@@ -488,16 +488,20 @@ void SetStateInfo(void)
                 GetFileTime(file, NULL, NULL, &ft);
                 FileTimeToLocalFileTime(&ft, &lt);
                 FileTimeToSystemTime(&lt, &st);
-                wsprintf(buf, L"&%d: %04d/%02d/%02d %02d:%02d:%02d",
-                    i + 1, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+                wsprintf(buf, L"&%d %04d/%02d/%02d %02d:%02d:%02d\tShift+F%d",
+                    i + 1, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, i + 1);
+                SetMenuItemInfo(menu, ID_STATE_SAVE_0 + i, FALSE, &minfo);
+                wsprintf(buf, L"&%d %04d/%02d/%02d %02d:%02d:%02d\tF%d",
+                    i + 1, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, i + 1);
+                SetMenuItemInfo(menu, ID_STATE_LOAD_0 + i, FALSE, &minfo);
                 CloseHandle(file);
             }
             else
             {
-                wsprintf(buf, L"%d:", i + 1);
+                wsprintf(buf, L"%d", i + 1);
+                SetMenuItemInfo(menu, ID_STATE_SAVE_0 + i, FALSE, &minfo);
+                SetMenuItemInfo(menu, ID_STATE_LOAD_0 + i, FALSE, &minfo);
             }
-            SetMenuItemInfo(menu, ID_STATE_SAVE_0 + i, FALSE, &minfo);
-            SetMenuItemInfo(menu, ID_STATE_LOAD_0 + i, FALSE, &minfo);
         }
     }
 }

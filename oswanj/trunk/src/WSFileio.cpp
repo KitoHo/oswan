@@ -24,10 +24,9 @@ wchar_t IniPath[512];
 
 void WsSetDir(void)
 {
-    wchar_t *p, argv[512];
+    wchar_t *p;
 
-    MultiByteToWideChar(932, MB_PRECOMPOSED, __argv[0], -1, argv, 512);
-    wcscpy(CurDir, argv);
+    wcscpy(CurDir, __wargv[0]);
     p = wcsrchr(CurDir, L'\\');
     if (p == NULL)
     {
@@ -77,6 +76,7 @@ int WsCreate(wchar_t *CartName)
     }
     if ((fp = _wfopen(CartName, L"rb")) == NULL)
     {
+        MessageBox(NULL, CartName, NULL, MB_OK);
         ErrorMsg(ERR_FOPEN);
         return -1;
     }

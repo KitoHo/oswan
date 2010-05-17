@@ -34,7 +34,7 @@ static wchar_t  RecentOfn5[512];
 wchar_t* RecentOfn[] = {RecentOfn0, RecentOfn1, RecentOfn2, RecentOfn3, RecentOfn4, RecentOfn5};
 extern wchar_t StateName[512];
 
-int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, int nCmdShow)
+int WINAPI wWinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPWSTR lpsCmdLine, int nCmdShow)
 {
     MSG msg;
     HACCEL accel;
@@ -61,6 +61,15 @@ int WINAPI WinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPSTR lpsCmdLine, in
     WsInputInit(hWnd);
     WsInputSetKeyMap(0);
     WsSplash();
+    if (lpsCmdLine[0] != 0)
+    {
+        apuWaveClear();
+        WsRelease();
+        Run = 1;
+        WsCreate(lpsCmdLine);
+        SetRecentRoms(lpsCmdLine);
+        SetStateInfo();
+    }
     while (1) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
         {

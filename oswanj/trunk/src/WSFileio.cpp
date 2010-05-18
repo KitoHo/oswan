@@ -77,7 +77,6 @@ int WsCreate(wchar_t *CartName)
     if ((fp = _wfopen(CartName, L"rb")) == NULL)
     {
         ErrorMsg(ERR_FOPEN);
-        MessageBox(NULL, CartName, NULL, MB_OK);
         return -1;
     }
     fseek(fp, -10, 2);
@@ -334,7 +333,7 @@ void WsRelease(void)
     StateName[0] = '\0';
 }
 
-void WsLoadIEep(void)
+void WsLoadEeprom(void)
 {
     FILE* fp;
     wchar_t buf[512];
@@ -353,7 +352,7 @@ void WsLoadIEep(void)
     }
 }
 
-void WsSaveIEep(void)
+void WsSaveEeprom(void)
 {
     FILE* fp;
     wchar_t buf[512];

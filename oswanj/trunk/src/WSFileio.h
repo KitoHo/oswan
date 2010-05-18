@@ -10,8 +10,8 @@ extern wchar_t IniPath[512];
 
 int WsCreate(wchar_t *CartName);
 void WsRelease(void);
-void WsLoadIEep(void);
-void WsSaveIEep(void);
+void WsLoadEeprom(void);
+void WsSaveEeprom(void);
 void WsLoadState(int num);
 void WsSaveState(int num);
 

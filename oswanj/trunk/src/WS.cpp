@@ -52,7 +52,7 @@ static WORD DefColor[] = {
     MONO(0x7), MONO(0x6), MONO(0x5), MONO(0x4), MONO(0x3), MONO(0x2), MONO(0x1), MONO(0x0)
 };
 
-void  ComEEP(struct EEPROM *eeprom, WORD *cmd, WORD *data)
+void  ComEeprom(struct EEPROM *eeprom, WORD *cmd, WORD *data)
 {
     int i, j, op, addr;
     const int tblmask[16][5]=
@@ -531,7 +531,7 @@ void  WriteIO(DWORD A, BYTE V)
         IO[IRQACK] &= (BYTE)~V;
         return;
     case 0xBE:
-        ComEEP(&sIEep, (WORD*)(IO + EEPCMD), (WORD*)(IO + EEPDATA));
+        ComEeprom(&sIEep, (WORD*)(IO + EEPCMD), (WORD*)(IO + EEPDATA));
         V >>= 4;
         break;
     case 0xC0:
@@ -574,7 +574,7 @@ void  WriteIO(DWORD A, BYTE V)
         Page[3] = ROMMap[V];
         break;
     case 0xC8:
-        ComEEP(&sCEep, (WORD*)(IO + CEEPCMD), (WORD*)(IO + CEEPDATA));
+        ComEeprom(&sCEep, (WORD*)(IO + CEEPCMD), (WORD*)(IO + CEEPDATA));
         if(V & 0x10)
         {
             V >>= 4;

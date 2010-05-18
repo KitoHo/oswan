@@ -50,7 +50,7 @@ int WINAPI wWinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPWSTR lpsCmdLine, 
     hInst = hCurInst;
     accel = LoadAccelerators(hCurInst, MAKEINTRESOURCE(IDR_ACCELERATOR1));
     WsSetDir();
-    WsLoadIEep();
+    WsLoadEeprom();
     ConfigCreate();
     SetRecentRoms(NULL);
     apuInit();
@@ -92,7 +92,7 @@ int WINAPI wWinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPWSTR lpsCmdLine, 
             Sleep(2);
         }
     }
-    WsSaveIEep();
+    WsSaveEeprom();
     WsRelease();
     drawDestroy();
     drawFinalize();

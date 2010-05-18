@@ -237,17 +237,17 @@ static void  WriteCRam(DWORD A, BYTE V)
     {
         flashCommand1 = 1;
     }
-    if (RAMSize != 0x40000 || IO[BNK1SEL] < 8)
+    if (RAMSize != 0x40000 || IO[BNK1SLCT] < 8)
     {
         // normal sram
         Page[1][offset] = V;
     }
-    else if (IO[BNK1SEL] >= 8 && IO[BNK1SEL] < 15)
+    else if (IO[BNK1SLCT] >= 8 && IO[BNK1SLCT] < 15)
     {
         // FLASH ROM use SRAM bank(port 0xC1:8-14)(0xC1:15 0xF0000-0xFFFFF are write protected)
         if (flashWriteEnable || flashWriteOne)
         {
-            Page[IO[BNK1SEL]][offset] = V;
+            Page[IO[BNK1SLCT]][offset] = V;
             flashWriteEnable = 0;
             flashWriteOne = 0;
         }
@@ -757,7 +757,7 @@ void WsReset (void)
     WriteIO(0xBC, 0x30); // 内蔵EEPROM
     WriteIO(0xBD, 0x01); // 書き込み可能
     WriteIO(0xBE, 0x83);
-    IO[0xC0] = 0x0F;
+    IO[BNKSLCT] = 0x0F;
     j = 0xF0;
     Page[0x4] = ROMMap[0x4 | j];
     Page[0x5] = ROMMap[0x5 | j];

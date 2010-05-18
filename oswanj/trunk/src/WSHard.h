@@ -59,8 +59,8 @@ BYTE  ReadIO(DWORD A);
 #define DMADST      0x44        //
 #define DMACNT      0x46        //
 
-#define SDMASA      0x4A        //
-#define SDMASB      0x4C        // 
+#define SDMASL      0x4A        //
+#define SDMASH      0x4C        // 
 #define SDMACNT     0x4E        //
 #define SDMACTL     0x52        // 
 
@@ -70,7 +70,10 @@ BYTE  ReadIO(DWORD A);
 #define SND2FRQ     0x82        // 
 #define SND3FRQ     0x84        // 
 #define SND4FRQ     0x86        // 
-#define SNDV        0x88        // 
+#define SND1VOL     0x88        // 
+#define SND2VOL     0x89        // 
+#define SND3VOL     0x8A        // 
+#define SND4VOL     0x8B        // 
 #define SNDSWP      0x8C        // 
 #define SWPSTP      0x8D        // 
 #define NSCTL       0x8E        // 
@@ -99,9 +102,10 @@ BYTE  ReadIO(DWORD A);
 #define EEPCMD      0xBC        // 
 #define EEPCTL      0xBE        // 
 
-#define BNK1SEL     0xC1        // 
-#define BNK2SEL     0xC2        // 
-#define BNK3SEL     0xC3        // 
+#define BNKSLCT     0xC0        // 
+#define BNK1SLCT    0xC1        // 
+#define BNK2SLCT    0xC2        // 
+#define BNK3SLCT    0xC3        // 
 #define CEEPDATA    0xC4        // 
 #define CEEPCMD     0xC6        // 
 

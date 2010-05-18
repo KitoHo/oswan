@@ -76,8 +76,8 @@ int WsCreate(wchar_t *CartName)
     }
     if ((fp = _wfopen(CartName, L"rb")) == NULL)
     {
-        MessageBox(NULL, CartName, NULL, MB_OK);
         ErrorMsg(ERR_FOPEN);
+        MessageBox(NULL, CartName, NULL, MB_OK);
         return -1;
     }
     fseek(fp, -10, 2);

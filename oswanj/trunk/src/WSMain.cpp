@@ -61,14 +61,15 @@ int WINAPI wWinMain(HINSTANCE hCurInst, HINSTANCE hPrevInst, LPWSTR lpsCmdLine, 
     WsInputInit(hWnd);
     WsInputSetKeyMap(0);
     WsSplash();
-    if (lpsCmdLine[0] != 0)
+    if (__argc > 1)
     {
-        apuWaveClear();
-        WsRelease();
-        Run = 1;
-        WsCreate(lpsCmdLine);
-        SetRecentRoms(lpsCmdLine);
-        SetStateInfo();
+        if (WsCreate(__wargv[1]) != -1)
+        {
+            Sleep(500);
+            Run = 1;
+            SetRecentRoms(__wargv[1]);
+            SetStateInfo();
+        }
     }
     while (1) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))

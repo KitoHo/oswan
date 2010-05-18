@@ -249,8 +249,8 @@ unsigned char apuVoice(void)
     unsigned char v;
 
     if ((IO[SDMACTL] & 0x98) == 0x98) { // Hyper voice
-        v = Page[IO[SDMASB] + b][*(WORD*)(IO+SDMASA) + index++];
-        if ((*(WORD*)(IO+SDMASA) + index) == 0)
+        v = Page[IO[SDMASH] + b][*(WORD*)(IO + SDMASL) + index++];
+        if ((*(WORD*)(IO + SDMASL) + index) == 0)
         {
             b++;
         }
@@ -270,20 +270,20 @@ unsigned char apuVoice(void)
         return v;
     }
     else if ((IO[SDMACTL] & 0x88) == 0x80) { // DMA start
-        IO[0x89] = Page[IO[SDMASB] + b][*(WORD*)(IO+SDMASA) + index++];
-        if ((*(WORD*)(IO+SDMASA) + index) == 0)
+        IO[SND2VOL] = Page[IO[SDMASH] + b][*(WORD*)(IO + SDMASL) + index++];
+        if ((*(WORD*)(IO + SDMASL) + index) == 0)
         {
             b++;
         }
-        if (*(WORD*)(IO+SDMACNT) <= index)
+        if (*(WORD*)(IO + SDMACNT) <= index)
         {
             IO[SDMACTL] &= 0x7F; // DMA end
-            *(WORD*)(IO+SDMACNT) = 0;
+            *(WORD*)(IO + SDMACNT) = 0;
             index = 0;
             b = 0;
         }
     }
-    return ((VoiceOn && Sound[4]) ? IO[0x89] : 0x80);
+    return ((VoiceOn && Sound[4]) ? IO[SND2VOL] : 0x80);
 }
 
 void apuSweep(void)

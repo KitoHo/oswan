@@ -169,7 +169,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
                 apuWaveClear();
                 WsRelease();
                 Run = 1;
-                WsCreate(RecentOfn[id]);
+                if (WsCreate(RecentOfn[id]) < 0)
+                {
+                    wcscpy(RecentOfn[id], L"");
+                    Run = 0;
+                    WsSplash();
+                }
                 SetRecentRoms(RecentOfn[id]);
                 SetStateInfo();
             }

@@ -292,7 +292,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wp, LPARAM lp)
             }
             return 0L;
         case ID_SOUND_UP:
-            if (WsWaveVol < 50)
+            if (WsWaveVol < 100)
             {
                 WsWaveVol++;
             }

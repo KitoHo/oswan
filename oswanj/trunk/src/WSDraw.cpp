@@ -112,7 +112,7 @@ HRESULT drawCreate(void)
     //--------------------------------------
     // オブジェクトの頂点バッファを生成
     //--------------------------------------
-    // 8つの頂点からなる頂点バッファを作る
+    // 8つの頂点からなる頂点バッファを作る(メイン4個　セグメント4個)
     if(FAILED( pD3DDevice->CreateVertexBuffer(8 * sizeof(MY_VERTEX), D3DUSAGE_WRITEONLY, MY_VERTEX_FVF, D3DPOOL_MANAGED, &pMyVB, NULL)))
     {
         return E_FAIL;

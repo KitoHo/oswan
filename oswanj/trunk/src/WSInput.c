@@ -20,7 +20,7 @@ BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* lpddi, LPVOID lpCont
 {
     HRESULT hRet;
 
-    hRet = lpDInput->CreateDevice(lpddi->guidInstance, &lpJoyDevice, NULL);
+    hRet = IDirectInput8_CreateDevice(lpDInput, &(lpddi->guidInstance), &lpJoyDevice, NULL);
     if(FAILED(hRet))  return DIENUM_CONTINUE;
 
     return DIENUM_STOP;
@@ -32,11 +32,11 @@ int WsInputJoyInit(HWND hw)
     if (lpJoyDevice != NULL)
         return TRUE;
 
-    hRet = lpDInput->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback, NULL, DIEDFL_ATTACHEDONLY);
+    hRet = IDirectInput8_EnumDevices(lpDInput, DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback, NULL, DIEDFL_ATTACHEDONLY);
     if (hRet != DI_OK){
         if (lpJoyDevice != NULL)
         {
-            lpJoyDevice->Release();
+            IDirectInputDevice8_Release(lpJoyDevice);
             lpJoyDevice = NULL;
         }
         return FALSE;
@@ -45,35 +45,35 @@ int WsInputJoyInit(HWND hw)
     {
         return FALSE;
     }
-    hRet = lpJoyDevice->SetDataFormat(&c_dfDIJoystick2);
+    hRet = IDirectInputDevice8_SetDataFormat(lpJoyDevice, &c_dfDIJoystick2);
     if (hRet != DI_OK){
         if (lpJoyDevice != NULL)
         {
-            lpJoyDevice->Release();
+            IDirectInputDevice8_Release(lpJoyDevice);
             lpJoyDevice = NULL;
         }
         return FALSE;
     }
-    hRet = lpJoyDevice->SetCooperativeLevel(hw, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+    hRet = IDirectInputDevice8_SetCooperativeLevel(lpJoyDevice, hw, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
     if (hRet != DI_OK){
         if (lpJoyDevice != NULL)
         {
-            lpJoyDevice->Release();
+            IDirectInputDevice8_Release(lpJoyDevice);
             lpJoyDevice = NULL;
         }
         return FALSE;
     }
-    lpJoyDevice->Acquire();
+    IDirectInputDevice8_Acquire(lpJoyDevice);
 
     return TRUE;
 }
 
 int WsInputInit(HWND hw)
 {
-    DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&lpDInput, NULL);
-    lpDInput->CreateDevice(GUID_SysKeyboard, &lpKeyDevice, NULL);
-    lpKeyDevice->SetDataFormat(&c_dfDIKeyboard);
-    lpKeyDevice->SetCooperativeLevel(hw, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+    DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &IID_IDirectInput8, (LPVOID*)&lpDInput, NULL);
+    IDirectInput8_CreateDevice(lpDInput, &GUID_SysKeyboard, &lpKeyDevice, NULL);
+    IDirectInputDevice8_SetDataFormat(lpKeyDevice, &c_dfDIKeyboard);
+    IDirectInputDevice8_SetCooperativeLevel(lpKeyDevice, hw, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
     return WsInputJoyInit(hw);
 }
 
@@ -81,8 +81,8 @@ void WsInputJoyRelease(void)
 {
     if (lpJoyDevice != NULL)
     {
-        lpJoyDevice->Unacquire();
-        lpJoyDevice->Release();
+        IDirectInputDevice8_Unacquire(lpJoyDevice);
+        IDirectInputDevice8_Release(lpJoyDevice);
         lpJoyDevice = NULL;
     }
 }
@@ -91,13 +91,13 @@ void WsInputRelease(void)
 {
     if (lpKeyDevice != NULL)
     {
-        lpKeyDevice->Unacquire();
-        lpKeyDevice->Release();
+        IDirectInputDevice8_Unacquire(lpKeyDevice);
+        IDirectInputDevice8_Release(lpKeyDevice);
         lpKeyDevice = NULL;
     }
     if (lpDInput != NULL)
     {
-        lpDInput->Release();
+        IDirectInput8_Release(lpDInput);
         lpDInput = NULL;
     }
     WsInputJoyRelease();
@@ -206,10 +206,10 @@ WORD WsInputGetState(void)
     ZeroMemory(diKeys, 256);
     if (lpKeyDevice != NULL)
     {
-        hRet = lpKeyDevice->Acquire();
+        hRet = IDirectInputDevice8_Acquire(lpKeyDevice);
         if (hRet == DI_OK || hRet == S_FALSE)
         {
-            hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+            hRet = IDirectInputDevice8_GetDeviceState(lpKeyDevice, 256, diKeys);
             if (hRet == DI_OK)
             {
                 for (i = 0; i < 12; i++)
@@ -225,17 +225,17 @@ WORD WsInputGetState(void)
     }
     if (lpJoyDevice != NULL)
     {
-        hRet = lpJoyDevice->Poll();
+        hRet = IDirectInputDevice8_Poll(lpJoyDevice);
         if (FAILED(hRet))
         {
-            hRet = lpJoyDevice->Acquire();
+            hRet = IDirectInputDevice8_Acquire(lpJoyDevice);
             while (hRet == DIERR_INPUTLOST)
             {
-                hRet = lpJoyDevice->Acquire();
+                hRet = IDirectInputDevice8_Acquire(lpJoyDevice);
             }
             return KeyState;
         }
-        hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+        hRet = IDirectInputDevice8_GetDeviceState(lpJoyDevice, sizeof(DIJOYSTATE2), &js);
         if (hRet == DI_OK){
             for (i = 0; i < 12; i++)
             {
@@ -271,10 +271,10 @@ int WsInputGetNowait(void)
     ZeroMemory(diKeys, 256);
     if (lpKeyDevice != NULL)
     {
-        hRet = lpKeyDevice->Acquire();
+        hRet = IDirectInputDevice8_Acquire(lpKeyDevice);
         if (hRet == DI_OK || hRet == S_FALSE)
         {
-            hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+            hRet = IDirectInputDevice8_GetDeviceState(lpKeyDevice, 256, diKeys);
             if (hRet == DI_OK)
             {
                 if (diKeys[WsKeyboard[12]] & 0x80)
@@ -286,17 +286,17 @@ int WsInputGetNowait(void)
     }
     if (lpJoyDevice != NULL)
     {
-        hRet = lpJoyDevice->Poll();
+        hRet = IDirectInputDevice8_Poll(lpJoyDevice);
         if (FAILED(hRet))
         {
-            hRet = lpJoyDevice->Acquire();
+            hRet = IDirectInputDevice8_Acquire(lpJoyDevice);
             while (hRet == DIERR_INPUTLOST)
             {
-                hRet = lpJoyDevice->Acquire();
+                hRet = IDirectInputDevice8_Acquire(lpJoyDevice);
             }
             return flag;
         }
-        hRet = lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
+        hRet = IDirectInputDevice8_GetDeviceState(lpJoyDevice, sizeof(DIJOYSTATE2), &js);
         if (hRet == DI_OK){
             flag |= WsInputCheckJoy(WsJoypad[12]);
         }

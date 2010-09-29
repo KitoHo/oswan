@@ -73,7 +73,7 @@ int apuWaveCreate(void)
     wfe.nBlockAlign = wfe.nChannels * wfe.wBitsPerSample / 8;
     wfe.nSamplesPerSec = BPSWAV;
     wfe.nAvgBytesPerSec = wfe.nSamplesPerSec * wfe.nBlockAlign;
-    result = waveOutOpen(&hWaveOut, WAVE_MAPPER, &wfe, (DWORD_PTR)apuWaveOutProc, NULL, CALLBACK_FUNCTION);
+    result = waveOutOpen(&hWaveOut, WAVE_MAPPER, &wfe, (DWORD_PTR)apuWaveOutProc, (DWORD_PTR)NULL, CALLBACK_FUNCTION);
     if (result != MMSYSERR_NOERROR )
     {
         waveOutGetErrorText(result, msg, sizeof(msg));

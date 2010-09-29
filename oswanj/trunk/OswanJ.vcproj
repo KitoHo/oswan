@@ -327,50 +327,50 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\WS.cpp"
+				RelativePath=".\src\WS.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSApu.cpp"
+				RelativePath=".\src\WSApu.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSConfig.cpp"
+				RelativePath=".\src\WSConfig.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSDialog.cpp"
+				RelativePath=".\src\WSDialog.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSDraw.cpp"
+				RelativePath=".\src\WSDraw.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSError.cpp"
+				RelativePath=".\src\WSError.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSFileio.cpp"
+				RelativePath=".\src\WSFileio.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSInput.cpp"
+				RelativePath=".\src\WSInput.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSMain.cpp"
+				RelativePath=".\src\WSMain.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\WSRender.cpp"
+				RelativePath=".\src\WSRender.c"
 				>
 			</File>
 			<Filter
 				Name="nec"
 				>
 				<File
-					RelativePath=".\src\nec\nec.cpp"
+					RelativePath=".\src\nec\nec.c"
 					>
 				</File>
 			</Filter>

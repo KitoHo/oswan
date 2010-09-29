@@ -23,7 +23,7 @@ static LPDIRECT3DSURFACE9          pSegSurface;
 
 // 頂点１つのデータ型
 typedef struct {
-    D3DVECTOR p;      // 位置
+    D3DVECTOR   p;      // 位置
     DWORD       color;  // 色
     D3DXVECTOR2 t;      // テクスチャーの画像の位置
 } MY_VERTEX;

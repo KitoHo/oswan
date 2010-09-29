@@ -22,14 +22,14 @@ static LPDIRECT3DTEXTURE9          pSegTexture;
 static LPDIRECT3DSURFACE9          pSegSurface;
 
 // 頂点１つのデータ型
-struct MY_VERTEX{
-    D3DXVECTOR3 p;      // 位置
+typedef struct {
+    D3DVECTOR p;      // 位置
     DWORD       color;  // 色
     D3DXVECTOR2 t;      // テクスチャーの画像の位置
-};
+} MY_VERTEX;
 // MY_VERTEXのフォーマット設定
 #define MY_VERTEX_FVF  (D3DFVF_XYZ | D3DFVF_DIFFUSE  | D3DFVF_TEX1)
-#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
+#define SAFE_RELEASE(p) { if(p) { IDirect3D9_Release(p); (p)=NULL; } }
 
 //-------------------------------------------------------------
 // レンダラーの初期化
@@ -48,7 +48,7 @@ HRESULT drawInitialize(BOOL isFullScreen)
         return E_FAIL;  // 取得失敗
     }
     // 現在のディスプレイモードを取得
-    if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
+    if(FAILED(IDirect3D9_GetAdapterDisplayMode(pD3D, D3DADAPTER_DEFAULT, &d3ddm)))
     {
         return E_FAIL;
     }
@@ -72,11 +72,11 @@ HRESULT drawInitialize(BOOL isFullScreen)
     D3DPP.PresentationInterval      = D3DPRESENT_INTERVAL_IMMEDIATE;    // 垂直同期しない
     // ディスプレイアダプタを表すためのデバイスを作成
     // 描画と頂点処理をハードウェアで行なう
-    if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
+    if(FAILED(IDirect3D9_CreateDevice(pD3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
     {
         // 上記の設定が失敗したら
         // 描画をハードウェアで行い、頂点処理はCPUで行なう
-        if(FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
+        if(FAILED(IDirect3D9_CreateDevice(pD3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3DPP, &pD3DDevice)))
         {
             // 初期化失敗
             MessageBox(hWnd, TEXT(" グラフィックチップが未対応です "), TEXT("Direct3D Error"), MB_OK);
@@ -113,28 +113,28 @@ HRESULT drawCreate(void)
     // オブジェクトの頂点バッファを生成
     //--------------------------------------
     // 8つの頂点からなる頂点バッファを作る(メイン4個　セグメント4個)
-    if(FAILED( pD3DDevice->CreateVertexBuffer(8 * sizeof(MY_VERTEX), D3DUSAGE_WRITEONLY, MY_VERTEX_FVF, D3DPOOL_MANAGED, &pMyVB, NULL)))
+    if(FAILED(IDirect3DDevice9_CreateVertexBuffer(pD3DDevice, 8 * sizeof(MY_VERTEX), D3DUSAGE_WRITEONLY, MY_VERTEX_FVF, D3DPOOL_MANAGED, &pMyVB, NULL)))
     {
         return E_FAIL;
     }
-    pD3DDevice->CreateTexture(256, 256, 1, 0, D3DFMT_A4R4G4B4, D3DPOOL_MANAGED, &pTexture, NULL);
-    pTexture->GetSurfaceLevel(0, &pSurface);
-    pD3DDevice->CreateTexture(32, 1024, 1, 0, D3DFMT_A4R4G4B4, D3DPOOL_MANAGED, &pSegTexture, NULL);
-    pSegTexture->GetSurfaceLevel(0, &pSegSurface);
+    IDirect3DDevice9_CreateTexture(pD3DDevice, 256, 256, 1, 0, D3DFMT_A4R4G4B4, D3DPOOL_MANAGED, &pTexture, NULL);
+    IDirect3DTexture9_GetSurfaceLevel(pTexture, 0, &pSurface);
+    IDirect3DDevice9_CreateTexture(pD3DDevice, 32, 1024, 1, 0, D3DFMT_A4R4G4B4, D3DPOOL_MANAGED, &pSegTexture, NULL);
+    IDirect3DTexture9_GetSurfaceLevel(pSegTexture, 0, &pSegSurface);
     //--------------------------------------
     // テクスチャステージの設定
     //--------------------------------------
-    pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
-    pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    IDirect3DDevice9_SetTextureStageState(pD3DDevice, 0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1 );
+    IDirect3DDevice9_SetTextureStageState(pD3DDevice, 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
     //--------------------------------------
     // レンダリングステートパラメータの設定
     //--------------------------------------
     // 両面描画モードの指定
-    pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    IDirect3DDevice9_SetRenderState(pD3DDevice, D3DRS_CULLMODE, D3DCULL_NONE);
     // ディザリングを行なう（高品質描画）
-    pD3DDevice->SetRenderState(D3DRS_DITHERENABLE, TRUE);
+    IDirect3DDevice9_SetRenderState(pD3DDevice, D3DRS_DITHERENABLE, TRUE);
     // ノーライティングモード   
-    pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    IDirect3DDevice9_SetRenderState(pD3DDevice, D3DRS_LIGHTING, FALSE);
     return S_OK;
 }
 
@@ -162,6 +162,13 @@ void drawDestroy(void)
 #define KERO 0.0075f
 void drawDraw()
 {
+    D3DLOCKED_RECT lockRect;
+    int x, y, pitch;
+    WORD *p;
+    MY_VERTEX* v;
+    D3DXMATRIX mat;
+    D3DXMatrixIdentity(&mat);
+
     if(pD3DDevice == 0)
     {
         return;
@@ -171,10 +178,7 @@ void drawDraw()
         return;
     }
     // 画像データをテクスチャに転送
-    D3DLOCKED_RECT lockRect;
-    int x, y, pitch;
-    WORD *p;
-    pSurface->LockRect(&lockRect, NULL, D3DLOCK_DISCARD);
+    IDirect3DSurface9_LockRect(pSurface, &lockRect, NULL, D3DLOCK_DISCARD);
     p = FrameBuffer[0] + 8;
     pitch = lockRect.Pitch / 2;
     for (y = 0; y < 144; y++)
@@ -185,10 +189,10 @@ void drawDraw()
         }
         p += 32;
     }
-    pSurface->UnlockRect();
+    IDirect3DSurface9_UnlockRect(pSurface);
     // 液晶セグメントデータをテクスチャに転送
     RenderSegment();
-    pSegSurface->LockRect(&lockRect, NULL, D3DLOCK_DISCARD);
+    IDirect3DSurface9_LockRect(pSegSurface, &lockRect, NULL, D3DLOCK_DISCARD);
     p = SegmentBuffer;
     pitch = lockRect.Pitch / 2;
     for (y = 0; y < 144 * 4; y++)
@@ -198,50 +202,81 @@ void drawDraw()
             *((WORD*)lockRect.pBits + pitch * y + x) = *p++;
         }
     }
-    pSegSurface->UnlockRect();
+    IDirect3DSurface9_UnlockRect(pSegSurface);
     //頂点バッファの中身を埋める
-    MY_VERTEX* v;
-    pMyVB->Lock( 0, 0, (void**)&v, 0 );
+    IDirect3DVertexBuffer9_Lock( pMyVB, 0, 0, (void**)&v, 0 );
     if (Kerorikan)
     {
         // 頂点座標の設定
-        v[0].p = D3DXVECTOR3(-112*KERO,  72*KERO, 0.0f);
-        v[1].p = D3DXVECTOR3( 112*KERO,  72*KERO, 0.0f);
-        v[2].p = D3DXVECTOR3(-112*KERO, -72*KERO, 0.0f);
-        v[3].p = D3DXVECTOR3( 112*KERO, -72*KERO, 0.0f);
-        v[4].p = D3DXVECTOR3( 114*KERO,  72*KERO, 0.0f);
-        v[5].p = D3DXVECTOR3( 122*KERO,  72*KERO, 0.0f);
-        v[6].p = D3DXVECTOR3( 114*KERO, -72*KERO, 0.0f);
-        v[7].p = D3DXVECTOR3( 122*KERO, -72*KERO, 0.0f);
+        D3DVECTOR p[8] = {
+            -112*KERO,  72*KERO, 0.0f,
+             112*KERO,  72*KERO, 0.0f,
+            -112*KERO, -72*KERO, 0.0f,
+             112*KERO, -72*KERO, 0.0f,
+             114*KERO,  72*KERO, 0.0f,
+             122*KERO,  72*KERO, 0.0f,
+             114*KERO, -72*KERO, 0.0f,
+             122*KERO, -72*KERO, 0.0f
+        };
+        v[0].p = p[0];
+        v[1].p = p[1];
+        v[2].p = p[2];
+        v[3].p = p[3];
+        v[4].p = p[4];
+        v[5].p = p[5];
+        v[6].p = p[6];
+        v[7].p = p[7];
     }
     else
     {
         // 頂点座標の設定
-        v[0].p = D3DXVECTOR3(-1.0f,  1.0f, 0.0f);
-        v[1].p = D3DXVECTOR3(MAIN_W, 1.0f, 0.0f);
-        v[2].p = D3DXVECTOR3(-1.0f, -1.0f, 0.0f);
-        v[3].p = D3DXVECTOR3(MAIN_W,-1.0f, 0.0f);
-        v[4].p = D3DXVECTOR3(SEG_W,  1.0f, 0.0f);
-        v[5].p = D3DXVECTOR3( 1.0f,  1.0f, 0.0f);
-        v[6].p = D3DXVECTOR3(SEG_W, -1.0f, 0.0f);
-        v[7].p = D3DXVECTOR3( 1.0f, -1.0f, 0.0f);
+        D3DVECTOR p[8] = {
+            -1.0f,  1.0f, 0.0f,
+            MAIN_W, 1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f,
+            MAIN_W,-1.0f, 0.0f,
+            SEG_W,  1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f,
+            SEG_W, -1.0f, 0.0f,
+             1.0f, -1.0f, 0.0f
+        };
+        v[0].p = p[0];
+        v[1].p = p[1];
+        v[2].p = p[2];
+        v[3].p = p[3];
+        v[4].p = p[4];
+        v[5].p = p[5];
+        v[6].p = p[6];
+        v[7].p = p[7];
     }
-    // テクスチャ座標の設定
-    v[0].t = D3DXVECTOR2(0.0f, 0.0f);
-    v[1].t = D3DXVECTOR2(MAIN_X, 0.0f);
-    v[2].t = D3DXVECTOR2(0.0f, MAIN_Y);
-    v[3].t = D3DXVECTOR2(MAIN_X, MAIN_Y);
-    v[4].t = D3DXVECTOR2(0.0f, 0.0f);
-    v[5].t = D3DXVECTOR2(SEG_X, 0.0f);
-    v[6].t = D3DXVECTOR2(0.0f, SEG_Y);
-    v[7].t = D3DXVECTOR2(SEG_X, SEG_Y);
+    {
+        // テクスチャ座標の設定
+        D3DXVECTOR2 t[8] = {
+            0.0f, 0.0f,
+            MAIN_X, 0.0f,
+            0.0f, MAIN_Y,
+            MAIN_X, MAIN_Y,
+            0.0f, 0.0f,
+            SEG_X, 0.0f,
+            0.0f, SEG_Y,
+            SEG_X, SEG_Y
+        };
+        v[0].t = t[0];
+        v[1].t = t[1];
+        v[2].t = t[2];
+        v[3].t = t[3];
+        v[4].t = t[4];
+        v[5].t = t[5];
+        v[6].t = t[6];
+        v[7].t = t[7];
+    }
+    {
     // 頂点カラーの設定
-    v[0].color = v[1].color = v[2].color = v[3].color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
-    v[4].color = v[5].color = v[6].color = v[7].color = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
-    pMyVB->Unlock();
+    v[0].color = v[1].color = v[2].color = v[3].color = 0xFFFFFFFFU;
+    v[4].color = v[5].color = v[6].color = v[7].color = 0xFFFFFFFFU;
+    }
+    IDirect3DVertexBuffer9_Unlock(pMyVB);
     // 回転処理
-    D3DXMATRIX mat;
-    D3DXMatrixIdentity(&mat);
     // 斜め（左atan(0.5)回転）
     if (Kerorikan)
     {
@@ -253,24 +288,24 @@ void drawDraw()
         D3DXMatrixRotationZ(&mat, D3DXToRadian(90));
     }
     // 描画開始宣言
-    if(SUCCEEDED(pD3DDevice->BeginScene()))
+    if(SUCCEEDED(IDirect3DDevice9_BeginScene(pD3DDevice)))
     {
-        pD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0xFF666666, 0.0f, 0);
-        pD3DDevice->SetStreamSource(0, pMyVB, 0, sizeof(MY_VERTEX));
-        pD3DDevice->SetFVF(MY_VERTEX_FVF);
-        pD3DDevice->SetTexture( 0, pTexture);
-        pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2); // 0番の頂点から三角形を2個
-        pD3DDevice->SetTexture( 0, pSegTexture);
-        pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4, 2); // 4番の頂点から三角形を2個
-        pD3DDevice->SetTransform(D3DTS_VIEW, &mat);
+        IDirect3DDevice9_Clear(pD3DDevice, 0, NULL, D3DCLEAR_TARGET, 0xFF666666, 0.0f, 0);
+        IDirect3DDevice9_SetStreamSource(pD3DDevice, 0, pMyVB, 0, sizeof(MY_VERTEX));
+        IDirect3DDevice9_SetFVF(pD3DDevice, MY_VERTEX_FVF);
+        IDirect3DDevice9_SetTexture(pD3DDevice, 0, (IDirect3DBaseTexture9 *)pTexture);
+        IDirect3DDevice9_DrawPrimitive(pD3DDevice, D3DPT_TRIANGLESTRIP, 0, 2); // 0番の頂点から三角形を2個
+        IDirect3DDevice9_SetTexture(pD3DDevice, 0, (IDirect3DBaseTexture9 *)pSegTexture);
+        IDirect3DDevice9_DrawPrimitive(pD3DDevice, D3DPT_TRIANGLESTRIP, 4, 2); // 4番の頂点から三角形を2個
+        IDirect3DDevice9_SetTransform(pD3DDevice, D3DTS_VIEW, &mat);
         // 描画終了宣言
-        pD3DDevice->EndScene();
+        IDirect3DDevice9_EndScene(pD3DDevice);
     }
     // 描画結果の転送
-    if(FAILED(pD3DDevice->Present(NULL, NULL, NULL, NULL)))
+    if(FAILED(IDirect3DDevice9_Present(pD3DDevice, NULL, NULL, NULL, NULL)))
     {
         // デバイス消失から復帰
-        pD3DDevice->Reset(&D3DPP);
+        IDirect3DDevice9_Reset(pD3DDevice, &D3DPP);
     }
 }
 

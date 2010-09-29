@@ -63,7 +63,7 @@ void WsDlgConfInit(HWND hDlg)
     ShowWindow(hTab1, SW_SHOW);
     SetFocus(GetDlgItem(hTab1, IDC_EDIT_Y1));
     SendMessage(GetDlgItem(hTab1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
-    lpKeyDevice->Acquire();
+    IDirectInputDevice8_Acquire(lpKeyDevice);
 }
 
 LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -93,7 +93,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
                     ShowWindow(hTab4, SW_HIDE);
                     SetFocus(GetDlgItem(hTab1, IDC_EDIT_Y1));
                     SendMessage(GetDlgItem(hTab1, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
-                    lpKeyDevice->Acquire();
+                    IDirectInputDevice8_Acquire(lpKeyDevice);
                     break;
                 case 1:
                     ShowWindow(hTab1, SW_HIDE);
@@ -102,7 +102,7 @@ LRESULT CALLBACK ConfProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
                     ShowWindow(hTab4, SW_HIDE);
                     SetFocus(GetDlgItem(hTab2, IDC_EDIT_Y1));
                     SendMessage(GetDlgItem(hTab2, IDC_EDIT_Y1), EM_SETSEL, 0, -1);
-                    lpKeyDevice->Acquire();
+                    IDirectInputDevice8_Acquire(lpKeyDevice);
                     break;
                 case 2:
                     ShowWindow(hTab1, SW_HIDE);
@@ -167,10 +167,10 @@ LRESULT CALLBACK EditProcKey(HWND hEditWnd, UINT msg, WPARAM wParam, LPARAM lPar
     case WM_KEYDOWN:
         key = GetDlgCtrlID(hEditWnd) - IDC_EDIT_B;
         wParam = 0;
-        hRet = lpKeyDevice->Acquire();
+        hRet = IDirectInputDevice8_Acquire(lpKeyDevice);
         if (hRet == DI_OK || hRet == S_FALSE)
         {
-            hRet = lpKeyDevice->GetDeviceState(256, diKeys);
+            hRet = IDirectInputDevice8_GetDeviceState(lpKeyDevice, 256, diKeys);
             if (hRet == DI_OK)
             {
                 for (i = 0; i < 256; i++)
@@ -459,18 +459,18 @@ int GetJoyState(void)
     {
         return -1;
     }
-    hRet = lpJoyDevice->Poll();
+    hRet = IDirectInputDevice8_Poll(lpJoyDevice);
     if (FAILED(hRet))
     {
-        hRet = lpJoyDevice->Acquire();
+        hRet = IDirectInputDevice8_Acquire(lpJoyDevice);
         while (hRet == DIERR_INPUTLOST)
         {
-            hRet = lpJoyDevice->Acquire();
+            hRet = IDirectInputDevice8_Acquire(lpJoyDevice);
         }
         return -1;
     }
-    lpJoyDevice->GetDeviceState(sizeof(DIJOYSTATE2), &js);
-    lpJoyDevice->GetCapabilities(&diDevCaps);
+    IDirectInputDevice8_GetDeviceState(lpJoyDevice, sizeof(DIJOYSTATE2), &js);
+    IDirectInputDevice8_GetCapabilities(lpJoyDevice, &diDevCaps);
     for (i = 0; i < diDevCaps.dwButtons; i++)
     {
         if (js.rgbButtons[i] & 0x80)

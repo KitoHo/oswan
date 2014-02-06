@@ -414,7 +414,7 @@ void apuLoadSound(void)
     BYTE* tmp;
     DWORD wfesize;
 
-    hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE);
+    hInst = (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE);
     hRsrc = FindResource(hInst, MAKEINTRESOURCE(IDR_WAVE1), TEXT("WAVE"));
     hG = LoadResource(hInst, hRsrc);
     wave = (BYTE*)LockResource(hG); //RIFFヘッダの確認
